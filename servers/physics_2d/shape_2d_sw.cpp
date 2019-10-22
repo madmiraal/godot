@@ -842,7 +842,6 @@ void ConcavePolygonShape2DSW::set_data(const Variant &p_data) {
 	if (p_data.get_type() == Variant::POOL_VECTOR2_ARRAY) {
 		PoolVector<Vector2> p2arr = p_data;
 		int len = p2arr.size();
-		ERR_FAIL_COND(len % 2);
 
 		segments.clear();
 		points.clear();
@@ -857,17 +856,14 @@ void ConcavePolygonShape2DSW::set_data(const Variant &p_data) {
 		PoolVector<Vector2>::Read arr = p2arr.read();
 
 		Map<Point2, int> pointmap;
-		for (int i = 0; i < len; i += 2) {
+		pointmap[arr[0]] = 0;
+
+		for (int i = 0; i < len; i++) {
 			Point2 p1 = arr[i];
-			Point2 p2 = arr[i + 1];
+			Point2 p2 = arr[(i + 1) % len];
 			int idx_p1, idx_p2;
 
-			if (pointmap.has(p1)) {
-				idx_p1 = pointmap[p1];
-			} else {
-				idx_p1 = pointmap.size();
-				pointmap[p1] = idx_p1;
-			}
+			idx_p1 = pointmap[p1];
 
 			if (pointmap.has(p2)) {
 				idx_p2 = pointmap[p2];
@@ -909,11 +905,10 @@ void ConcavePolygonShape2DSW::set_data(const Variant &p_data) {
 Variant ConcavePolygonShape2DSW::get_data() const {
 	PoolVector<Vector2> rsegments;
 	int len = segments.size();
-	rsegments.resize(len * 2);
+	rsegments.resize(len);
 	PoolVector<Vector2>::Write w = rsegments.write();
 	for (int i = 0; i < len; i++) {
-		w[(i << 1) + 0] = points[segments[i].points[0]];
-		w[(i << 1) + 1] = points[segments[i].points[1]];
+		w[i] = points[segments[i].points[0]];
 	}
 
 	w.release();
