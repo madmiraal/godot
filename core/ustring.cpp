@@ -140,9 +140,11 @@ void CharString::copy_from(const char *p_cstr) {
 		return;
 	}
 
-	resize(len + 1); // include terminating null char
+	Error err = resize(++len); // include terminating null char
 
-	strcpy(ptrw(), p_cstr);
+	ERR_FAIL_COND_MSG(err != OK, "Failed to copy C-string.");
+
+	memcpy(ptrw(), p_cstr, len);
 }
 
 Error String::parse_url(String &r_scheme, String &r_host, int &r_port, String &r_path) const {
