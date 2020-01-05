@@ -174,12 +174,16 @@ struct CSGBrushOperation {
 		Transform to_3D;
 		float vertex_snap2;
 
-		inline int _get_point_idx(const Vector2 &p_point);
-		inline int _add_vertex(const Vertex2D &p_vertex);
-		inline void _add_vertex_idx_sorted(Vector<int> &r_vertex_indices, int p_new_vertex_index);
-		inline void _merge_faces(const Vector<int> &p_segment_indices);
-		inline void _find_edge_intersections(const Vector2 p_segment_points[2], Vector<int> &r_segment_indices);
-		inline int _insert_point(const Vector2 &p_point);
+		int _get_point_idx(const Vector2 &p_point);
+		int _add_vertex(const Vertex2D &p_vertex);
+		void _add_vertex_idx_sorted(Vector<int> &r_vertex_indices, int p_new_vertex_index);
+		void _merge_faces(const Vector<int> &p_segment_indices);
+		void _find_edge_intersections(const Vector2 p_segment_points[2], Vector<int> &r_segment_indices);
+		int _insert_point(const Vector2 &p_point);
+
+		void _printPoint(const Vector2 &point_2D);
+		void _printFace(int face_idx);
+		void _printFaces();
 
 		void insert(const CSGBrush &p_brush, int p_brush_face);
 		void addFacesToMesh(MeshMerge &r_mesh_merge, bool p_smooth, bool p_invert, const Ref<Material> &p_material, bool p_from_b);

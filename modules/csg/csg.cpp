@@ -34,7 +34,19 @@
 #include "core/math/math_funcs.h"
 #include "core/sort_array.h"
 
+#include <iomanip>
+#include <iostream>
+
 // Static helper functions.
+
+std::ostream &operator<<(std::ostream &os, const Vector3 &vector) {
+	int precision = 2;
+	os << "<";
+	os << std::setprecision(precision) << vector.x << ",";
+	os << std::setprecision(precision) << vector.y << ",";
+	os << std::setprecision(precision) << vector.z << ">";
+	return os;
+}
 
 inline static bool is_snapable(const Vector3 &p_point1, const Vector3 &p_point2, real_t p_distance) {
 
@@ -122,8 +134,15 @@ inline bool is_point_in_triangle(const Vector3 &p_point, const Vector3 p_vertice
 	if (Math::is_zero_approx(det)) {
 		if (p_shifted > 2) {
 			// Triangle appears degenerate, so ignore it.
+			std::cout << "Degnerate triangle:";
+			for (int i = 0; i < 3; ++i) {
+				std::cout << " " << (p_vertices[i] - Vector3(1, 1, 1));
+			}
+			std::cout << " -> Determinant = " << det;
+			std::cout << std::endl;
 			return false;
 		}
+
 		Vector3 shift_by;
 		shift_by[p_shifted] = 1;
 		Vector3 shifted_point = p_point + shift_by;
@@ -284,6 +303,8 @@ void CSGBrushOperation::merge_brushes(Operation p_operation, const CSGBrush &p_b
 	MeshMerge mesh_merge;
 	mesh_merge.vertex_snap = p_vertex_snap;
 
+	std::cout << std::endl
+			  << "### Add faces ###" << std::endl;
 	for (int i = 0; i < p_brush_a.faces.size(); i++) {
 
 		Ref<Material> material;
@@ -291,15 +312,20 @@ void CSGBrushOperation::merge_brushes(Operation p_operation, const CSGBrush &p_b
 			material = p_brush_a.materials[p_brush_a.faces[i].material];
 		}
 
+		std::cout << "Adding face[" << mesh_merge.faces.size() << "]: FaceA[" << i << "]" << std::endl;
 		if (build2DFaceCollection.build2DFacesA.has(i)) {
+			build2DFaceCollection.build2DFacesA[i]._printFaces();
 			build2DFaceCollection.build2DFacesA[i].addFacesToMesh(mesh_merge, p_brush_a.faces[i].smooth, p_brush_a.faces[i].invert, material, false);
 		} else {
+			std::cout << "Original face: ";
 			Vector3 points[3];
 			Vector2 uvs[3];
 			for (int j = 0; j < 3; j++) {
+				std::cout << (p_brush_a.faces[i].vertices[j]) << " ";
 				points[j] = p_brush_a.faces[i].vertices[j];
 				uvs[j] = p_brush_a.faces[i].uvs[j];
 			}
+			std::cout << std::endl;
 			mesh_merge.add_face(points, uvs, p_brush_a.faces[i].smooth, p_brush_a.faces[i].invert, material, false);
 		}
 	}
@@ -311,18 +337,25 @@ void CSGBrushOperation::merge_brushes(Operation p_operation, const CSGBrush &p_b
 			material = p_brush_b.materials[p_brush_b.faces[i].material];
 		}
 
+		std::cout << "Adding face[" << mesh_merge.faces.size() << "]: FaceB[" << i << "]" << std::endl;
 		if (build2DFaceCollection.build2DFacesB.has(i)) {
+			build2DFaceCollection.build2DFacesB[i]._printFaces();
 			build2DFaceCollection.build2DFacesB[i].addFacesToMesh(mesh_merge, p_brush_b.faces[i].smooth, p_brush_b.faces[i].invert, material, true);
 		} else {
+			std::cout << "Original face: ";
 			Vector3 points[3];
 			Vector2 uvs[3];
 			for (int j = 0; j < 3; j++) {
+				std::cout << (p_brush_b.faces[i].vertices[j]) << " ";
 				points[j] = p_brush_b.faces[i].vertices[j];
 				uvs[j] = p_brush_b.faces[i].uvs[j];
 			}
+			std::cout << std::endl;
 			mesh_merge.add_face(points, uvs, p_brush_b.faces[i].smooth, p_brush_b.faces[i].invert, material, true);
 		}
 	}
+	std::cout << "Number of faces: " << mesh_merge.faces.size() << std::endl
+			  << std::endl;
 
 	// Mark faces that ended up inside the intersection.
 	mesh_merge.mark_inside_faces();
@@ -588,11 +621,15 @@ bool CSGBrushOperation::MeshMerge::_bvh_inside(FaceBVH *facebvhptr, int p_max_de
 							// Check if faces are co-planar.
 							if ((current_normal - face_normal).length_squared() < CMP_EPSILON2 &&
 									is_point_in_triangle(face_center, current_points)) {
-								// Only add an intersection if not a B face.
+								// Only add an intersection if checking a B face.
+								std::cout << "Face[" << p_face_idx << "] coplanar with Face[" << current_facebvhptr->face << "]";
+								std::cout << "(" << (current_face.from_b ? "B" : "A") << ")" << std::endl;
 								if (!face.from_b)
 									_add_distance(intersectionsA, intersectionsB, current_face.from_b, 0);
 							} else if (ray_intersects_triangle(face_center, face_normal, current_points, CMP_EPSILON, intersection_point)) {
 								real_t distance = (intersection_point - face_center).length();
+								std::cout << "Face[" << p_face_idx << "] inside Face[" << current_facebvhptr->face << "]";
+								std::cout << "(" << (current_face.from_b ? "B" : "A") << ") at " << distance << std::endl;
 								_add_distance(intersectionsA, intersectionsB, current_face.from_b, distance);
 							}
 						}
@@ -650,6 +687,10 @@ bool CSGBrushOperation::MeshMerge::_bvh_inside(FaceBVH *facebvhptr, int p_max_de
 			break;
 	}
 
+	std::cout << "Face[" << p_face_idx << "]";
+	std::cout << "(" << (face.from_b ? "B" : "A") << ") Inside: ";
+	std::cout << ((intersectionsA.size() + intersectionsB.size()) & 1 ? "Yes" : "No ");
+	std::cout << ": Intersections: " << intersectionsA.size() << " + " << intersectionsB.size() << " = " << (intersectionsA.size() + intersectionsB.size()) << std::endl;
 	// Inside if face normal intersects other faces an odd number of times.
 	return (intersectionsA.size() + intersectionsB.size()) & 1;
 }
@@ -882,6 +923,11 @@ void CSGBrushOperation::Build2DFaces::_merge_faces(const Vector<int> &p_segment_
 			}
 		}
 
+		std::cout << "Attempting to merge faces: " << merge_faces_idx[0];
+		for (int i = 1; i < merge_faces_idx.size(); ++i)
+			std::cout << ", " << merge_faces_idx[i];
+		std::cout << std::endl;
+
 		Vector<int> degenerate_points;
 
 		// Create the new faces.
@@ -925,6 +971,9 @@ void CSGBrushOperation::Build2DFaces::_merge_faces(const Vector<int> &p_segment_
 		merge_faces_idx.invert();
 		for (int i = 0; i < merge_faces_idx.size(); ++i)
 			faces.remove(merge_faces_idx[i]);
+
+		std::cout << "Faces after merge:" << std::endl;
+		_printFaces();
 
 		if (degenerate_points.size() == 0) continue;
 
@@ -992,6 +1041,9 @@ void CSGBrushOperation::Build2DFaces::_merge_faces(const Vector<int> &p_segment_
 						faces.remove(face_idx);
 						faces.insert(face_idx, right_face);
 						faces.insert(face_idx, left_face);
+
+						std::cout << "Face[" << face_idx << "] split:" << std::endl;
+						_printFaces();
 
 						// Don't check against the new faces.
 						++face_idx;
@@ -1085,6 +1137,9 @@ void CSGBrushOperation::Build2DFaces::_find_edge_intersections(const Vector2 p_s
 				faces.insert(face_idx, right_face);
 				faces.insert(face_idx, left_face);
 
+				std::cout << "Face[" << face_idx << "] split:" << std::endl;
+				_printFaces();
+
 				// Check against the new faces.
 				--face_idx;
 				break;
@@ -1096,6 +1151,10 @@ void CSGBrushOperation::Build2DFaces::_find_edge_intersections(const Vector2 p_s
 int CSGBrushOperation::Build2DFaces::_insert_point(const Vector2 &p_point) {
 
 	int new_vertex_idx = -1;
+
+	std::cout << "Inserting: ";
+	_printPoint(p_point);
+	std::cout << std::endl;
 
 	for (int face_idx = 0; face_idx < faces.size(); ++face_idx) {
 
@@ -1177,6 +1236,9 @@ int CSGBrushOperation::Build2DFaces::_insert_point(const Vector2 &p_point) {
 				faces.insert(face_idx, right_face);
 				faces.insert(face_idx, left_face);
 
+				std::cout << "Face[" << face_idx << "] split into 2:" << std::endl;
+				_printFaces();
+
 				// Don't check against the new faces.
 				++face_idx;
 
@@ -1204,6 +1266,13 @@ int CSGBrushOperation::Build2DFaces::_insert_point(const Vector2 &p_point) {
 				Vector2 new_edge2[2] = { vertices[new_vertex_idx].point, points[(i + 1) % 3] };
 				if (are_segements_parallel(edge, new_edge1, vertex_snap2) &&
 						are_segements_parallel(edge, new_edge2, vertex_snap2)) {
+					std::cout << "Skipping: <";
+					_printPoint(points[i]);
+					std::cout << ", ";
+					_printPoint(points[(i + 1) % 3]);
+					std::cout << ", ";
+					_printPoint(vertices[new_vertex_idx].point);
+					std::cout << ">" << std::endl;
 					continue;
 				}
 
@@ -1215,12 +1284,41 @@ int CSGBrushOperation::Build2DFaces::_insert_point(const Vector2 &p_point) {
 			}
 			faces.remove(face_idx);
 
+			std::cout << "Face[" << face_idx << "] split into 3:" << std::endl;
+			_printFaces();
+
 			// No need to check other faces.
 			break;
 		}
 	}
 
 	return new_vertex_idx;
+}
+
+void CSGBrushOperation::Build2DFaces::_printPoint(const Vector2 &point_2D) {
+
+	Vector3 point_3D(point_2D.x, point_2D.y, 0);
+	point_3D = to_3D.xform(point_3D);
+	std::cout << point_3D;
+}
+
+void CSGBrushOperation::Build2DFaces::_printFace(int face_idx) {
+
+	Face2D face = faces[face_idx];
+	Vertex2D fv[3] = { vertices[face.vertex_idx[0]], vertices[face.vertex_idx[1]], vertices[face.vertex_idx[2]] };
+
+	std::cout << "Face[" << face_idx << "]:";
+	for (int i = 0; i < 3; ++i) {
+		std::cout << " ";
+		_printPoint(fv[i].point);
+	}
+}
+
+void CSGBrushOperation::Build2DFaces::_printFaces() {
+	for (int face_idx = 0; face_idx < faces.size(); ++face_idx) {
+		_printFace(face_idx);
+		std::cout << std::endl;
+	}
 }
 
 void CSGBrushOperation::Build2DFaces::insert(const CSGBrush &p_brush, int p_face_idx) {
@@ -1454,15 +1552,39 @@ void CSGBrushOperation::update_faces(const CSGBrush &p_brush_a, const int p_face
 			}
 		}
 	}
+	static int count = 0;
 
 	// If we're still here, the faces probably intersect, so add new faces.
 	if (!p_collection.build2DFacesA.has(p_face_idx_a)) {
 		p_collection.build2DFacesA[p_face_idx_a] = Build2DFaces(p_brush_a, p_face_idx_a, p_vertex_snap);
 	}
+	std::cout << std::endl
+			  << "### Collision " << ++count << "a ###" << std::endl;
+	std::cout << "FaceA[" << p_face_idx_a << "]:" << std::endl;
+	p_collection.build2DFacesA[p_face_idx_a]._printFaces();
+	std::cout << "Insert FaceB[" << p_face_idx_b << "]: ";
+	for (int i = 0; i < 3; ++i) {
+		std::cout << (p_brush_b.faces[p_face_idx_b].vertices[i]) << " ";
+	}
+	std::cout << std::endl;
 	p_collection.build2DFacesA[p_face_idx_a].insert(p_brush_b, p_face_idx_b);
+	std::cout << "New FaceA[" << p_face_idx_a << "]:" << std::endl;
+	p_collection.build2DFacesA[p_face_idx_a]._printFaces();
 
 	if (!p_collection.build2DFacesB.has(p_face_idx_b)) {
 		p_collection.build2DFacesB[p_face_idx_b] = Build2DFaces(p_brush_b, p_face_idx_b, p_vertex_snap);
 	}
+
+	std::cout << std::endl
+			  << "### Collision " << count << "b ###" << std::endl;
+	std::cout << "FaceB[" << p_face_idx_b << "]:" << std::endl;
+	p_collection.build2DFacesB[p_face_idx_b]._printFaces();
+	std::cout << "Insert FaceA[" << p_face_idx_a << "]: ";
+	for (int i = 0; i < 3; ++i) {
+		std::cout << (p_brush_a.faces[p_face_idx_a].vertices[i]) << " ";
+	}
+	std::cout << std::endl;
 	p_collection.build2DFacesB[p_face_idx_b].insert(p_brush_a, p_face_idx_a);
+	std::cout << "New FaceB[" << p_face_idx_b << "]:" << std::endl;
+	p_collection.build2DFacesB[p_face_idx_b]._printFaces();
 }
