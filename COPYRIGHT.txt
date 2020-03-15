@@ -332,6 +332,12 @@ Comment: Recast
 Copyright: 2009, Mikko Mononen
 License: Zlib
 
+Files: ./thirdparty/sqlite/spmemvfs.c
+ ./thirdparty/sqlite/spmemvfs.h
+Comment: A memory vfs implementation for SQLite
+Copyright: Copyright 2009, Stephen Liu
+License: BSD-2-clause
+
 Files: ./thirdparty/squish/
 Comment: libSquish
 Copyright: 2006, Simon Brown
