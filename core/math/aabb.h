@@ -76,8 +76,8 @@ public:
 	bool intersects_ray(const Vector3 &p_from, const Vector3 &p_dir, Vector3 *r_clip = NULL, Vector3 *r_normal = NULL) const;
 	_FORCE_INLINE_ bool smits_intersect_ray(const Vector3 &p_from, const Vector3 &p_dir, real_t t0, real_t t1) const;
 
-	_FORCE_INLINE_ bool intersects_convex_shape(const Plane *p_planes, int p_plane_count, const Vector3 *p_points, int p_point_count) const;
-	_FORCE_INLINE_ bool inside_convex_shape(const Plane *p_planes, int p_plane_count) const;
+	_FORCE_INLINE_ bool intersects_convex_shape(const Vector<Plane> &p_planes, const Vector<Vector3> &p_points) const;
+	_FORCE_INLINE_ bool inside_convex_shape(const Vector<Plane> &p_planes) const;
 	bool intersects_plane(const Plane &p_plane) const;
 
 	_FORCE_INLINE_ bool has_point(const Vector3 &p_point) const;
@@ -190,12 +190,12 @@ Vector3 AABB::get_endpoint(int p_point) const {
 	ERR_FAIL_V(Vector3());
 }
 
-bool AABB::intersects_convex_shape(const Plane *p_planes, int p_plane_count, const Vector3 *p_points, int p_point_count) const {
+bool AABB::intersects_convex_shape(const Vector<Plane> &p_planes, const Vector<Vector3> &p_points) const {
 
 	Vector3 half_extents = size * 0.5;
 	Vector3 ofs = position + half_extents;
 
-	for (int i = 0; i < p_plane_count; i++) {
+	for (int i = 0; i < p_planes.size(); i++) {
 		const Plane &p = p_planes[i];
 		Vector3 point(
 				(p.normal.x > 0) ? -half_extents.x : half_extents.x,
@@ -213,7 +213,7 @@ bool AABB::intersects_convex_shape(const Plane *p_planes, int p_plane_count, con
 
 	for (int k = 0; k < 3; k++) {
 
-		for (int i = 0; i < p_point_count; i++) {
+		for (int i = 0; i < p_points.size(); i++) {
 			if (p_points[i].coord[k] > ofs.coord[k] + half_extents.coord[k]) {
 				bad_point_counts_positive[k]++;
 			}
@@ -222,10 +222,10 @@ bool AABB::intersects_convex_shape(const Plane *p_planes, int p_plane_count, con
 			}
 		}
 
-		if (bad_point_counts_negative[k] == p_point_count) {
+		if (bad_point_counts_negative[k] == p_points.size()) {
 			return false;
 		}
-		if (bad_point_counts_positive[k] == p_point_count) {
+		if (bad_point_counts_positive[k] == p_points.size()) {
 			return false;
 		}
 	}
@@ -233,12 +233,12 @@ bool AABB::intersects_convex_shape(const Plane *p_planes, int p_plane_count, con
 	return true;
 }
 
-bool AABB::inside_convex_shape(const Plane *p_planes, int p_plane_count) const {
+bool AABB::inside_convex_shape(const Vector<Plane> &p_planes) const {
 
 	Vector3 half_extents = size * 0.5;
 	Vector3 ofs = position + half_extents;
 
-	for (int i = 0; i < p_plane_count; i++) {
+	for (int i = 0; i < p_planes.size(); i++) {
 		const Plane &p = p_planes[i];
 		Vector3 point(
 				(p.normal.x < 0) ? -half_extents.x : half_extents.x,
