@@ -76,6 +76,12 @@ bool CollisionSolverSW::solve_static_plane(const ShapeSW *p_shape_A, const Trans
 		found = true;
 
 		Vector3 support_A = p.project(supports[i]);
+		if (p_shape_B->get_type() == PhysicsServer::SHAPE_RAY) {
+			const RayShapeSW *ray = static_cast<const RayShapeSW *>(p_shape_B);
+			if (!ray->get_slips_on_slope()) {
+				plane->get_plane().intersects_ray(p_transform_B.origin, p_transform_B.basis.get_axis(2), &support_A);
+			}
+		}
 
 		if (p_result_callback) {
 			if (p_swap_result) {
@@ -214,9 +220,6 @@ bool CollisionSolverSW::solve_static(const ShapeSW *p_shape_A, const Transform &
 
 	if (type_A == PhysicsServer::SHAPE_PLANE) {
 		if (type_B == PhysicsServer::SHAPE_PLANE) {
-			return false;
-		}
-		if (type_B == PhysicsServer::SHAPE_RAY) {
 			return false;
 		}
 
