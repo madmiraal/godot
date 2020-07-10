@@ -87,7 +87,7 @@ public:
 	// primarily for the gizmo
 	void set_point(int p_idx, const Vector2 &p_point);
 
-	String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	Portal();
 	~Portal();

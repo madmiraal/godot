@@ -115,7 +115,7 @@ protected:
 	friend class CSGCombiner;
 	CSGBrush *_get_brush();
 
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 public:
 	Array get_meshes() const;
@@ -127,8 +127,8 @@ public:
 
 	virtual PoolVector<Vector3> get_brush_faces();
 
-	virtual AABB get_aabb() const;
-	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const;
+	virtual AABB get_aabb() const override;
+	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const override;
 
 	void set_use_collision(bool p_enable);
 	bool is_using_collision() const;
@@ -162,7 +162,7 @@ class CSGCombiner : public CSGShape {
 	GDCLASS(CSGCombiner, CSGShape);
 
 private:
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 public:
 	CSGCombiner();
@@ -186,7 +186,7 @@ public:
 class CSGMesh : public CSGPrimitive {
 	GDCLASS(CSGMesh, CSGPrimitive);
 
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Ref<Mesh> mesh;
 	Ref<Material> material;
@@ -206,7 +206,7 @@ public:
 
 class CSGSphere : public CSGPrimitive {
 	GDCLASS(CSGSphere, CSGPrimitive);
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Ref<Material> material;
 	bool smooth_faces;
@@ -238,7 +238,7 @@ public:
 
 class CSGBox : public CSGPrimitive {
 	GDCLASS(CSGBox, CSGPrimitive);
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Ref<Material> material;
 	float width;
@@ -266,7 +266,7 @@ public:
 
 class CSGCylinder : public CSGPrimitive {
 	GDCLASS(CSGCylinder, CSGPrimitive);
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Ref<Material> material;
 	float radius;
@@ -302,7 +302,7 @@ public:
 
 class CSGTorus : public CSGPrimitive {
 	GDCLASS(CSGTorus, CSGPrimitive);
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Ref<Material> material;
 	float inner_radius;
@@ -358,7 +358,7 @@ public:
 	};
 
 private:
-	virtual CSGBrush *_build_brush();
+	virtual CSGBrush *_build_brush() override;
 
 	Vector<Vector2> polygon;
 	Ref<Material> material;
@@ -392,7 +392,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 	void _notification(int p_what);
 
 public:

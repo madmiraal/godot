@@ -48,7 +48,7 @@ protected:
 	OccluderShape(RID p_shape);
 
 public:
-	virtual RID get_rid() const { return _shape; }
+	virtual RID get_rid() const override { return _shape; }
 	~OccluderShape();
 
 	virtual void notification_enter_world(RID p_scenario) = 0;
@@ -76,9 +76,9 @@ public:
 	void set_sphere_position(int p_idx, const Vector3 &p_position);
 	void set_sphere_radius(int p_idx, real_t p_radius);
 
-	virtual void notification_enter_world(RID p_scenario);
-	virtual void update_shape_to_visual_server();
-	virtual Transform center_node(const Transform &p_global_xform, const Transform &p_parent_xform, real_t p_snap);
+	virtual void notification_enter_world(RID p_scenario) override;
+	virtual void update_shape_to_visual_server() override;
+	virtual Transform center_node(const Transform &p_global_xform, const Transform &p_parent_xform, real_t p_snap) override;
 
 	OccluderShapeSphere();
 };

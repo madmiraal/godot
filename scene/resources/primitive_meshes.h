@@ -64,20 +64,20 @@ protected:
 	void _request_update();
 
 public:
-	virtual int get_surface_count() const;
-	virtual int surface_get_array_len(int p_idx) const;
-	virtual int surface_get_array_index_len(int p_idx) const;
-	virtual Array surface_get_arrays(int p_surface) const;
-	virtual Array surface_get_blend_shape_arrays(int p_surface) const;
-	virtual uint32_t surface_get_format(int p_idx) const;
-	virtual Mesh::PrimitiveType surface_get_primitive_type(int p_idx) const;
-	virtual void surface_set_material(int p_idx, const Ref<Material> &p_material);
-	virtual Ref<Material> surface_get_material(int p_idx) const;
-	virtual int get_blend_shape_count() const;
-	virtual StringName get_blend_shape_name(int p_index) const;
-	virtual void set_blend_shape_name(int p_index, const StringName &p_name);
-	virtual AABB get_aabb() const;
-	virtual RID get_rid() const;
+	virtual int get_surface_count() const override;
+	virtual int surface_get_array_len(int p_idx) const override;
+	virtual int surface_get_array_index_len(int p_idx) const override;
+	virtual Array surface_get_arrays(int p_surface) const override;
+	virtual Array surface_get_blend_shape_arrays(int p_surface) const override;
+	virtual uint32_t surface_get_format(int p_idx) const override;
+	virtual Mesh::PrimitiveType surface_get_primitive_type(int p_idx) const override;
+	virtual void surface_set_material(int p_idx, const Ref<Material> &p_material) override;
+	virtual Ref<Material> surface_get_material(int p_idx) const override;
+	virtual int get_blend_shape_count() const override;
+	virtual StringName get_blend_shape_name(int p_index) const override;
+	virtual void set_blend_shape_name(int p_index, const StringName &p_name) override;
+	virtual AABB get_aabb() const override;
+	virtual RID get_rid() const override;
 
 	void set_material(const Ref<Material> &p_material);
 	Ref<Material> get_material() const;
@@ -108,7 +108,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_radius(const float p_radius);
@@ -140,7 +140,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_size(const Vector3 &p_size);
@@ -174,7 +174,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_top_radius(const float p_radius);
@@ -209,7 +209,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_size(const Size2 &p_size);
@@ -242,7 +242,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_left_to_right(const float p_left_to_right);
@@ -276,7 +276,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	QuadMesh();
@@ -303,7 +303,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	void set_radius(const float p_radius);
@@ -332,7 +332,7 @@ class PointMesh : public PrimitiveMesh {
 	GDCLASS(PointMesh, PrimitiveMesh)
 
 protected:
-	virtual void _create_mesh_array(Array &p_arr) const;
+	virtual void _create_mesh_array(Array &p_arr) const override;
 
 public:
 	PointMesh();

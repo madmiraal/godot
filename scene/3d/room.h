@@ -78,7 +78,7 @@ public:
 	// editor only
 	PoolVector<Vector3> generate_points();
 
-	String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 private:
 	// call during each conversion

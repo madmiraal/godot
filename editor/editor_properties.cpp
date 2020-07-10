@@ -599,7 +599,7 @@ public:
 	Vector<String> names;
 	Vector<String> tooltips;
 
-	virtual Size2 get_minimum_size() const {
+	virtual Size2 get_minimum_size() const override {
 		Size2 min_size = get_grid_size();
 
 		// Add extra rows when expanded.
@@ -613,7 +613,7 @@ public:
 		return min_size;
 	}
 
-	virtual String get_tooltip(const Point2 &p_pos) const {
+	virtual String get_tooltip(const Point2 &p_pos) const override {
 		for (int i = 0; i < flag_rects.size(); i++) {
 			if (i < tooltips.size() && flag_rects[i].has_point(p_pos)) {
 				return tooltips[i];

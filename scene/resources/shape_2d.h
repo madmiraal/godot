@@ -58,7 +58,7 @@ public:
 
 	virtual void draw(const RID &p_to_rid, const Color &p_color) {}
 	virtual Rect2 get_rect() const { return Rect2(); }
-	virtual RID get_rid() const;
+	virtual RID get_rid() const override;
 
 	bool is_collision_outline_enabled();
 

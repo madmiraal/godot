@@ -52,7 +52,7 @@ class CPUParticlesEditor : public ParticlesEditorBase {
 
 	friend class CPUParticlesEditorPlugin;
 
-	virtual void _generate_emission_points();
+	virtual void _generate_emission_points() override;
 
 protected:
 	void _notification(int p_notification);
@@ -71,11 +71,11 @@ class CPUParticlesEditorPlugin : public EditorPlugin {
 	EditorNode *editor;
 
 public:
-	virtual String get_name() const { return "CPUParticles"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "CPUParticles"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	CPUParticlesEditorPlugin(EditorNode *p_node);
 	~CPUParticlesEditorPlugin();

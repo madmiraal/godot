@@ -245,7 +245,7 @@ private:
 #ifdef TOOLS_ENABLED
 	Set<PlaceHolderScriptInstance *> placeholders;
 	//void _update_placeholder(PlaceHolderScriptInstance *p_placeholder);
-	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder);
+	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder) override;
 	void _update_placeholders();
 #endif
 
@@ -260,7 +260,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	bool inherits_script(const Ref<Script> &p_script) const;
+	virtual bool inherits_script(const Ref<Script> &p_script) const override;
 
 	// TODO: Remove it in future when breaking changes are acceptable
 	StringName get_default_func() const;
@@ -326,35 +326,35 @@ public:
 
 	void set_instance_base_type(const StringName &p_type);
 
-	virtual bool can_instance() const;
+	virtual bool can_instance() const override;
 
-	virtual Ref<Script> get_base_script() const;
-	virtual StringName get_instance_base_type() const;
-	virtual ScriptInstance *instance_create(Object *p_this);
-	virtual bool instance_has(const Object *p_this) const;
+	virtual Ref<Script> get_base_script() const override;
+	virtual StringName get_instance_base_type() const override;
+	virtual ScriptInstance *instance_create(Object *p_this) override;
+	virtual bool instance_has(const Object *p_this) const override;
 
-	virtual bool has_source_code() const;
-	virtual String get_source_code() const;
-	virtual void set_source_code(const String &p_code);
-	virtual Error reload(bool p_keep_state = false);
+	virtual bool has_source_code() const override;
+	virtual String get_source_code() const override;
+	virtual void set_source_code(const String &p_code) override;
+	virtual Error reload(bool p_keep_state = false) override;
 
-	virtual bool is_tool() const;
-	virtual bool is_valid() const;
+	virtual bool is_tool() const override;
+	virtual bool is_valid() const override;
 
-	virtual ScriptLanguage *get_language() const;
+	virtual ScriptLanguage *get_language() const override;
 
-	virtual bool has_script_signal(const StringName &p_signal) const;
-	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const;
+	virtual bool has_script_signal(const StringName &p_signal) const override;
+	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const override;
 
-	virtual bool get_property_default_value(const StringName &p_property, Variant &r_value) const;
-	virtual void get_script_method_list(List<MethodInfo> *p_list) const;
+	virtual bool get_property_default_value(const StringName &p_property, Variant &r_value) const override;
+	virtual void get_script_method_list(List<MethodInfo> *p_list) const override;
 
-	virtual bool has_method(const StringName &p_method) const;
-	virtual MethodInfo get_method_info(const StringName &p_method) const;
+	virtual bool has_method(const StringName &p_method) const override;
+	virtual MethodInfo get_method_info(const StringName &p_method) const override;
 
-	virtual void get_script_property_list(List<PropertyInfo> *p_list) const;
+	virtual void get_script_property_list(List<PropertyInfo> *p_list) const override;
 
-	virtual int get_member_line(const StringName &p_member) const;
+	virtual int get_member_line(const StringName &p_member) const override;
 
 #ifdef TOOLS_ENABLED
 	virtual bool are_subnodes_edited() const;

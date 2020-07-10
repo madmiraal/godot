@@ -114,12 +114,18 @@ private:
 	void _propagate_visibility_changed();
 
 protected:
-	_FORCE_INLINE_ void set_ignore_transform_notification(bool p_ignore) { data.ignore_notification = p_ignore; }
+	_FORCE_INLINE_ void set_ignore_transform_notification(bool p_ignore) {
+		data.ignore_notification = p_ignore;
+	}
 
 	_FORCE_INLINE_ void _update_local_transform() const;
 
-	uint32_t _get_spatial_flags() const { return data.spatial_flags; }
-	void _replace_spatial_flags(uint32_t p_flags) { data.spatial_flags = p_flags; }
+	uint32_t _get_spatial_flags() const {
+		return data.spatial_flags;
+	}
+	void _replace_spatial_flags(uint32_t p_flags) {
+		data.spatial_flags = p_flags;
+	}
 	void _set_spatial_flag(uint32_t p_flag, bool p_set) {
 		if (p_set) {
 			data.spatial_flags |= p_flag;
@@ -143,7 +149,7 @@ public:
 		NOTIFICATION_EXIT_GAMEPLAY = 46,
 	};
 
-	virtual void notification_callback(int p_message_type);
+	virtual void notification_callback(int p_message_type) override;
 	Spatial *get_parent_spatial() const;
 
 	Ref<World> get_world() const;
@@ -180,7 +186,9 @@ public:
 	void set_gizmo(const Ref<SpatialGizmo> &p_gizmo);
 	Ref<SpatialGizmo> get_gizmo() const;
 
-	_FORCE_INLINE_ bool is_inside_world() const { return data.inside_world; }
+	_FORCE_INLINE_ bool is_inside_world() const {
+		return data.inside_world;
+	}
 
 	Transform get_relative_transform(const Node *p_parent) const;
 

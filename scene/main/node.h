@@ -184,8 +184,12 @@ private:
 	void _set_tree(SceneTree *p_tree);
 
 protected:
-	void _block() { data.blocked++; }
-	void _unblock() { data.blocked--; }
+	void _block() {
+		data.blocked++;
+	}
+	void _unblock() {
+		data.blocked--;
+	}
 
 	void _notification(int p_notification);
 
@@ -270,7 +274,9 @@ public:
 		return data.tree;
 	}
 
-	_FORCE_INLINE_ bool is_inside_tree() const { return data.inside_tree; }
+	_FORCE_INLINE_ bool is_inside_tree() const {
+		return data.inside_tree;
+	}
 
 	bool is_a_parent_of(const Node *p_node) const;
 	bool is_greater_than(const Node *p_node) const;
@@ -314,7 +320,7 @@ public:
 	bool is_editable_instance(const Node *p_node) const;
 	Node *get_deepest_editable_node(Node *start_node) const;
 
-	virtual String to_string();
+	virtual String to_string() override;
 
 	/* NOTIFICATIONS */
 
@@ -393,18 +399,22 @@ public:
 	static void set_human_readable_collision_renaming(bool p_enabled);
 	static void init_node_hrcr();
 
-	void force_parent_owned() { data.parent_owned = true; } //hack to avoid duplicate nodes
+	void force_parent_owned() {
+		data.parent_owned = true;
+	} //hack to avoid duplicate nodes
 
 	void set_import_path(const NodePath &p_import_path); //path used when imported, used by scene editors to keep tracking
 	NodePath get_import_path() const;
 
 	bool is_owned_by_parent() const;
 
-	void get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const;
+	virtual void get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const override;
 
 	void clear_internal_tree_resource_paths();
 
-	_FORCE_INLINE_ Viewport *get_viewport() const { return data.viewport; }
+	_FORCE_INLINE_ Viewport *get_viewport() const {
+		return data.viewport;
+	}
 
 	virtual String get_configuration_warning() const;
 

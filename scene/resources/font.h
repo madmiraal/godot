@@ -158,11 +158,11 @@ public:
 	Error create_from_fnt(const String &p_file);
 
 	void set_height(float p_height);
-	float get_height() const;
+	virtual float get_height() const override;
 
 	void set_ascent(float p_ascent);
-	float get_ascent() const;
-	float get_descent() const;
+	virtual float get_ascent() const override;
+	virtual float get_descent() const override;
 
 	void add_texture(const Ref<Texture> &p_texture);
 	void add_char(CharType p_char, int p_texture_idx, const Rect2 &p_rect, const Size2 &p_align, float p_advance = -1);
@@ -178,7 +178,7 @@ public:
 	int get_kerning_pair(CharType p_A, CharType p_B) const;
 	Vector<KerningPairKey> get_kerning_pair_keys() const;
 
-	Size2 get_char_size(CharType p_char, CharType p_next = 0) const;
+	virtual Size2 get_char_size(CharType p_char, CharType p_next = 0) const override;
 
 	void set_fallback(const Ref<BitmapFont> &p_fallback);
 	Ref<BitmapFont> get_fallback() const;
@@ -186,9 +186,9 @@ public:
 	void clear();
 
 	void set_distance_field_hint(bool p_distance_field);
-	bool is_distance_field_hint() const;
+	virtual bool is_distance_field_hint() const override;
 
-	float draw_char(RID p_canvas_item, const Point2 &p_pos, CharType p_char, CharType p_next = 0, const Color &p_modulate = Color(1, 1, 1), bool p_outline = false) const;
+	virtual float draw_char(RID p_canvas_item, const Point2 &p_pos, CharType p_char, CharType p_next = 0, const Color &p_modulate = Color(1, 1, 1), bool p_outline = false) const override;
 
 	BitmapFont();
 	~BitmapFont();

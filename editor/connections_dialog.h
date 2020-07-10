@@ -72,7 +72,7 @@ class ConnectDialog : public ConfirmationDialog {
 
 	Label *error_label;
 
-	void ok_pressed();
+	virtual void ok_pressed() override;
 	void _cancel_pressed();
 	void _tree_node_selected();
 	void _add_bind();

@@ -62,7 +62,7 @@ public:
 	void set_disabled(bool p_disabled);
 	bool is_disabled() const;
 
-	String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	CollisionShape();
 	~CollisionShape();

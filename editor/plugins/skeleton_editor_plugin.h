@@ -82,11 +82,11 @@ class SkeletonEditorPlugin : public EditorPlugin {
 	SkeletonEditor *skeleton_editor;
 
 public:
-	virtual String get_name() const { return "Skeleton"; }
-	virtual bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "Skeleton"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	SkeletonEditorPlugin(EditorNode *p_node);
 	~SkeletonEditorPlugin();

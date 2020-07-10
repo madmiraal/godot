@@ -55,7 +55,7 @@ public:
 	}
 	int get_roomgroup_priority() const { return _settings_priority; }
 
-	String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 private:
 	void clear();

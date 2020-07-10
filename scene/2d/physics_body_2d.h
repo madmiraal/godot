@@ -253,7 +253,7 @@ public:
 
 	Array get_colliding_bodies() const; //function for script
 
-	virtual String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	RigidBody2D();
 	~RigidBody2D();

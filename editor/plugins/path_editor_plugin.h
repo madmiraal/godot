@@ -43,12 +43,12 @@ class PathSpatialGizmo : public EditorSpatialGizmo {
 	mutable float orig_out_length;
 
 public:
-	virtual String get_handle_name(int p_idx) const;
-	virtual Variant get_handle_value(int p_idx);
-	virtual void set_handle(int p_idx, Camera *p_camera, const Point2 &p_point);
-	virtual void commit_handle(int p_idx, const Variant &p_restore, bool p_cancel = false);
+	virtual String get_handle_name(int p_idx) const override;
+	virtual Variant get_handle_value(int p_idx) override;
+	virtual void set_handle(int p_idx, Camera *p_camera, const Point2 &p_point) override;
+	virtual void commit_handle(int p_idx, const Variant &p_restore, bool p_cancel = false) override;
 
-	virtual void redraw();
+	virtual void redraw() override;
 	PathSpatialGizmo(Path *p_path = nullptr);
 };
 
@@ -56,11 +56,11 @@ class PathSpatialGizmoPlugin : public EditorSpatialGizmoPlugin {
 	GDCLASS(PathSpatialGizmoPlugin, EditorSpatialGizmoPlugin);
 
 protected:
-	Ref<EditorSpatialGizmo> create_gizmo(Spatial *p_spatial);
+	virtual Ref<EditorSpatialGizmo> create_gizmo(Spatial *p_spatial) override;
 
 public:
-	String get_name() const;
-	int get_priority() const;
+	virtual String get_name() const override;
+	virtual int get_priority() const override;
 	PathSpatialGizmoPlugin();
 };
 
@@ -98,15 +98,15 @@ public:
 	Path *get_edited_path() { return path; }
 
 	static PathEditorPlugin *singleton;
-	virtual bool forward_spatial_gui_input(Camera *p_camera, const Ref<InputEvent> &p_event);
+	virtual bool forward_spatial_gui_input(Camera *p_camera, const Ref<InputEvent> &p_event) override;
 
 	//virtual bool forward_gui_input(const InputEvent& p_event) { return collision_polygon_editor->forward_gui_input(p_event); }
 	//virtual Ref<SpatialEditorGizmo> create_spatial_gizmo(Spatial *p_spatial);
-	virtual String get_name() const { return "Path"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "Path"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	bool mirror_angle_enabled() { return mirror_handle_angle; }
 	bool mirror_length_enabled() { return mirror_handle_length; }

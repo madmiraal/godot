@@ -51,14 +51,12 @@ protected:
 	uint32_t handshake_timeout = 3000;
 
 public:
-	virtual void poll() = 0;
 	virtual Error listen(int p_port, const Vector<String> p_protocols = Vector<String>(), bool gd_mp_api = false) = 0;
 	virtual void stop() = 0;
 	virtual bool is_listening() const = 0;
 	virtual bool has_peer(int p_id) const = 0;
-	virtual Ref<WebSocketPeer> get_peer(int p_id) const = 0;
-	virtual bool is_server() const;
-	ConnectionStatus get_connection_status() const;
+	virtual bool is_server() const override;
+	virtual ConnectionStatus get_connection_status() const override;
 
 	virtual IP_Address get_peer_address(int p_peer_id) const = 0;
 	virtual int get_peer_port(int p_peer_id) const = 0;
@@ -83,8 +81,6 @@ public:
 
 	float get_handshake_timeout() const;
 	void set_handshake_timeout(float p_timeout);
-
-	virtual Error set_buffers(int p_in_buffer, int p_in_packets, int p_out_buffer, int p_out_packets) = 0;
 
 	WebSocketServer();
 	~WebSocketServer();

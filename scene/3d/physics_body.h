@@ -181,7 +181,7 @@ public:
 	void set_mass(real_t p_mass);
 	real_t get_mass() const;
 
-	virtual float get_inverse_mass() const { return 1.0 / mass; }
+	virtual float get_inverse_mass() const override { return 1.0 / mass; }
 
 	void set_weight(real_t p_weight);
 	real_t get_weight() const;
@@ -198,12 +198,12 @@ public:
 	Ref<PhysicsMaterial> get_physics_material_override() const;
 
 	void set_linear_velocity(const Vector3 &p_velocity);
-	Vector3 get_linear_velocity() const;
+	virtual Vector3 get_linear_velocity() const override;
 
 	void set_axis_velocity(const Vector3 &p_axis);
 
 	void set_angular_velocity(const Vector3 &p_velocity);
-	Vector3 get_angular_velocity() const;
+	virtual Vector3 get_angular_velocity() const override;
 
 	Basis get_inverse_inertia_tensor();
 
@@ -247,7 +247,7 @@ public:
 	void apply_impulse(const Vector3 &p_pos, const Vector3 &p_impulse);
 	void apply_torque_impulse(const Vector3 &p_impulse);
 
-	virtual String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	RigidBody();
 	~RigidBody();
@@ -591,14 +591,16 @@ public:
 
 public:
 #ifdef TOOLS_ENABLED
-	virtual Transform get_global_gizmo_transform() const;
-	virtual Transform get_local_gizmo_transform() const;
+	virtual Transform get_global_gizmo_transform() const override;
+	virtual Transform get_local_gizmo_transform() const override;
 #endif
 
 	const JointData *get_joint_data() const;
 	Skeleton *find_skeleton_parent();
 
-	int get_bone_id() const { return bone_id; }
+	int get_bone_id() const {
+		return bone_id;
+	}
 
 	void set_joint_type(JointType p_joint_type);
 	JointType get_joint_type() const;

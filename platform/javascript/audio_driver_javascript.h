@@ -97,8 +97,8 @@ private:
 	static AudioDriverScriptProcessor *singleton;
 
 protected:
-	Error create(int &p_buffer_samples, int p_channels) override;
-	void start(float *p_out_buf, int p_out_buf_size, float *p_in_buf, int p_in_buf_size) override;
+	virtual Error create(int &p_buffer_samples, int p_channels) override;
+	virtual void start(float *p_out_buf, int p_out_buf_size, float *p_in_buf, int p_in_buf_size) override;
 
 public:
 	virtual const char *get_name() const override { return "ScriptProcessor"; }
@@ -153,8 +153,8 @@ protected:
 public:
 	virtual const char *get_name() const override { return "AudioWorklet"; }
 
-	void lock() override;
-	void unlock() override;
+	virtual void lock() override;
+	virtual void unlock() override;
 };
 #endif
 

@@ -180,7 +180,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 public:
 	void set_background(BGMode p_bg);
@@ -409,7 +409,7 @@ public:
 	void set_fog_height_curve(float p_distance);
 	float get_fog_height_curve() const;
 
-	virtual RID get_rid() const;
+	virtual RID get_rid() const override;
 
 	Environment();
 	~Environment();

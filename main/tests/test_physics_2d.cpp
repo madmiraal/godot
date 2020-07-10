@@ -193,7 +193,7 @@ class TestPhysics2DMainLoop : public MainLoop {
 	}
 
 protected:
-	void input_event(const Ref<InputEvent> &p_event) {
+	virtual void input_event(const Ref<InputEvent> &p_event) override {
 		Ref<InputEventMouseButton> mb = p_event;
 
 		if (mb.is_valid()) {
@@ -314,7 +314,7 @@ protected:
 	}
 
 public:
-	virtual void init() {
+	virtual void init() override {
 		VisualServer *vs = VisualServer::get_singleton();
 		Physics2DServer *ps = Physics2DServer::get_singleton();
 
@@ -388,10 +388,10 @@ public:
 		//_add_plane(Vector2(-1,0).normalized(),-600);
 	}
 
-	virtual bool idle(float p_time) {
+	virtual bool idle(float p_time) override {
 		return false;
 	}
-	virtual void finish() {
+	virtual void finish() override {
 	}
 
 	TestPhysics2DMainLoop() {}

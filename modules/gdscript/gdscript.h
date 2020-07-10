@@ -121,7 +121,7 @@ class GDScript : public Script {
 #ifdef TOOLS_ENABLED
 	Set<PlaceHolderScriptInstance *> placeholders;
 	//void _update_placeholder(PlaceHolderScriptInstance *p_placeholder);
-	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder);
+	virtual void _placeholder_erased(PlaceHolderScriptInstance *p_placeholder) override;
 #endif
 
 #ifdef DEBUG_ENABLED
@@ -139,71 +139,91 @@ protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
 	void _get_property_list(List<PropertyInfo> *p_properties) const;
 
-	Variant call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error);
+	virtual Variant call(const StringName &p_method, const Variant **p_args, int p_argcount, Variant::CallError &r_error) override;
 	//void call_multilevel(const StringName& p_method,const Variant** p_args,int p_argcount);
 
 	static void _bind_methods();
 
 public:
-	virtual bool is_valid() const { return valid; }
+	virtual bool is_valid() const override {
+		return valid;
+	}
 
-	bool inherits_script(const Ref<Script> &p_script) const;
+	virtual bool inherits_script(const Ref<Script> &p_script) const override;
 
-	const Map<StringName, Ref<GDScript>> &get_subclasses() const { return subclasses; }
-	const Map<StringName, Variant> &get_constants() const { return constants; }
-	const Set<StringName> &get_members() const { return members; }
+	const Map<StringName, Ref<GDScript>> &get_subclasses() const {
+		return subclasses;
+	}
+	const Map<StringName, Variant> &get_constants() const {
+		return constants;
+	}
+	const Set<StringName> &get_members() const {
+		return members;
+	}
 	const GDScriptDataType &get_member_type(const StringName &p_member) const {
 		CRASH_COND(!member_indices.has(p_member));
 		return member_indices[p_member].data_type;
 	}
-	const Map<StringName, GDScriptFunction *> &get_member_functions() const { return member_functions; }
-	const Ref<GDScriptNativeClass> &get_native() const { return native; }
-	const String &get_script_class_name() const { return name; }
+	const Map<StringName, GDScriptFunction *> &get_member_functions() const {
+		return member_functions;
+	}
+	const Ref<GDScriptNativeClass> &get_native() const {
+		return native;
+	}
+	const String &get_script_class_name() const {
+		return name;
+	}
 
-	virtual bool has_script_signal(const StringName &p_signal) const;
-	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const;
+	virtual bool has_script_signal(const StringName &p_signal) const override;
+	virtual void get_script_signal_list(List<MethodInfo> *r_signals) const override;
 
-	bool is_tool() const { return tool; }
+	virtual bool is_tool() const override {
+		return tool;
+	}
 	Ref<GDScript> get_base() const;
 
-	const Map<StringName, MemberInfo> &debug_get_member_indices() const { return member_indices; }
+	const Map<StringName, MemberInfo> &debug_get_member_indices() const {
+		return member_indices;
+	}
 	const Map<StringName, GDScriptFunction *> &debug_get_member_functions() const; //this is debug only
 	StringName debug_get_member_by_index(int p_idx) const;
 
 	Variant _new(const Variant **p_args, int p_argcount, Variant::CallError &r_error);
-	virtual bool can_instance() const;
+	virtual bool can_instance() const override;
 
-	virtual Ref<Script> get_base_script() const;
+	virtual Ref<Script> get_base_script() const override;
 
-	virtual StringName get_instance_base_type() const; // this may not work in all scripts, will return empty if so
-	virtual ScriptInstance *instance_create(Object *p_this);
-	virtual PlaceHolderScriptInstance *placeholder_instance_create(Object *p_this);
-	virtual bool instance_has(const Object *p_this) const;
+	virtual StringName get_instance_base_type() const override; // this may not work in all scripts, will return empty if so
+	virtual ScriptInstance *instance_create(Object *p_this) override;
+	virtual PlaceHolderScriptInstance *placeholder_instance_create(Object *p_this) override;
+	virtual bool instance_has(const Object *p_this) const override;
 
-	virtual bool has_source_code() const;
-	virtual String get_source_code() const;
-	virtual void set_source_code(const String &p_code);
-	virtual void update_exports();
+	virtual bool has_source_code() const override;
+	virtual String get_source_code() const override;
+	virtual void set_source_code(const String &p_code) override;
+	virtual void update_exports() override;
 
-	virtual Error reload(bool p_keep_state = false);
+	virtual Error reload(bool p_keep_state = false) override;
 
-	void set_script_path(const String &p_path) { path = p_path; } //because subclasses need a path too...
+	void set_script_path(const String &p_path) {
+		path = p_path;
+	} //because subclasses need a path too...
 	Error load_source_code(const String &p_path);
 	Error load_byte_code(const String &p_path);
 
 	Vector<uint8_t> get_as_byte_code() const;
 
-	bool get_property_default_value(const StringName &p_property, Variant &r_value) const;
+	virtual bool get_property_default_value(const StringName &p_property, Variant &r_value) const override;
 
-	virtual void get_script_method_list(List<MethodInfo> *p_list) const;
-	virtual bool has_method(const StringName &p_method) const;
-	virtual MethodInfo get_method_info(const StringName &p_method) const;
+	virtual void get_script_method_list(List<MethodInfo> *p_list) const override;
+	virtual bool has_method(const StringName &p_method) const override;
+	virtual MethodInfo get_method_info(const StringName &p_method) const override;
 
-	virtual void get_script_property_list(List<PropertyInfo> *p_list) const;
+	virtual void get_script_property_list(List<PropertyInfo> *p_list) const override;
 
-	virtual ScriptLanguage *get_language() const;
+	virtual ScriptLanguage *get_language() const override;
 
-	virtual int get_member_line(const StringName &p_member) const {
+	virtual int get_member_line(const StringName &p_member) const override {
 #ifdef TOOLS_ENABLED
 		if (member_lines.has(p_member)) {
 			return member_lines[p_member];
@@ -212,11 +232,13 @@ public:
 		return -1;
 	}
 
-	virtual void get_constants(Map<StringName, Variant> *p_constants);
-	virtual void get_members(Set<StringName> *p_members);
+	virtual void get_constants(Map<StringName, Variant> *p_constants) override;
+	virtual void get_members(Set<StringName> *p_members) override;
 
 #ifdef TOOLS_ENABLED
-	virtual bool is_placeholder_fallback_enabled() const { return placeholder_fallback_enabled; }
+	virtual bool is_placeholder_fallback_enabled() const override {
+		return placeholder_fallback_enabled;
+	}
 #endif
 
 	GDScript();
@@ -242,7 +264,9 @@ class GDScriptInstance : public ScriptInstance {
 	void _ml_call_reversed(GDScript *sptr, const StringName &p_method, const Variant **p_args, int p_argcount);
 
 public:
-	virtual Object *get_owner() { return owner; }
+	virtual Object *get_owner() {
+		return owner;
+	}
 
 	virtual bool set(const StringName &p_name, const Variant &p_value);
 	virtual bool get(const StringName &p_name, Variant &r_ret) const;
@@ -255,7 +279,9 @@ public:
 	virtual void call_multilevel(const StringName &p_method, const Variant **p_args, int p_argcount);
 	virtual void call_multilevel_reversed(const StringName &p_method, const Variant **p_args, int p_argcount);
 
-	Variant debug_get_member_by_index(int p_idx) const { return members[p_idx]; }
+	Variant debug_get_member_by_index(int p_idx) const {
+		return members[p_idx];
+	}
 
 	virtual void notification(int p_notification);
 	String to_string(bool *r_valid);

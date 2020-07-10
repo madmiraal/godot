@@ -53,11 +53,11 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual String get_name() const { return "RoomManager"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "RoomManager"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	RoomManagerEditorPlugin(EditorNode *p_node);
 	~RoomManagerEditorPlugin();
@@ -79,11 +79,11 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual String get_name() const { return "Room"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "Room"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	RoomEditorPlugin(EditorNode *p_node);
 	~RoomEditorPlugin();
@@ -104,11 +104,11 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual String get_name() const { return "Portal"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "Portal"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	PortalEditorPlugin(EditorNode *p_node);
 	~PortalEditorPlugin();
@@ -130,11 +130,11 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual String get_name() const { return "Occluder"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "Occluder"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	OccluderEditorPlugin(EditorNode *p_node);
 	~OccluderEditorPlugin();

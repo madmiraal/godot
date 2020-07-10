@@ -86,7 +86,7 @@ protected:
 
 	static void _bind_methods();
 	void _notification(int p_what);
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 	Light(VisualServer::LightType p_type);
 
@@ -120,8 +120,8 @@ public:
 	void set_bake_mode(BakeMode p_mode);
 	BakeMode get_bake_mode() const;
 
-	virtual AABB get_aabb() const;
-	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const;
+	virtual AABB get_aabb() const override;
+	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const override;
 
 	Light();
 	~Light();
@@ -212,7 +212,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	SpotLight() :
 			Light(VisualServer::LIGHT_SPOT) {}

@@ -106,7 +106,7 @@ protected:
 public:
 	void emit_changed(const StringName &p_property, const Variant &p_value, const StringName &p_field = StringName(), bool p_changing = false);
 
-	virtual Size2 get_minimum_size() const;
+	virtual Size2 get_minimum_size() const override;
 
 	void set_label(const String &p_label);
 	String get_label() const;
@@ -148,7 +148,7 @@ public:
 	virtual void expand_all_folding();
 	virtual void collapse_all_folding();
 
-	virtual Variant get_drag_data(const Point2 &p_point);
+	virtual Variant get_drag_data(const Point2 &p_point) override;
 
 	void set_selectable(bool p_selectable);
 	bool is_selectable() const;
@@ -157,7 +157,7 @@ public:
 	float get_name_split_ratio() const;
 
 	void set_object_and_property(Object *p_object, const StringName &p_property);
-	virtual Control *make_custom_tooltip(const String &p_text) const;
+	virtual Control *make_custom_tooltip(const String &p_text) const override;
 
 	String get_tooltip_text() const;
 
@@ -209,8 +209,8 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual Size2 get_minimum_size() const;
-	virtual Control *make_custom_tooltip(const String &p_text) const;
+	virtual Size2 get_minimum_size() const override;
+	virtual Control *make_custom_tooltip(const String &p_text) const override;
 
 	String get_tooltip_text() const;
 
@@ -236,7 +236,7 @@ protected:
 	void _gui_input(const Ref<InputEvent> &p_event);
 
 public:
-	virtual Size2 get_minimum_size() const;
+	virtual Size2 get_minimum_size() const override;
 
 	void setup(const String &p_section, const String &p_label, Object *p_object, const Color &p_bg_color, bool p_foldable);
 	VBoxContainer *get_vbox();
@@ -317,7 +317,7 @@ class EditorInspector : public ScrollContainer {
 
 	void _node_removed(Node *p_node);
 
-	void _changed_callback(Object *p_changed, const char *p_prop);
+	virtual void _changed_callback(Object *p_changed, const char *p_prop) override;
 	void _edit_request_change(Object *p_object, const String &p_prop);
 
 	void _filter_changed(const String &p_text);

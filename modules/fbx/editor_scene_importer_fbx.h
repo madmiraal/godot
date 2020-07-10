@@ -127,9 +127,9 @@ public:
 	EditorSceneImporterFBX() {}
 	~EditorSceneImporterFBX() {}
 
-	virtual void get_extensions(List<String> *r_extensions) const;
-	virtual uint32_t get_import_flags() const;
-	virtual Node *import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, uint32_t p_compress_flags, List<String> *r_missing_deps, Error *r_err = nullptr);
+	virtual void get_extensions(List<String> *r_extensions) const override;
+	virtual uint32_t get_import_flags() const override;
+	virtual Node *import_scene(const String &p_path, uint32_t p_flags, int p_bake_fps, uint32_t p_compress_flags, List<String> *r_missing_deps, Error *r_err = nullptr) override;
 	void create_mesh_data_skin(ImportState &state, const Ref<FBXNode> &fbx_node, uint64_t mesh_id);
 };
 

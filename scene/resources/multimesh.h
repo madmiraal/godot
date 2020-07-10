@@ -114,7 +114,7 @@ public:
 
 	virtual AABB get_aabb() const;
 
-	virtual RID get_rid() const;
+	virtual RID get_rid() const override;
 
 	MultiMesh();
 	~MultiMesh();

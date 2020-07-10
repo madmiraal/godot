@@ -107,7 +107,7 @@ public:
 	void rooms_clear();
 	void rooms_flip_portals();
 
-	String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 
 	// for internal use in the editor..
 	// either we can clear the rooms and unload,
@@ -186,7 +186,9 @@ private:
 	// merging
 	void _merge_meshes_in_room(Room *p_room);
 	void _list_mergeable_mesh_instances(Spatial *p_node, LocalVector<MeshInstance *, int32_t> &r_list);
-	void _merge_log(String p_string) { debug_print_line(p_string); }
+	void _merge_log(String p_string) {
+		debug_print_line(p_string);
+	}
 	bool _remove_redundant_dangling_nodes(Spatial *p_node);
 
 	// helper funcs
@@ -203,7 +205,9 @@ private:
 	Error _build_convex_hull(const Vector<Vector3> &p_points, Geometry::MeshData &r_mesh, real_t p_epsilon = 3.0 * UNIT_EPSILON);
 
 	// output strings during conversion process
-	void convert_log(String p_string, int p_priority = 0) { debug_print_line(p_string, 1); }
+	void convert_log(String p_string, int p_priority = 0) {
+		debug_print_line(p_string, 1);
+	}
 
 	// only prints when user has set 'debug' in the room manager inspector
 	// also does not show in non editor builds
@@ -212,7 +216,9 @@ private:
 public:
 	static String _find_name_before(Node *p_node, String p_postfix, bool p_allow_no_postfix = false);
 	static void show_warning(const String &p_string, const String &p_extra_string = "", bool p_alert = true);
-	static real_t _get_default_portal_margin() { return _default_portal_margin; }
+	static real_t _get_default_portal_margin() {
+		return _default_portal_margin;
+	}
 
 private:
 	// accessible from UI

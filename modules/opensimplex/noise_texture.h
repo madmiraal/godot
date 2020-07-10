@@ -71,7 +71,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 public:
 	void set_noise(Ref<OpenSimplexNoise> p_noise);
@@ -92,16 +92,16 @@ public:
 	void set_bump_strength(float p_bump_strength);
 	float get_bump_strength();
 
-	int get_width() const;
-	int get_height() const;
+	virtual int get_width() const override;
+	virtual int get_height() const override;
 
-	virtual void set_flags(uint32_t p_flags);
-	virtual uint32_t get_flags() const;
+	virtual void set_flags(uint32_t p_flags) override;
+	virtual uint32_t get_flags() const override;
 
-	virtual RID get_rid() const { return texture; }
-	virtual bool has_alpha() const { return false; }
+	virtual RID get_rid() const override { return texture; }
+	virtual bool has_alpha() const override { return false; }
 
-	virtual Ref<Image> get_data() const;
+	virtual Ref<Image> get_data() const override;
 
 	NoiseTexture();
 	virtual ~NoiseTexture();

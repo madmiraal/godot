@@ -215,83 +215,83 @@ protected:
 	Map<int, VibrationInfo> joy_vibration;
 
 public:
-	virtual bool is_key_pressed(int p_scancode) const;
-	virtual bool is_physical_key_pressed(int p_scancode) const;
-	virtual bool is_mouse_button_pressed(int p_button) const;
-	virtual bool is_joy_button_pressed(int p_device, int p_button) const;
-	virtual bool is_action_pressed(const StringName &p_action, bool p_exact = false) const;
-	virtual bool is_action_just_pressed(const StringName &p_action, bool p_exact = false) const;
-	virtual bool is_action_just_released(const StringName &p_action, bool p_exact = false) const;
-	virtual float get_action_strength(const StringName &p_action, bool p_exact = false) const;
-	virtual float get_action_raw_strength(const StringName &p_action, bool p_exact = false) const;
+	virtual bool is_key_pressed(int p_scancode) const override;
+	virtual bool is_physical_key_pressed(int p_scancode) const override;
+	virtual bool is_mouse_button_pressed(int p_button) const override;
+	virtual bool is_joy_button_pressed(int p_device, int p_button) const override;
+	virtual bool is_action_pressed(const StringName &p_action, bool p_exact = false) const override;
+	virtual bool is_action_just_pressed(const StringName &p_action, bool p_exact = false) const override;
+	virtual bool is_action_just_released(const StringName &p_action, bool p_exact = false) const override;
+	virtual float get_action_strength(const StringName &p_action, bool p_exact = false) const override;
+	virtual float get_action_raw_strength(const StringName &p_action, bool p_exact = false) const override;
 
-	virtual float get_joy_axis(int p_device, int p_axis) const;
-	String get_joy_name(int p_idx);
-	virtual Array get_connected_joypads();
-	virtual Vector2 get_joy_vibration_strength(int p_device);
-	virtual float get_joy_vibration_duration(int p_device);
-	virtual uint64_t get_joy_vibration_timestamp(int p_device);
-	void joy_connection_changed(int p_idx, bool p_connected, String p_name, String p_guid = "");
+	virtual float get_joy_axis(int p_device, int p_axis) const override;
+	virtual String get_joy_name(int p_idx) override;
+	virtual Array get_connected_joypads() override;
+	virtual Vector2 get_joy_vibration_strength(int p_device) override;
+	virtual float get_joy_vibration_duration(int p_device) override;
+	virtual uint64_t get_joy_vibration_timestamp(int p_device) override;
+	virtual void joy_connection_changed(int p_idx, bool p_connected, String p_name, String p_guid = "") override;
 	void parse_joypad_mapping(String p_mapping, bool p_update_existing);
 
-	virtual Vector3 get_gravity() const;
-	virtual Vector3 get_accelerometer() const;
-	virtual Vector3 get_magnetometer() const;
-	virtual Vector3 get_gyroscope() const;
+	virtual Vector3 get_gravity() const override;
+	virtual Vector3 get_accelerometer() const override;
+	virtual Vector3 get_magnetometer() const override;
+	virtual Vector3 get_gyroscope() const override;
 
-	virtual Point2 get_mouse_position() const;
-	virtual Point2 get_last_mouse_speed() const;
-	virtual int get_mouse_button_mask() const;
+	virtual Point2 get_mouse_position() const override;
+	virtual Point2 get_last_mouse_speed() const override;
+	virtual int get_mouse_button_mask() const override;
 
-	virtual void warp_mouse_position(const Vector2 &p_to);
-	virtual Point2i warp_mouse_motion(const Ref<InputEventMouseMotion> &p_motion, const Rect2 &p_rect);
+	virtual void warp_mouse_position(const Vector2 &p_to) override;
+	virtual Point2i warp_mouse_motion(const Ref<InputEventMouseMotion> &p_motion, const Rect2 &p_rect) override;
 
-	virtual void parse_input_event(const Ref<InputEvent> &p_event);
+	virtual void parse_input_event(const Ref<InputEvent> &p_event) override;
 
-	virtual void set_gravity(const Vector3 &p_gravity);
-	virtual void set_accelerometer(const Vector3 &p_accel);
-	virtual void set_magnetometer(const Vector3 &p_magnetometer);
-	virtual void set_gyroscope(const Vector3 &p_gyroscope);
+	virtual void set_gravity(const Vector3 &p_gravity) override;
+	virtual void set_accelerometer(const Vector3 &p_accel) override;
+	virtual void set_magnetometer(const Vector3 &p_magnetometer) override;
+	virtual void set_gyroscope(const Vector3 &p_gyroscope) override;
 	void set_joy_axis(int p_device, int p_axis, float p_value);
 
-	virtual void start_joy_vibration(int p_device, float p_weak_magnitude, float p_strong_magnitude, float p_duration = 0);
-	virtual void stop_joy_vibration(int p_device);
-	virtual void vibrate_handheld(int p_duration_ms = 500);
+	virtual void start_joy_vibration(int p_device, float p_weak_magnitude, float p_strong_magnitude, float p_duration = 0) override;
+	virtual void stop_joy_vibration(int p_device) override;
+	virtual void vibrate_handheld(int p_duration_ms = 500) override;
 
 	void set_main_loop(MainLoop *p_main_loop);
 	void set_mouse_position(const Point2 &p_posf);
 
-	void action_press(const StringName &p_action, float p_strength = 1.f);
-	void action_release(const StringName &p_action);
+	virtual void action_press(const StringName &p_action, float p_strength = 1.f) override;
+	virtual void action_release(const StringName &p_action) override;
 
 	void iteration(float p_step);
 
 	void set_emulate_touch_from_mouse(bool p_emulate);
-	virtual bool is_emulating_touch_from_mouse() const;
+	virtual bool is_emulating_touch_from_mouse() const override;
 	void ensure_touch_mouse_raised();
 
 	void set_emulate_mouse_from_touch(bool p_emulate);
-	virtual bool is_emulating_mouse_from_touch() const;
+	virtual bool is_emulating_mouse_from_touch() const override;
 
-	virtual CursorShape get_default_cursor_shape() const;
-	virtual void set_default_cursor_shape(CursorShape p_shape);
-	virtual CursorShape get_current_cursor_shape() const;
-	virtual void set_custom_mouse_cursor(const RES &p_cursor, CursorShape p_shape = Input::CURSOR_ARROW, const Vector2 &p_hotspot = Vector2());
+	virtual CursorShape get_default_cursor_shape() const override;
+	virtual void set_default_cursor_shape(CursorShape p_shape) override;
+	virtual CursorShape get_current_cursor_shape() const override;
+	virtual void set_custom_mouse_cursor(const RES &p_cursor, CursorShape p_shape = Input::CURSOR_ARROW, const Vector2 &p_hotspot = Vector2()) override;
 
 	void parse_mapping(String p_mapping);
 	void joy_button(int p_device, int p_button, bool p_pressed);
 	void joy_axis(int p_device, int p_axis, const JoyAxis &p_value);
 	void joy_hat(int p_device, int p_val);
 
-	virtual void add_joy_mapping(String p_mapping, bool p_update_existing = false);
-	virtual void remove_joy_mapping(String p_guid);
-	virtual bool is_joy_known(int p_device);
-	virtual String get_joy_guid(int p_device) const;
+	virtual void add_joy_mapping(String p_mapping, bool p_update_existing = false) override;
+	virtual void remove_joy_mapping(String p_guid) override;
+	virtual bool is_joy_known(int p_device) override;
+	virtual String get_joy_guid(int p_device) const override;
 
-	virtual String get_joy_button_string(int p_button);
-	virtual String get_joy_axis_string(int p_axis);
-	virtual int get_joy_axis_index_from_string(String p_axis);
-	virtual int get_joy_button_index_from_string(String p_button);
+	virtual String get_joy_button_string(int p_button) override;
+	virtual String get_joy_axis_string(int p_axis) override;
+	virtual int get_joy_axis_index_from_string(String p_axis) override;
+	virtual int get_joy_button_index_from_string(String p_button) override;
 
 	int get_unused_joy_id();
 
@@ -299,10 +299,10 @@ public:
 	String get_joy_guid_remapped(int p_device) const;
 	void set_fallback_mapping(String p_guid);
 
-	virtual void flush_buffered_events();
-	virtual bool is_using_input_buffering();
-	virtual void set_use_input_buffering(bool p_enable);
-	virtual void set_use_accumulated_input(bool p_enable);
+	virtual void flush_buffered_events() override;
+	virtual bool is_using_input_buffering() override;
+	virtual void set_use_input_buffering(bool p_enable) override;
+	virtual void set_use_accumulated_input(bool p_enable) override;
 
 	virtual void release_pressed_events();
 	InputDefault();

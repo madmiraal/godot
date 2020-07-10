@@ -72,14 +72,14 @@ private:
 	static void _callback(void *p_ref, int p_arg_id, int p_argc);
 
 protected:
-	bool _set(const StringName &p_name, const Variant &p_value) override;
-	bool _get(const StringName &p_name, Variant &r_ret) const override;
-	void _get_property_list(List<PropertyInfo> *p_list) const override;
+	virtual bool _set(const StringName &p_name, const Variant &p_value) override;
+	virtual bool _get(const StringName &p_name, Variant &r_ret) const override;
+	virtual void _get_property_list(List<PropertyInfo> *p_list) const override;
 
 public:
-	Variant getvar(const Variant &p_key, bool *r_valid = nullptr) const override;
-	void setvar(const Variant &p_key, const Variant &p_value, bool *r_valid = nullptr) override;
-	Variant call(const StringName &p_method, const Variant **p_args, int p_argc, Variant::CallError &r_error) override;
+	virtual Variant getvar(const Variant &p_key, bool *r_valid = nullptr) const override;
+	virtual void setvar(const Variant &p_key, const Variant &p_value, bool *r_valid = nullptr) override;
+	virtual Variant call(const StringName &p_method, const Variant **p_args, int p_argc, Variant::CallError &r_error) override;
 	JavaScriptObjectImpl() {}
 	JavaScriptObjectImpl(int p_id) { _js_id = p_id; }
 	~JavaScriptObjectImpl() {

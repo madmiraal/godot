@@ -40,13 +40,13 @@ class BoxShape : public Shape {
 protected:
 	static void _bind_methods();
 
-	virtual void _update_shape();
+	virtual void _update_shape() override;
 
 public:
 	void set_extents(const Vector3 &p_extents);
 	Vector3 get_extents() const;
 
-	virtual Vector<Vector3> get_debug_mesh_lines();
+	virtual Vector<Vector3> get_debug_mesh_lines() override;
 
 	BoxShape();
 };

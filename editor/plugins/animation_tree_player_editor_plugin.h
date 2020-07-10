@@ -156,7 +156,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	virtual Size2 get_minimum_size() const;
+	virtual Size2 get_minimum_size() const override;
 	void edit(AnimationTreePlayer *p_anim_tree);
 	AnimationTreePlayerEditor();
 };
@@ -169,11 +169,11 @@ class AnimationTreePlayerEditorPlugin : public EditorPlugin {
 	Button *button;
 
 public:
-	virtual String get_name() const { return "AnimTree"; }
-	bool has_main_screen() const { return false; }
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
-	virtual void make_visible(bool p_visible);
+	virtual String get_name() const override { return "AnimTree"; }
+	virtual bool has_main_screen() const override { return false; }
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
+	virtual void make_visible(bool p_visible) override;
 
 	AnimationTreePlayerEditorPlugin(EditorNode *p_node);
 	~AnimationTreePlayerEditorPlugin();

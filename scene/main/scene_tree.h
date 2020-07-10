@@ -280,7 +280,9 @@ public:
 		GROUP_CALL_MULTILEVEL = 8,
 	};
 
-	_FORCE_INLINE_ Viewport *get_root() const { return root; }
+	_FORCE_INLINE_ Viewport *get_root() const {
+		return root;
+	}
 
 	void call_group_flags(uint32_t p_call_flags, const StringName &p_group, const StringName &p_function, VARIANT_ARG_LIST);
 	void notify_group_flags(uint32_t p_call_flags, const StringName &p_group, int p_notification);
@@ -292,14 +294,14 @@ public:
 
 	void flush_transform_notifications();
 
-	virtual void input_text(const String &p_text);
-	virtual void input_event(const Ref<InputEvent> &p_event);
-	virtual void init();
+	virtual void input_text(const String &p_text) override;
+	virtual void input_event(const Ref<InputEvent> &p_event) override;
+	virtual void init() override;
 
-	virtual bool iteration(float p_time);
-	virtual bool idle(float p_time);
+	virtual bool iteration(float p_time) override;
+	virtual bool idle(float p_time) override;
 
-	virtual void finish();
+	virtual void finish() override;
 
 	void set_auto_accept_quit(bool p_enable);
 	void set_quit_on_go_back(bool p_enable);
@@ -308,13 +310,19 @@ public:
 
 	void set_input_as_handled();
 	bool is_input_handled();
-	_FORCE_INLINE_ float get_physics_process_time() const { return physics_process_time; }
-	_FORCE_INLINE_ float get_idle_process_time() const { return idle_process_time; }
+	_FORCE_INLINE_ float get_physics_process_time() const {
+		return physics_process_time;
+	}
+	_FORCE_INLINE_ float get_idle_process_time() const {
+		return idle_process_time;
+	}
 
 #ifdef TOOLS_ENABLED
 	bool is_node_being_edited(const Node *p_node) const;
 #else
-	bool is_node_being_edited(const Node *p_node) const { return false; }
+	bool is_node_being_edited(const Node *p_node) const {
+		return false;
+	}
 #endif
 
 	void set_pause(bool p_enabled);
@@ -331,10 +339,14 @@ public:
 	bool is_debugging_navigation_hint() const;
 #else
 	void set_debug_collisions_hint(bool p_enabled) {}
-	bool is_debugging_collisions_hint() const { return false; }
+	bool is_debugging_collisions_hint() const {
+		return false;
+	}
 
 	void set_debug_navigation_hint(bool p_enabled) {}
-	bool is_debugging_navigation_hint() const { return false; }
+	bool is_debugging_navigation_hint() const {
+		return false;
+	}
 #endif
 
 	void set_debug_collisions_color(const Color &p_color);
@@ -354,7 +366,9 @@ public:
 	Ref<Material> get_debug_collision_material();
 	Ref<ArrayMesh> get_debug_contact_mesh();
 
-	int get_collision_debug_contact_count() { return collision_debug_contacts; }
+	int get_collision_debug_contact_count() {
+		return collision_debug_contacts;
+	}
 
 	int64_t get_frame() const;
 	int64_t get_event_count() const;
@@ -388,11 +402,13 @@ public:
 	//used by Main::start, don't use otherwise
 	void add_current_scene(Node *p_current);
 
-	static SceneTree *get_singleton() { return singleton; }
+	static SceneTree *get_singleton() {
+		return singleton;
+	}
 
-	void drop_files(const Vector<String> &p_files, int p_from_screen = 0);
-	void global_menu_action(const Variant &p_id, const Variant &p_meta);
-	void get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const;
+	virtual void drop_files(const Vector<String> &p_files, int p_from_screen = 0) override;
+	virtual void global_menu_action(const Variant &p_id, const Variant &p_meta) override;
+	virtual void get_argument_options(const StringName &p_function, int p_idx, List<String> *r_options) const override;
 
 	//network API
 

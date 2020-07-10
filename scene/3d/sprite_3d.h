@@ -143,8 +143,8 @@ public:
 
 	virtual Rect2 get_item_rect() const = 0;
 
-	virtual AABB get_aabb() const;
-	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const;
+	virtual AABB get_aabb() const override;
+	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const override;
 	Ref<TriangleMesh> generate_triangle_mesh() const;
 
 	SpriteBase3D();
@@ -164,10 +164,10 @@ class Sprite3D : public SpriteBase3D {
 	int hframes;
 
 protected:
-	virtual void _draw();
+	virtual void _draw() override;
 	static void _bind_methods();
 
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 public:
 	void set_texture(const Ref<Texture> &p_texture);
@@ -191,7 +191,7 @@ public:
 	void set_hframes(int p_amount);
 	int get_hframes() const;
 
-	virtual Rect2 get_item_rect() const;
+	virtual Rect2 get_item_rect() const override;
 
 	Sprite3D();
 	//~Sprite3D();
@@ -221,10 +221,10 @@ class AnimatedSprite3D : public SpriteBase3D {
 	bool _is_playing() const;
 
 protected:
-	virtual void _draw();
+	virtual void _draw() override;
 	static void _bind_methods();
 	void _notification(int p_what);
-	virtual void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 
 public:
 	void set_sprite_frames(const Ref<SpriteFrames> &p_frames);
@@ -240,9 +240,9 @@ public:
 	void set_frame(int p_frame);
 	int get_frame() const;
 
-	virtual Rect2 get_item_rect() const;
+	virtual Rect2 get_item_rect() const override;
 
-	virtual String get_configuration_warning() const;
+	virtual String get_configuration_warning() const override;
 	AnimatedSprite3D();
 };
 

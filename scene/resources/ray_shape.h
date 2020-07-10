@@ -39,7 +39,7 @@ class RayShape : public Shape {
 
 protected:
 	static void _bind_methods();
-	virtual void _update_shape();
+	virtual void _update_shape() override;
 
 public:
 	void set_length(float p_length);
@@ -48,7 +48,7 @@ public:
 	void set_slips_on_slope(bool p_active);
 	bool get_slips_on_slope() const;
 
-	virtual Vector<Vector3> get_debug_mesh_lines();
+	virtual Vector<Vector3> get_debug_mesh_lines() override;
 
 	RayShape();
 };

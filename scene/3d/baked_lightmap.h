@@ -96,7 +96,7 @@ public:
 	void clear_users();
 	void clear_data();
 
-	virtual RID get_rid() const;
+	virtual RID get_rid() const override;
 	BakedLightmapData();
 	~BakedLightmapData();
 };
@@ -197,7 +197,7 @@ private:
 
 protected:
 	static void _bind_methods();
-	void _validate_property(PropertyInfo &property) const;
+	virtual void _validate_property(PropertyInfo &property) const override;
 	void _notification(int p_what);
 
 public:
@@ -274,8 +274,8 @@ public:
 	void set_bias(float p_bias);
 	float get_bias() const;
 
-	AABB get_aabb() const;
-	PoolVector<Face3> get_faces(uint32_t p_usage_flags) const;
+	virtual AABB get_aabb() const override;
+	virtual PoolVector<Face3> get_faces(uint32_t p_usage_flags) const override;
 
 	BakeError bake(Node *p_from_node, String p_data_save_path = "");
 	BakedLightmap();
