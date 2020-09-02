@@ -15,7 +15,7 @@ if os.name == "nt":
 def _reg_open_key(key, subkey):
     try:
         return winreg.OpenKey(key, subkey)
-    except (WindowsError, OSError):
+    except OSError:
         if platform.architecture()[0] == "32bit":
             bitness_sam = winreg.KEY_WOW64_64KEY
         else:
@@ -43,7 +43,7 @@ def _find_mono_in_reg(subkey, bits):
         with _reg_open_key_bits(winreg.HKEY_LOCAL_MACHINE, subkey, bits) as hKey:
             value = winreg.QueryValueEx(hKey, "SdkInstallRoot")[0]
             return value
-    except (WindowsError, OSError):
+    except OSError:
         return None
 
 
@@ -54,7 +54,7 @@ def _find_mono_in_reg_old(subkey, bits):
             if default_clr:
                 return _find_mono_in_reg(subkey + "\\" + default_clr, bits)
             return None
-    except (WindowsError, EnvironmentError):
+    except OSError:
         return None
 
 
@@ -103,7 +103,7 @@ def find_msbuild_tools_path_reg():
         raise ValueError("Cannot find `installationPath` entry")
     except ValueError as e:
         print("Error reading output from vswhere: " + e.message)
-    except WindowsError:
+    except OSError:
         pass  # Fine, vswhere not found
     except (subprocess.CalledProcessError, OSError):
         pass
@@ -115,5 +115,5 @@ def find_msbuild_tools_path_reg():
         with _reg_open_key(winreg.HKEY_LOCAL_MACHINE, subkey) as hKey:
             value = winreg.QueryValueEx(hKey, "MSBuildToolsPath")[0]
             return value
-    except (WindowsError, OSError):
+    except OSError:
         return ""
