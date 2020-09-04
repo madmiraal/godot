@@ -117,9 +117,13 @@ public:
 			z(p_z),
 			w(p_w) {
 	}
-	Quat(const Vector3 &axis, const real_t &angle) { set_axis_angle(axis, angle); }
+	Quat(const Vector3 &axis, const real_t &angle) {
+		set_axis_angle(axis, angle);
+	}
 
-	Quat(const Vector3 &euler) { set_euler(euler); }
+	Quat(const Vector3 &euler) {
+		set_euler(euler);
+	}
 	Quat(const Quat &p_q) :
 			x(p_q.x),
 			y(p_q.y),
@@ -127,7 +131,7 @@ public:
 			w(p_q.w) {
 	}
 
-	Quat operator=(const Quat &p_q) {
+	Quat &operator=(const Quat &p_q) {
 		x = p_q.x;
 		y = p_q.y;
 		z = p_q.z;
