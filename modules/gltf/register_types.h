@@ -28,5 +28,10 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
+#ifndef GLTF_REGISTER_TYPES_H
+#define GLTF_REGISTER_TYPES_H
+
 void register_gltf_types();
 void unregister_gltf_types();
+
+#endif // GLTF_REGISTER_TYPES_H
