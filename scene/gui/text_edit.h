@@ -73,14 +73,14 @@ public:
 		};
 
 		struct Line {
-			int width_cache : 24;
-			bool marked : 1;
-			bool breakpoint : 1;
-			bool bookmark : 1;
-			bool hidden : 1;
-			bool safe : 1;
-			bool has_info : 1;
-			int wrap_amount_cache : 24;
+			int32_t width_cache;
+			bool marked;
+			bool breakpoint;
+			bool bookmark;
+			bool hidden;
+			bool safe;
+			bool has_info;
+			int32_t wrap_amount_cache;
 			Map<int, ColorRegionInfo> region_info;
 			Ref<Texture> info_icon;
 			String info;
