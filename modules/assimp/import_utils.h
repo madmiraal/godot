@@ -420,7 +420,7 @@ public:
 	/* create texture from assimp data, if found in path */
 	static bool CreateAssimpTexture(
 			AssimpImporter::ImportState &state,
-			aiString texture_path,
+			const aiString &texture_path,
 			String &filename,
 			String &path,
 			AssimpImageData &image_state) {

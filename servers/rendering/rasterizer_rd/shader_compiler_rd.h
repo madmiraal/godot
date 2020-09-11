@@ -122,7 +122,7 @@ private:
 public:
 	Error compile(RS::ShaderMode p_mode, const String &p_code, IdentifierActions *p_actions, const String &p_path, GeneratedCode &r_gen_code);
 
-	void initialize(DefaultIdentifierActions p_actions);
+	void initialize(const DefaultIdentifierActions &p_actions);
 	ShaderCompilerRD();
 };
 

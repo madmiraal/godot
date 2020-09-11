@@ -53,7 +53,7 @@ public:
 		return data;
 	}
 
-	_FORCE_INLINE_ void push_back(T p_elem) {
+	_FORCE_INLINE_ void push_back(const T &p_elem) {
 		if (unlikely(count == capacity)) {
 			if (capacity == 0) {
 				capacity = 1;

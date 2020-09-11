@@ -64,7 +64,7 @@ private:
 	CowData<T> _cowdata;
 
 public:
-	bool push_back(T p_elem);
+	bool push_back(const T &p_elem);
 	_FORCE_INLINE_ bool append(const T &p_elem) { return push_back(p_elem); } //alias
 
 	void remove(int p_index) { _cowdata.remove(p_index); }
@@ -87,7 +87,7 @@ public:
 	_FORCE_INLINE_ int size() const { return _cowdata.size(); }
 	Error resize(int p_size) { return _cowdata.resize(p_size); }
 	_FORCE_INLINE_ const T &operator[](int p_index) const { return _cowdata.get(p_index); }
-	Error insert(int p_pos, T p_val) { return _cowdata.insert(p_pos, p_val); }
+	Error insert(int p_pos, const T &p_val) { return _cowdata.insert(p_pos, p_val); }
 	int find(const T &p_val, int p_from = 0) const { return _cowdata.find(p_val, p_from); }
 
 	void append_array(Vector<T> p_other);
@@ -185,7 +185,7 @@ void Vector<T>::append_array(Vector<T> p_other) {
 }
 
 template <class T>
-bool Vector<T>::push_back(T p_elem) {
+bool Vector<T>::push_back(const T &p_elem) {
 	Error err = resize(size() + 1);
 	ERR_FAIL_COND_V(err, true);
 	set(size() - 1, p_elem);

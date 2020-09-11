@@ -46,7 +46,7 @@
 #include <assimp/LogStream.hpp>
 
 // move into assimp
-aiBone *get_bone_by_name(const aiScene *scene, aiString bone_name) {
+aiBone *get_bone_by_name(const aiScene *scene, const aiString &bone_name) {
 	for (unsigned int mesh_id = 0; mesh_id < scene->mNumMeshes; ++mesh_id) {
 		aiMesh *mesh = scene->mMeshes[mesh_id];
 
@@ -79,7 +79,7 @@ void EditorSceneImporterAssimp::get_extensions(List<String> *r_extensions) const
 	}
 }
 
-void EditorSceneImporterAssimp::_register_project_setting_import(const String generic, const String import_setting_string,
+void EditorSceneImporterAssimp::_register_project_setting_import(const String &generic, const String &import_setting_string,
 		const Vector<String> &exts, List<String> *r_extensions,
 		const bool p_enabled) const {
 	const String use_generic = "use_" + generic;
@@ -163,7 +163,7 @@ struct EditorSceneImporterAssetImportInterpolate {
 		return 0.5f * ((2.0f * p1) + (-p0 + p2) * t + (2.0f * p0 - 5.0f * p1 + 4.0f * p2 - p3) * t2 + (-p0 + 3.0f * p1 - 3.0f * p2 + p3) * t3);
 	}
 
-	T bezier(T start, T control_1, T control_2, T end, float t) {
+	T bezier(const T &start, const T &control_1, const T &control_2, const T &end, float t) {
 		/* Formula from Wikipedia article on Bezier curves. */
 		real_t omt = (1.0 - t);
 		real_t omt2 = omt * omt;
@@ -192,7 +192,7 @@ struct EditorSceneImporterAssetImportInterpolate<Quat> {
 		return p1.slerp(p2, c).normalized();
 	}
 
-	Quat bezier(Quat start, Quat control_1, Quat control_2, Quat end, float t) {
+	Quat bezier(const Quat &start, const Quat &control_1, const Quat &control_2, const Quat &end, float t) {
 		ERR_FAIL_COND_V_MSG(!start.is_normalized(), Quat(), "The start quaternion must be normalized.");
 		ERR_FAIL_COND_V_MSG(!end.is_normalized(), Quat(), "The end quaternion must be normalized.");
 
@@ -202,7 +202,7 @@ struct EditorSceneImporterAssetImportInterpolate<Quat> {
 
 template <class T>
 T EditorSceneImporterAssimp::_interpolate_track(const Vector<float> &p_times, const Vector<T> &p_values, float p_time,
-		AssetImportAnimation::Interpolation p_interp) {
+		const AssetImportAnimation::Interpolation &p_interp) {
 	//could use binary search, worth it?
 	int idx = -1;
 	for (int i = 0; i < p_times.size(); i++) {
@@ -271,7 +271,7 @@ T EditorSceneImporterAssimp::_interpolate_track(const Vector<float> &p_times, co
 	ERR_FAIL_V(p_values[0]);
 }
 
-aiBone *EditorSceneImporterAssimp::get_bone_from_stack(ImportState &state, aiString name) {
+aiBone *EditorSceneImporterAssimp::get_bone_from_stack(ImportState &state, const aiString &name) {
 	List<aiBone *>::Element *iter;
 	aiBone *bone = nullptr;
 	for (iter = state.bone_stack.front(); iter; iter = iter->next()) {

@@ -111,12 +111,12 @@ private:
 
 	void _import_animation(ImportState &state, int p_animation_index, int p_bake_fps);
 	Node *get_node_by_name(ImportState &state, String name);
-	aiBone *get_bone_from_stack(ImportState &state, aiString name);
+	aiBone *get_bone_from_stack(ImportState &state, const aiString &name);
 	Node3D *_generate_scene(const String &p_path, aiScene *scene, const uint32_t p_flags, int p_bake_fps, const int32_t p_max_bone_weights);
 
 	template <class T>
-	T _interpolate_track(const Vector<float> &p_times, const Vector<T> &p_values, float p_time, AssetImportAnimation::Interpolation p_interp);
-	void _register_project_setting_import(const String generic, const String import_setting_string, const Vector<String> &exts, List<String> *r_extensions, const bool p_enabled) const;
+	T _interpolate_track(const Vector<float> &p_times, const Vector<T> &p_values, float p_time, const AssetImportAnimation::Interpolation &p_interp);
+	void _register_project_setting_import(const String &generic, const String &import_setting_string, const Vector<String> &exts, List<String> *r_extensions, const bool p_enabled) const;
 
 	struct ImportFormat {
 		Vector<String> extensions;

@@ -99,7 +99,7 @@ struct PluginConfig {
 // 	/*.custom_maven_repos =*/{}
 // };
 
-static inline String resolve_local_dependency_path(String plugin_config_dir, String dependency_path) {
+static inline String resolve_local_dependency_path(const String &plugin_config_dir, const String &dependency_path) {
 	String absolute_path;
 	if (!dependency_path.empty()) {
 		if (dependency_path.is_abs_path()) {
@@ -112,7 +112,7 @@ static inline String resolve_local_dependency_path(String plugin_config_dir, Str
 	return absolute_path;
 }
 
-static inline PluginConfig resolve_prebuilt_plugin(PluginConfig prebuilt_plugin, String plugin_config_dir) {
+static inline PluginConfig resolve_prebuilt_plugin(const PluginConfig &prebuilt_plugin, const String &plugin_config_dir) {
 	PluginConfig resolved = prebuilt_plugin;
 	resolved.binary = resolved.binary_type == BINARY_TYPE_LOCAL ? resolve_local_dependency_path(plugin_config_dir, prebuilt_plugin.binary) : prebuilt_plugin.binary;
 	if (!prebuilt_plugin.local_dependencies.empty()) {
@@ -124,13 +124,13 @@ static inline PluginConfig resolve_prebuilt_plugin(PluginConfig prebuilt_plugin,
 	return resolved;
 }
 
-static inline Vector<PluginConfig> get_prebuilt_plugins(String plugins_base_dir) {
+static inline Vector<PluginConfig> get_prebuilt_plugins(const String &plugins_base_dir) {
 	Vector<PluginConfig> prebuilt_plugins;
 	// prebuilt_plugins.push_back(resolve_prebuilt_plugin(MY_PREBUILT_PLUGIN, plugins_base_dir));
 	return prebuilt_plugins;
 }
 
-static inline bool is_plugin_config_valid(PluginConfig plugin_config) {
+static inline bool is_plugin_config_valid(const PluginConfig &plugin_config) {
 	bool valid_name = !plugin_config.name.empty();
 	bool valid_binary_type = plugin_config.binary_type == BINARY_TYPE_LOCAL ||
 							 plugin_config.binary_type == BINARY_TYPE_REMOTE;
@@ -200,7 +200,7 @@ static inline PluginConfig load_plugin_config(Ref<ConfigFile> config_file, const
 	return plugin_config;
 }
 
-static inline String get_plugins_binaries(String binary_type, Vector<PluginConfig> plugins_configs) {
+static inline String get_plugins_binaries(const String &binary_type, const Vector<PluginConfig> &plugins_configs) {
 	String plugins_binaries;
 	if (!plugins_configs.empty()) {
 		Vector<String> binaries;
@@ -229,7 +229,7 @@ static inline String get_plugins_binaries(String binary_type, Vector<PluginConfi
 	return plugins_binaries;
 }
 
-static inline String get_plugins_custom_maven_repos(Vector<PluginConfig> plugins_configs) {
+static inline String get_plugins_custom_maven_repos(const Vector<PluginConfig> &plugins_configs) {
 	String custom_maven_repos;
 	if (!plugins_configs.empty()) {
 		Vector<String> repos_urls;
@@ -247,7 +247,7 @@ static inline String get_plugins_custom_maven_repos(Vector<PluginConfig> plugins
 	return custom_maven_repos;
 }
 
-static inline String get_plugins_names(Vector<PluginConfig> plugins_configs) {
+static inline String get_plugins_names(const Vector<PluginConfig> &plugins_configs) {
 	String plugins_names;
 	if (!plugins_configs.empty()) {
 		Vector<String> names;

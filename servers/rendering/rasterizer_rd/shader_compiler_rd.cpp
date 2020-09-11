@@ -1274,7 +1274,7 @@ Error ShaderCompilerRD::compile(RS::ShaderMode p_mode, const String &p_code, Ide
 	return OK;
 }
 
-void ShaderCompilerRD::initialize(DefaultIdentifierActions p_actions) {
+void ShaderCompilerRD::initialize(const DefaultIdentifierActions &p_actions) {
 	actions = p_actions;
 
 	vertex_name = "vertex";
