@@ -783,6 +783,13 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 					const CollisionObjectSW *col_obj = intersection_query_results[i];
 					int shape_idx = intersection_query_subindex_results[i];
 
+					if (CollisionObjectSW::TYPE_BODY == col_obj->get_type()) {
+						const BodySW *b = static_cast<const BodySW *>(col_obj);
+						if (p_infinite_inertia && PhysicsServer::BODY_MODE_STATIC != b->get_mode() && PhysicsServer::BODY_MODE_KINEMATIC != b->get_mode()) {
+							continue;
+						}
+					}
+
 					if (CollisionSolverSW::solve_static(body_shape, body_shape_xform, col_obj->get_shape(shape_idx), col_obj->get_transform() * col_obj->get_shape_transform(shape_idx), cbkres, cbkptr, NULL, p_margin)) {
 						collided = cbk.amount > 0;
 					}
@@ -866,6 +873,13 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 
 				const CollisionObjectSW *col_obj = intersection_query_results[i];
 				int shape_idx = intersection_query_subindex_results[i];
+
+				if (CollisionObjectSW::TYPE_BODY == col_obj->get_type()) {
+					const BodySW *b = static_cast<const BodySW *>(col_obj);
+					if (p_infinite_inertia && PhysicsServer::BODY_MODE_STATIC != b->get_mode() && PhysicsServer::BODY_MODE_KINEMATIC != b->get_mode()) {
+						continue;
+					}
+				}
 
 				//test initial overlap, does it collide if going all the way?
 				Vector3 point_A, point_B;
@@ -977,6 +991,13 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 
 				const CollisionObjectSW *col_obj = intersection_query_results[i];
 				int shape_idx = intersection_query_subindex_results[i];
+
+				if (CollisionObjectSW::TYPE_BODY == col_obj->get_type()) {
+					const BodySW *b = static_cast<const BodySW *>(col_obj);
+					if (p_infinite_inertia && PhysicsServer::BODY_MODE_STATIC != b->get_mode() && PhysicsServer::BODY_MODE_KINEMATIC != b->get_mode()) {
+						continue;
+					}
+				}
 
 				rcd.object = col_obj;
 				rcd.shape = shape_idx;
