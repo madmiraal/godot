@@ -86,7 +86,7 @@ private:
 	};
 
 	struct BodyState {
-
+		RID rid;
 		int rc;
 		bool in_tree;
 		VSet<ShapePair> shapes;
@@ -118,7 +118,7 @@ private:
 	};
 
 	struct AreaState {
-
+		RID rid;
 		int rc;
 		bool in_tree;
 		VSet<AreaShapePair> shapes;
