@@ -41,9 +41,6 @@ class KinematicCollision2D;
 class PhysicsBody2D : public CollisionObject2D {
 	GDCLASS(PhysicsBody2D, CollisionObject2D);
 
-	void _set_layers(uint32_t p_mask);
-	uint32_t _get_layers() const;
-
 protected:
 	void _notification(int p_what);
 	PhysicsBody2D(Physics2DServer::BodyMode p_mode);

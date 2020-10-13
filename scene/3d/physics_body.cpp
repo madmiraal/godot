@@ -84,18 +84,7 @@ void PhysicsBody::remove_collision_exception_with(Node *p_node) {
 	PhysicsServer::get_singleton()->body_remove_collision_exception(get_rid(), collision_object->get_rid());
 }
 
-void PhysicsBody::_set_layers(uint32_t p_mask) {
-	set_collision_layer(p_mask);
-	set_collision_mask(p_mask);
-}
-
-uint32_t PhysicsBody::_get_layers() const {
-	return get_collision_layer();
-}
-
 void PhysicsBody::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_set_layers", "mask"), &PhysicsBody::_set_layers);
-	ClassDB::bind_method(D_METHOD("_get_layers"), &PhysicsBody::_get_layers);
 }
 
 PhysicsBody::PhysicsBody(PhysicsServer::BodyMode p_mode) :

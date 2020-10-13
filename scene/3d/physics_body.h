@@ -40,9 +40,6 @@
 class PhysicsBody : public CollisionObject {
 	GDCLASS(PhysicsBody, CollisionObject);
 
-	void _set_layers(uint32_t p_mask);
-	uint32_t _get_layers() const;
-
 protected:
 	static void _bind_methods();
 	void _notification(int p_what);

@@ -33,9 +33,6 @@
 	</methods>
 	<members>
 		<member name="input_pickable" type="bool" setter="set_pickable" getter="is_pickable" override="true" default="false" />
-		<member name="layers" type="int" setter="_set_layers" getter="_get_layers">
-			Both collision_layer and collision_mask. Returns collision_layer when accessed. Updates collision_layer and collision_mask when modified.
-		</member>
 	</members>
 	<constants>
 	</constants>
