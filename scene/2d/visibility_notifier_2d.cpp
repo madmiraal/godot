@@ -177,8 +177,8 @@ void VisibilityEnabler2D::_find_nodes(Node *p_node) {
 	Variant meta;
 
 	{
-		RigidBody2D *rb2d = Object::cast_to<RigidBody2D>(p_node);
-		if (rb2d && ((rb2d->get_mode() == RigidBody2D::MODE_CHARACTER || rb2d->get_mode() == RigidBody2D::MODE_RIGID))) {
+		PhysicsBody2D *rb2d = Object::cast_to<PhysicsBody2D>(p_node);
+		if (rb2d && ((rb2d->get_mode() == PhysicsBody2D::MODE_CHARACTER || rb2d->get_mode() == PhysicsBody2D::MODE_RIGID))) {
 			add = true;
 			meta = rb2d->get_mode();
 		}
@@ -270,7 +270,7 @@ void VisibilityEnabler2D::_change_node_state(Node *p_node, bool p_enabled) {
 	ERR_FAIL_COND(!nodes.has(p_node));
 
 	if (enabler[ENABLER_FREEZE_BODIES]) {
-		RigidBody2D *rb = Object::cast_to<RigidBody2D>(p_node);
+		PhysicsBody2D *rb = Object::cast_to<PhysicsBody2D>(p_node);
 		if (rb) {
 			rb->set_sleeping(!p_enabled);
 		}

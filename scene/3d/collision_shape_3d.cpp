@@ -130,7 +130,7 @@ String CollisionShape3D::get_configuration_warning() const {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
-		warning += TTR("CollisionShape3D only serves to provide a collision shape to a CollisionObject3D derived node. Please only use it as a child of Area3D, StaticBody3D, RigidBody3D, KinematicBody3D, etc. to give them a shape.");
+		warning += TTR("CollisionShape3D only serves to provide a collision shape to a CollisionObject3D derived node. Please only use it as a child of Area3D or PhysicsBody3D to give them a shape.");
 	}
 
 	if (!shape.is_valid()) {
@@ -141,13 +141,13 @@ String CollisionShape3D::get_configuration_warning() const {
 	}
 
 	if (shape.is_valid() &&
-			Object::cast_to<RigidBody3D>(get_parent()) &&
+			Object::cast_to<PhysicsBody3D>(get_parent()) &&
 			Object::cast_to<ConcavePolygonShape3D>(*shape) &&
-			Object::cast_to<RigidBody3D>(get_parent())->get_mode() != RigidBody3D::MODE_STATIC) {
+			Object::cast_to<PhysicsBody3D>(get_parent())->get_mode() != PhysicsBody3D::MODE_STATIC) {
 		if (!warning.empty()) {
 			warning += "\n\n";
 		}
-		warning += TTR("ConcavePolygonShape3D doesn't support RigidBody3D in another mode than static.");
+		warning += TTR("ConcavePolygonShape3D doesn't support PhysicsBody3D in another mode than static.");
 	}
 
 	return warning;

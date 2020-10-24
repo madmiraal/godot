@@ -394,7 +394,8 @@ Node *ResourceImporterScene::_fix_node(Node *p_node, Node *p_root, Map<Ref<Mesh>
 				ERR_FAIL_COND_V(fixed_name == String(), nullptr);
 
 				if (shapes.size()) {
-					StaticBody3D *col = memnew(StaticBody3D);
+					PhysicsBody3D *col = memnew(PhysicsBody3D);
+					col->set_mode(PhysicsBody3D::MODE_STATIC);
 					col->set_transform(mi->get_transform());
 					col->set_name(fixed_name);
 					p_node->replace_by(col);
@@ -416,7 +417,8 @@ Node *ResourceImporterScene::_fix_node(Node *p_node, Node *p_root, Map<Ref<Mesh>
 
 		} else if (p_node->has_meta("empty_draw_type")) {
 			String empty_draw_type = String(p_node->get_meta("empty_draw_type"));
-			StaticBody3D *sb = memnew(StaticBody3D);
+			PhysicsBody3D *sb = memnew(PhysicsBody3D);
+			sb->set_mode(PhysicsBody3D::MODE_STATIC);
 			sb->set_name(_fixstr(name, "colonly"));
 			Object::cast_to<Node3D>(sb)->set_transform(Object::cast_to<Node3D>(p_node)->get_transform());
 			p_node->replace_by(sb);
@@ -464,7 +466,7 @@ Node *ResourceImporterScene::_fix_node(Node *p_node, Node *p_root, Map<Ref<Mesh>
 				_gen_shape_list(mesh, shapes, true);
 			}
 
-			RigidBody3D *rigid_body = memnew(RigidBody3D);
+			PhysicsBody3D *rigid_body = memnew(PhysicsBody3D);
 			rigid_body->set_name(_fixstr(name, "rigid"));
 			p_node->replace_by(rigid_body);
 			rigid_body->set_transform(mi->get_transform());
@@ -517,7 +519,8 @@ Node *ResourceImporterScene::_fix_node(Node *p_node, Node *p_root, Map<Ref<Mesh>
 			}
 
 			if (shapes.size()) {
-				StaticBody3D *col = memnew(StaticBody3D);
+				PhysicsBody3D *col = memnew(PhysicsBody3D);
+				col->set_mode(PhysicsBody3D::MODE_STATIC);
 				col->set_name("static_collision");
 				mi->add_child(col);
 				col->set_owner(mi->get_owner());
@@ -616,7 +619,8 @@ Node *ResourceImporterScene::_fix_node(Node *p_node, Node *p_root, Map<Ref<Mesh>
 			}
 
 			if (shapes.size()) {
-				StaticBody3D *col = memnew(StaticBody3D);
+				PhysicsBody3D *col = memnew(PhysicsBody3D);
+				col->set_mode(PhysicsBody3D::MODE_STATIC);
 				col->set_name("static_collision");
 				p_node->add_child(col);
 				col->set_owner(p_node->get_owner());

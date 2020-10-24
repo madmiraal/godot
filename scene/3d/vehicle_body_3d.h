@@ -150,8 +150,8 @@ public:
 	VehicleWheel3D();
 };
 
-class VehicleBody3D : public RigidBody3D {
-	GDCLASS(VehicleBody3D, RigidBody3D);
+class VehicleBody3D : public PhysicsBody3D {
+	GDCLASS(VehicleBody3D, PhysicsBody3D);
 
 	float engine_force;
 	float brake;
