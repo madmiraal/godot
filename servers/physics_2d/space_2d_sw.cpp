@@ -370,7 +370,6 @@ struct _RestCallbackData2D {
 	real_t best_len;
 	Vector2 valid_dir;
 	real_t valid_depth;
-	real_t min_allowed_depth;
 };
 
 static void _rest_cbk_result(const Vector2 &p_point_A, const Vector2 &p_point_B, void *p_userdata) {
@@ -387,10 +386,7 @@ static void _rest_cbk_result(const Vector2 &p_point_A, const Vector2 &p_point_B,
 	Vector2 contact_rel = p_point_B - p_point_A;
 	real_t len = contact_rel.length();
 
-	if (len < rd->min_allowed_depth)
-		return;
-
-	if (len <= rd->best_len)
+	if (len == 0 || len <= rd->best_len)
 		return;
 
 	rd->best_len = len;
@@ -415,7 +411,6 @@ bool Physics2DDirectSpaceStateSW::rest_info(RID p_shape, const Transform2D &p_sh
 	rcd.best_len = 0;
 	rcd.best_object = NULL;
 	rcd.best_shape = 0;
-	rcd.min_allowed_depth = space->test_motion_min_contact_depth;
 
 	for (int i = 0; i < amount; i++) {
 
@@ -964,7 +959,7 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 					cbk.valid_depth = 10e20;
 
 					sep_axis = motion_normal;
-					bool collided = CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * (hi + contact_max_allowed_penetration), col_shape, col_obj_shape_xform, Vector2(), Physics2DServerSW::_shape_col_cbk, &cbk, &sep_axis);
+					bool collided = CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * hi, col_shape, col_obj_shape_xform, Vector2(), Physics2DServerSW::_shape_col_cbk, &cbk, &sep_axis);
 					if (!collided || cbk.amount == 0) {
 						// Add shape pair to excluded shape pairs.
 						if (excluded_shape_pair_count < max_excluded_shape_pairs) {
@@ -1014,7 +1009,6 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 		rcd.best_len = 0;
 		rcd.best_object = NULL;
 		rcd.best_shape = 0;
-		rcd.min_allowed_depth = test_motion_min_contact_depth;
 
 		Transform2D body_shape_xform = ugt * p_body->get_shape_transform(best_shape);
 		Shape2DSW *body_shape = p_body->get_shape(best_shape);
@@ -1059,7 +1053,7 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 
 			rcd.object = col_obj;
 			rcd.shape = shape_idx;
-			CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), col_obj->get_shape(shape_idx), col_obj_shape_xform, Vector2(), _rest_cbk_result, &rcd, nullptr, p_margin);
+			CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), col_obj->get_shape(shape_idx), col_obj_shape_xform, Vector2(), _rest_cbk_result, &rcd, nullptr);
 		}
 
 		ERR_FAIL_COND_V_MSG(rcd.best_len == 0, true, "Failed to extract collision information");
@@ -1256,7 +1250,6 @@ void Space2DSW::set_param(Physics2DServer::SpaceParameter p_param, real_t p_valu
 		case Physics2DServer::SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_THRESHOLD: body_angular_velocity_sleep_threshold = p_value; break;
 		case Physics2DServer::SPACE_PARAM_BODY_TIME_TO_SLEEP: body_time_to_sleep = p_value; break;
 		case Physics2DServer::SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS: constraint_bias = p_value; break;
-		case Physics2DServer::SPACE_PARAM_TEST_MOTION_MIN_CONTACT_DEPTH: test_motion_min_contact_depth = p_value; break;
 	}
 }
 
@@ -1271,7 +1264,6 @@ real_t Space2DSW::get_param(Physics2DServer::SpaceParameter p_param) const {
 		case Physics2DServer::SPACE_PARAM_BODY_ANGULAR_VELOCITY_SLEEP_THRESHOLD: return body_angular_velocity_sleep_threshold;
 		case Physics2DServer::SPACE_PARAM_BODY_TIME_TO_SLEEP: return body_time_to_sleep;
 		case Physics2DServer::SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS: return constraint_bias;
-		case Physics2DServer::SPACE_PARAM_TEST_MOTION_MIN_CONTACT_DEPTH: return test_motion_min_contact_depth;
 	}
 	return 0;
 }
@@ -1308,7 +1300,6 @@ Space2DSW::Space2DSW() {
 	contact_recycle_radius = 1.0;
 	contact_max_separation = 1.5;
 	contact_max_allowed_penetration = 0.3;
-	test_motion_min_contact_depth = 0.005;
 
 	constraint_bias = 0.2;
 	body_linear_velocity_sleep_threshold = GLOBAL_DEF("physics/2d/sleep_threshold_linear", 2.0);

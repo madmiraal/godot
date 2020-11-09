@@ -383,7 +383,6 @@ struct _RestCallbackData {
 	Vector3 best_contact;
 	Vector3 best_normal;
 	real_t best_len;
-	real_t min_allowed_depth;
 };
 
 static void _rest_cbk_result(const Vector3 &p_point_A, const Vector3 &p_point_B, void *p_userdata) {
@@ -392,9 +391,7 @@ static void _rest_cbk_result(const Vector3 &p_point_A, const Vector3 &p_point_B,
 
 	Vector3 contact_rel = p_point_B - p_point_A;
 	real_t len = contact_rel.length();
-	if (len < rd->min_allowed_depth)
-		return;
-	if (len <= rd->best_len)
+	if (len == 0 || len <= rd->best_len)
 		return;
 
 	rd->best_len = len;
@@ -417,7 +414,6 @@ bool PhysicsDirectSpaceStateSW::rest_info(RID p_shape, const Transform &p_shape_
 	rcd.best_len = 0;
 	rcd.best_object = NULL;
 	rcd.best_shape = 0;
-	rcd.min_allowed_depth = space->test_motion_min_contact_depth;
 
 	for (int i = 0; i < amount; i++) {
 
@@ -914,7 +910,6 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 		rcd.best_len = 0;
 		rcd.best_object = NULL;
 		rcd.best_shape = 0;
-		rcd.min_allowed_depth = test_motion_min_contact_depth;
 
 		Transform body_shape_xform = ugt * p_body->get_shape_transform(best_shape);
 		ShapeSW *body_shape = p_body->get_shape(best_shape);
@@ -932,7 +927,7 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 
 			rcd.object = col_obj;
 			rcd.shape = col_shape_idx;
-			CollisionSolverSW::solve_static(body_shape, body_shape_xform, col_shape, col_shape_xform, _rest_cbk_result, &rcd, nullptr, p_margin);
+			CollisionSolverSW::solve_static(body_shape, body_shape_xform, col_shape, col_shape_xform, _rest_cbk_result, &rcd, nullptr);
 		}
 
 		ERR_FAIL_COND_V_MSG(rcd.best_len == 0, false, "Failed to extract collision information");
@@ -1127,7 +1122,6 @@ void SpaceSW::set_param(PhysicsServer::SpaceParameter p_param, real_t p_value) {
 		case PhysicsServer::SPACE_PARAM_BODY_TIME_TO_SLEEP: body_time_to_sleep = p_value; break;
 		case PhysicsServer::SPACE_PARAM_BODY_ANGULAR_VELOCITY_DAMP_RATIO: body_angular_velocity_damp_ratio = p_value; break;
 		case PhysicsServer::SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS: constraint_bias = p_value; break;
-		case PhysicsServer::SPACE_PARAM_TEST_MOTION_MIN_CONTACT_DEPTH: test_motion_min_contact_depth = p_value; break;
 	}
 }
 
@@ -1143,7 +1137,6 @@ real_t SpaceSW::get_param(PhysicsServer::SpaceParameter p_param) const {
 		case PhysicsServer::SPACE_PARAM_BODY_TIME_TO_SLEEP: return body_time_to_sleep;
 		case PhysicsServer::SPACE_PARAM_BODY_ANGULAR_VELOCITY_DAMP_RATIO: return body_angular_velocity_damp_ratio;
 		case PhysicsServer::SPACE_PARAM_CONSTRAINT_DEFAULT_BIAS: return constraint_bias;
-		case PhysicsServer::SPACE_PARAM_TEST_MOTION_MIN_CONTACT_DEPTH: return test_motion_min_contact_depth;
 	}
 	return 0;
 }
@@ -1179,7 +1172,6 @@ SpaceSW::SpaceSW() {
 	contact_recycle_radius = 0.01;
 	contact_max_separation = 0.05;
 	contact_max_allowed_penetration = 0.01;
-	test_motion_min_contact_depth = 0.00001;
 
 	constraint_bias = 0.01;
 	body_linear_velocity_sleep_threshold = GLOBAL_DEF("physics/3d/sleep_threshold_linear", 0.1);
