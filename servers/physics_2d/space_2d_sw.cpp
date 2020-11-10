@@ -34,6 +34,7 @@
 #include "core/os/os.h"
 #include "core/pair.h"
 #include "physics_2d_server_sw.h"
+
 _FORCE_INLINE_ static bool _can_collide_with(CollisionObject2DSW *p_object, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas) {
 
 	if (!(p_object->get_collision_layer() & p_collision_mask)) {
@@ -362,8 +363,6 @@ struct _RestCallbackData2D {
 
 	const CollisionObject2DSW *object;
 	const CollisionObject2DSW *best_object;
-	int local_shape;
-	int best_local_shape;
 	int shape;
 	int best_shape;
 	Vector2 best_contact;
@@ -399,7 +398,6 @@ static void _rest_cbk_result(const Vector2 &p_point_A, const Vector2 &p_point_B,
 	rd->best_normal = contact_rel / len;
 	rd->best_object = rd->object;
 	rd->best_shape = rd->shape;
-	rd->best_local_shape = rd->local_shape;
 }
 
 bool Physics2DDirectSpaceStateSW::rest_info(RID p_shape, const Transform2D &p_shape_xform, const Vector2 &p_motion, real_t p_margin, ShapeRestInfo *r_info, const Set<RID> &p_exclude, uint32_t p_collision_mask, bool p_collide_with_bodies, bool p_collide_with_areas) {
@@ -434,10 +432,7 @@ bool Physics2DDirectSpaceStateSW::rest_info(RID p_shape, const Transform2D &p_sh
 		rcd.valid_depth = 0;
 		rcd.object = col_obj;
 		rcd.shape = shape_idx;
-		rcd.local_shape = 0;
-		bool sc = CollisionSolver2DSW::solve(shape, p_shape_xform, p_motion, col_obj->get_shape(shape_idx), col_obj->get_transform() * col_obj->get_shape_transform(shape_idx), Vector2(), _rest_cbk_result, &rcd, NULL, p_margin);
-		if (!sc)
-			continue;
+		CollisionSolver2DSW::solve(shape, p_shape_xform, p_motion, col_obj->get_shape(shape_idx), col_obj->get_transform() * col_obj->get_shape_transform(shape_idx), Vector2(), _rest_cbk_result, &rcd, NULL, p_margin);
 	}
 
 	if (rcd.best_len == 0 || !rcd.best_object)
@@ -875,6 +870,7 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 		Rect2 motion_aabb = body_aabb;
 		motion_aabb.position += p_motion;
 		motion_aabb = motion_aabb.merge(body_aabb);
+		Vector2 motion_normal = p_motion.normalized();
 
 		int amount = _cull_aabb_for_body(p_body, motion_aabb);
 
@@ -898,65 +894,60 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 			for (int i = 0; i < amount; i++) {
 
 				const CollisionObject2DSW *col_obj = intersection_query_results[i];
-				int col_shape_idx = intersection_query_subindex_results[i];
-				Shape2DSW *against_shape = col_obj->get_shape(col_shape_idx);
 
-				if (CollisionObject2DSW::TYPE_BODY == col_obj->get_type()) {
-					const Body2DSW *b = static_cast<const Body2DSW *>(col_obj);
-					if (p_infinite_inertia && Physics2DServer::BODY_MODE_STATIC != b->get_mode() && Physics2DServer::BODY_MODE_KINEMATIC != b->get_mode()) {
+				// Ignore RigidBodies if infinite inertia is enabled.
+				if (col_obj->get_type() == CollisionObject2DSW::TYPE_BODY) {
+					const Body2DSW *body = static_cast<const Body2DSW *>(col_obj);
+					if (p_infinite_inertia && body->get_mode() != Physics2DServer::BODY_MODE_STATIC && body->get_mode() != Physics2DServer::BODY_MODE_KINEMATIC) {
 						continue;
 					}
 				}
 
+				int col_shape_idx = intersection_query_subindex_results[i];
+
+				// Ignore previously excluded shape pairs.
 				bool excluded = false;
-
 				for (int k = 0; k < excluded_shape_pair_count; k++) {
-
 					if (excluded_shape_pairs[k].local_shape == body_shape && excluded_shape_pairs[k].against_object == col_obj && excluded_shape_pairs[k].against_shape_index == col_shape_idx) {
 						excluded = true;
 						break;
 					}
 				}
-
 				if (excluded) {
-
 					continue;
 				}
 
+				Shape2DSW *col_shape = col_obj->get_shape(col_shape_idx);
 				Transform2D col_obj_shape_xform = col_obj->get_transform() * col_obj->get_shape_transform(col_shape_idx);
-				//test initial overlap, does it collide if going all the way?
-				if (!CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion, against_shape, col_obj_shape_xform, Vector2(), NULL, NULL, NULL, 0)) {
+
+				// Does it collide if going all the way?
+				Vector2 sep_axis = motion_normal;
+				if (!CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion, col_shape, col_obj_shape_xform, Vector2(), nullptr, nullptr, &sep_axis)) {
 					continue;
 				}
 
-				//test initial overlap
-				if (CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), against_shape, col_obj_shape_xform, Vector2(), NULL, NULL, NULL, 0)) {
-
+				// Is it stuck?
+				sep_axis = motion_normal;
+				if (CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), col_shape, col_obj_shape_xform, Vector2(), nullptr, nullptr, &sep_axis)) {
 					if (col_obj->is_shape_set_as_one_way_collision(col_shape_idx)) {
 						continue;
 					}
-
 					stuck = true;
 					break;
 				}
 
-				//just do kinematic solving
+				// Do kinematic solving
 				real_t low = 0;
 				real_t hi = 1;
-				Vector2 mnormal = p_motion.normalized();
 
-				for (int k = 0; k < 8; k++) { //steps should be customizable..
+				for (int k = 0; k < 8; k++) { // Steps should be customizable.
 
 					real_t ofs = (low + hi) * 0.5;
 
-					Vector2 sep = mnormal; //important optimization for this to work fast enough
-					bool collided = CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * ofs, against_shape, col_obj_shape_xform, Vector2(), NULL, NULL, &sep, 0);
-
-					if (collided) {
-
+					sep_axis = motion_normal; // Important optimization for this to work fast enough.
+					if (CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * ofs, col_shape, col_obj_shape_xform, Vector2(), nullptr, nullptr, &sep_axis)) {
 						hi = ofs;
 					} else {
-
 						low = ofs;
 					}
 				}
@@ -970,12 +961,19 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 					cbk.passed = 0;
 					cbk.ptr = cd;
 					cbk.valid_dir = col_obj_shape_xform.get_axis(1).normalized();
-
 					cbk.valid_depth = 10e20;
 
-					Vector2 sep = mnormal; //important optimization for this to work fast enough
-					bool collided = CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * (hi + contact_max_allowed_penetration), col_obj->get_shape(col_shape_idx), col_obj_shape_xform, Vector2(), Physics2DServerSW::_shape_col_cbk, &cbk, &sep, 0);
+					sep_axis = motion_normal;
+					bool collided = CollisionSolver2DSW::solve(body_shape, body_shape_xform, p_motion * (hi + contact_max_allowed_penetration), col_shape, col_obj_shape_xform, Vector2(), Physics2DServerSW::_shape_col_cbk, &cbk, &sep_axis);
 					if (!collided || cbk.amount == 0) {
+						// Add shape pair to excluded shape pairs.
+						if (excluded_shape_pair_count < max_excluded_shape_pairs) {
+							ExcludedShapeSW esp;
+							esp.local_shape = body_shape;
+							esp.against_object = col_obj;
+							esp.against_shape_index = col_shape_idx;
+							excluded_shape_pairs[excluded_shape_pair_count++] = esp;
+						}
 						continue;
 					}
 				}
@@ -987,17 +985,13 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 			}
 
 			if (stuck) {
-
 				safe = 0;
 				unsafe = 0;
 				best_shape = body_shape_idx; //sadly it's the best
 				break;
 			}
-			if (best_safe == 1.0) {
-				continue;
-			}
-			if (best_safe < safe) {
 
+			if (best_safe < safe) {
 				safe = best_safe;
 				unsafe = best_unsafe;
 				best_shape = body_shape_idx;
@@ -1005,14 +999,14 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 		}
 	}
 
-	bool collided = false;
-	if (safe >= 1) {
-		best_shape = -1; //no best shape with cast, reset to -1
+	if (r_result) {
+		r_result->motion = p_motion;
+		r_result->remainder = Vector2();
+		r_result->motion += (body_transform.get_origin() - p_from.get_origin());
 	}
 
-	{
-
-		//it collided, let's get the rest info in unsafe advance
+	if (safe < 1 && r_result) {
+		// It collided, retrieve collision information using the unsafe distance.
 		Transform2D ugt = body_transform;
 		ugt.elements[2] += p_motion * unsafe;
 
@@ -1022,103 +1016,71 @@ bool Space2DSW::test_body_motion(Body2DSW *p_body, const Transform2D &p_from, co
 		rcd.best_shape = 0;
 		rcd.min_allowed_depth = test_motion_min_contact_depth;
 
-		//optimization
-		int from_shape = best_shape != -1 ? best_shape : 0;
-		int to_shape = best_shape != -1 ? best_shape + 1 : p_body->get_shape_count();
+		Transform2D body_shape_xform = ugt * p_body->get_shape_transform(best_shape);
+		Shape2DSW *body_shape = p_body->get_shape(best_shape);
 
-		for (int j = from_shape; j < to_shape; j++) {
+		body_aabb.position += p_motion * unsafe;
 
-			if (p_body->is_shape_set_as_disabled(j))
-				continue;
+		int amount = _cull_aabb_for_body(p_body, body_aabb);
 
-			Transform2D body_shape_xform = ugt * p_body->get_shape_transform(j);
-			Shape2DSW *body_shape = p_body->get_shape(j);
+		for (int i = 0; i < amount; i++) {
 
-			if (p_exclude_raycast_shapes && body_shape->get_type() == Physics2DServer::SHAPE_RAY) {
+			const CollisionObject2DSW *col_obj = intersection_query_results[i];
+			int shape_idx = intersection_query_subindex_results[i];
+
+			if (CollisionObject2DSW::TYPE_BODY == col_obj->get_type()) {
+				const Body2DSW *b = static_cast<const Body2DSW *>(col_obj);
+				if (p_infinite_inertia && Physics2DServer::BODY_MODE_STATIC != b->get_mode() && Physics2DServer::BODY_MODE_KINEMATIC != b->get_mode()) {
+					continue;
+				}
+			}
+
+			// Ignore previously excluded shape pairs.
+			bool excluded = false;
+			for (int k = 0; k < excluded_shape_pair_count; k++) {
+				if (excluded_shape_pairs[k].local_shape == body_shape && excluded_shape_pairs[k].against_object == col_obj && excluded_shape_pairs[k].against_shape_index == shape_idx) {
+					excluded = true;
+					break;
+				}
+			}
+			if (excluded) {
 				continue;
 			}
 
-			body_aabb.position += p_motion * unsafe;
+			Transform2D col_obj_shape_xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
 
-			int amount = _cull_aabb_for_body(p_body, body_aabb);
-
-			for (int i = 0; i < amount; i++) {
-
-				const CollisionObject2DSW *col_obj = intersection_query_results[i];
-				int shape_idx = intersection_query_subindex_results[i];
-
-				if (CollisionObject2DSW::TYPE_BODY == col_obj->get_type()) {
-					const Body2DSW *b = static_cast<const Body2DSW *>(col_obj);
-					if (p_infinite_inertia && Physics2DServer::BODY_MODE_STATIC != b->get_mode() && Physics2DServer::BODY_MODE_KINEMATIC != b->get_mode()) {
-						continue;
-					}
-				}
-
-				Shape2DSW *against_shape = col_obj->get_shape(shape_idx);
-
-				bool excluded = false;
-				for (int k = 0; k < excluded_shape_pair_count; k++) {
-
-					if (excluded_shape_pairs[k].local_shape == body_shape && excluded_shape_pairs[k].against_object == col_obj && excluded_shape_pairs[k].against_shape_index == shape_idx) {
-						excluded = true;
-						break;
-					}
-				}
-				if (excluded)
-					continue;
-
-				Transform2D col_obj_shape_xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
-
-				if (col_obj->is_shape_set_as_one_way_collision(shape_idx)) {
-
-					rcd.valid_dir = col_obj_shape_xform.get_axis(1).normalized();
-					rcd.valid_depth = 10e20;
-				} else {
-					rcd.valid_dir = Vector2();
-					rcd.valid_depth = 0;
-				}
-
-				rcd.object = col_obj;
-				rcd.shape = shape_idx;
-				rcd.local_shape = j;
-				bool sc = CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), against_shape, col_obj_shape_xform, Vector2(), _rest_cbk_result, &rcd, NULL, p_margin);
-				if (!sc)
-					continue;
+			if (col_obj->is_shape_set_as_one_way_collision(shape_idx)) {
+				rcd.valid_dir = col_obj_shape_xform.get_axis(1).normalized();
+				rcd.valid_depth = 10e20;
+			} else {
+				rcd.valid_dir = Vector2();
+				rcd.valid_depth = 0;
 			}
+
+			rcd.object = col_obj;
+			rcd.shape = shape_idx;
+			CollisionSolver2DSW::solve(body_shape, body_shape_xform, Vector2(), col_obj->get_shape(shape_idx), col_obj_shape_xform, Vector2(), _rest_cbk_result, &rcd, nullptr, p_margin);
 		}
 
-		if (rcd.best_len != 0) {
+		ERR_FAIL_COND_V_MSG(rcd.best_len == 0, true, "Failed to extract collision information");
 
-			if (r_result) {
-				r_result->collider = rcd.best_object->get_self();
-				r_result->collider_id = rcd.best_object->get_instance_id();
-				r_result->collider_shape = rcd.best_shape;
-				r_result->collision_local_shape = rcd.best_local_shape;
-				r_result->collision_normal = rcd.best_normal;
-				r_result->collision_point = rcd.best_contact;
-				r_result->collider_metadata = rcd.best_object->get_shape_metadata(rcd.best_shape);
-
-				const Body2DSW *body = static_cast<const Body2DSW *>(rcd.best_object);
-				Vector2 rel_vec = r_result->collision_point - body->get_transform().get_origin();
-				r_result->collider_velocity = Vector2(-body->get_angular_velocity() * rel_vec.y, body->get_angular_velocity() * rel_vec.x) + body->get_linear_velocity();
-
-				r_result->motion = safe * p_motion;
-				r_result->remainder = p_motion - safe * p_motion;
-				r_result->motion += (body_transform.get_origin() - p_from.get_origin());
-			}
-
-			collided = true;
-		}
-	}
-
-	if (!collided && r_result) {
-
-		r_result->motion = p_motion;
-		r_result->remainder = Vector2();
+		r_result->motion = safe * p_motion;
+		r_result->remainder = p_motion - safe * p_motion;
 		r_result->motion += (body_transform.get_origin() - p_from.get_origin());
+
+		r_result->collider = rcd.best_object->get_self();
+		r_result->collider_id = rcd.best_object->get_instance_id();
+		r_result->collider_shape = rcd.best_shape;
+		r_result->collision_local_shape = best_shape;
+		r_result->collision_normal = rcd.best_normal;
+		r_result->collision_point = rcd.best_contact;
+		r_result->collider_metadata = rcd.best_object->get_shape_metadata(rcd.best_shape);
+		const Body2DSW *body = static_cast<const Body2DSW *>(rcd.best_object);
+		Vector2 rel_vec = r_result->collision_point - body->get_transform().get_origin();
+		r_result->collider_velocity = Vector2(-body->get_angular_velocity() * rel_vec.y, body->get_angular_velocity() * rel_vec.x) + body->get_linear_velocity();
 	}
 
-	return collided;
+	return (safe < 1);
 }
 
 void *Space2DSW::_broadphase_pair(CollisionObject2DSW *A, int p_subindex_A, CollisionObject2DSW *B, int p_subindex_B, void *p_self) {
