@@ -261,35 +261,30 @@ bool PhysicsDirectSpaceStateSW::cast_motion(const RID &p_shape, const Transform 
 
 		Transform col_obj_xform = col_obj->get_transform() * col_obj->get_shape_transform(shape_idx);
 		//test initial overlap, does it collide if going all the way?
-		if (CollisionSolverSW::solve_distance(&mshape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, point_A, point_B, aabb, &sep_axis)) {
+		if (CollisionSolverSW::solve_distance(&mshape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, point_A, point_B, aabb) >= 0) {
 			continue;
 		}
 
 		//test initial overlap
 		sep_axis = p_motion.normalized();
 
-		if (!CollisionSolverSW::solve_distance(shape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, point_A, point_B, aabb, &sep_axis)) {
+		if (CollisionSolverSW::solve_distance(shape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, point_A, point_B, aabb) < 0) {
 			return false;
 		}
 
 		//just do kinematic solving
 		real_t low = 0;
 		real_t hi = 1;
-		Vector3 mnormal = p_motion.normalized();
 
 		for (int j = 0; j < 8; j++) { //steps should be customizable..
 
 			real_t ofs = (low + hi) * 0.5;
 
-			Vector3 sep = mnormal; //important optimization for this to work fast enough
-
 			mshape.motion = xform_inv.basis.xform(p_motion * ofs);
 
 			Vector3 lA, lB;
 
-			bool collided = !CollisionSolverSW::solve_distance(&mshape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, lA, lB, aabb, &sep);
-
-			if (collided) {
+			if (CollisionSolverSW::solve_distance(&mshape, p_xform, col_obj->get_shape(shape_idx), col_obj_xform, lA, lB, aabb) < 0) {
 
 				hi = ofs;
 			} else {
@@ -811,7 +806,6 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 		AABB motion_aabb = body_aabb;
 		motion_aabb.position += p_motion;
 		motion_aabb = motion_aabb.merge(body_aabb);
-		Vector3 motion_normal = p_motion.normalized();
 		Vector3 point_A, point_B;
 
 		int amount = _cull_aabb_for_body(p_body, motion_aabb);
@@ -845,14 +839,12 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 				Transform col_shape_xform = col_obj->get_transform() * col_obj->get_shape_transform(col_shape_idx);
 
 				// Does it collide if going all the way?
-				Vector3 sep_axis = motion_normal;
-				if (CollisionSolverSW::solve_distance(&mshape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb, &sep_axis)) {
+				if (CollisionSolverSW::solve_distance(&mshape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb) >= 0) {
 					continue;
 				}
 
 				// Is it stuck?
-				sep_axis = motion_normal;
-				if (!CollisionSolverSW::solve_distance(body_shape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb, &sep_axis)) {
+				if (CollisionSolverSW::solve_distance(body_shape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb) < 0) {
 					stuck = true;
 					break;
 				}
@@ -865,9 +857,8 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 
 					real_t ofs = (low + hi) * 0.5;
 
-					sep_axis = motion_normal; // Important optimization for this to work fast enough.
 					mshape.motion = body_shape_xform_inv.basis.xform(p_motion * ofs);
-					if (CollisionSolverSW::solve_distance(&mshape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb, &sep_axis)) {
+					if (CollisionSolverSW::solve_distance(&mshape, body_shape_xform, col_shape, col_shape_xform, point_A, point_B, motion_aabb) >= 0) {
 						low = ofs;
 					} else {
 						hi = ofs;
