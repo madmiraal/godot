@@ -1145,11 +1145,11 @@ void KinematicBody2D::set_sync_to_physics(bool p_enable) {
 
 	if (p_enable) {
 		PhysicsServer2D::get_singleton()->body_set_force_integration_callback(get_rid(), this, "_direct_state_changed");
-		set_only_update_transform_changes(true);
+		enable_only_update_transform_changes(true);
 		set_notify_local_transform(true);
 	} else {
 		PhysicsServer2D::get_singleton()->body_set_force_integration_callback(get_rid(), nullptr, "");
-		set_only_update_transform_changes(false);
+		enable_only_update_transform_changes(false);
 		set_notify_local_transform(false);
 	}
 }

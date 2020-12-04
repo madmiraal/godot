@@ -125,27 +125,27 @@ void CollisionObject2D::remove_shape_owner(uint32_t owner) {
 	shapes.erase(owner);
 }
 
-void CollisionObject2D::shape_owner_set_disabled(uint32_t p_owner, bool p_disabled) {
+void CollisionObject2D::enable_shape_owner(uint32_t p_owner, bool p_enable) {
 	ERR_FAIL_COND(!shapes.has(p_owner));
 
 	ShapeData &sd = shapes[p_owner];
-	sd.disabled = p_disabled;
+	sd.enabled = p_enable;
 	for (int i = 0; i < sd.shapes.size(); i++) {
 		if (area) {
-			PhysicsServer2D::get_singleton()->area_set_shape_disabled(rid, sd.shapes[i].index, p_disabled);
+			PhysicsServer2D::get_singleton()->area_enable_shape(rid, sd.shapes[i].index, p_enable);
 		} else {
-			PhysicsServer2D::get_singleton()->body_set_shape_disabled(rid, sd.shapes[i].index, p_disabled);
+			PhysicsServer2D::get_singleton()->body_enable_shape(rid, sd.shapes[i].index, p_enable);
 		}
 	}
 }
 
-bool CollisionObject2D::is_shape_owner_disabled(uint32_t p_owner) const {
+bool CollisionObject2D::is_shape_owner_enabled(uint32_t p_owner) const {
 	ERR_FAIL_COND_V(!shapes.has(p_owner), false);
 
-	return shapes[p_owner].disabled;
+	return shapes[p_owner].enabled;
 }
 
-void CollisionObject2D::shape_owner_set_one_way_collision(uint32_t p_owner, bool p_enable) {
+void CollisionObject2D::shape_owner_enable_one_way_collision(uint32_t p_owner, bool p_enable) {
 	if (area) {
 		return; //not for areas
 	}
@@ -155,11 +155,11 @@ void CollisionObject2D::shape_owner_set_one_way_collision(uint32_t p_owner, bool
 	ShapeData &sd = shapes[p_owner];
 	sd.one_way_collision = p_enable;
 	for (int i = 0; i < sd.shapes.size(); i++) {
-		PhysicsServer2D::get_singleton()->body_set_shape_as_one_way_collision(rid, sd.shapes[i].index, sd.one_way_collision, sd.one_way_collision_margin);
+		PhysicsServer2D::get_singleton()->body_enable_shape_one_way_collision(rid, sd.shapes[i].index, sd.one_way_collision, sd.one_way_collision_margin);
 	}
 }
 
-bool CollisionObject2D::is_shape_owner_one_way_collision_enabled(uint32_t p_owner) const {
+bool CollisionObject2D::shape_owner_is_one_way_collision_enabled(uint32_t p_owner) const {
 	ERR_FAIL_COND_V(!shapes.has(p_owner), false);
 
 	return shapes[p_owner].one_way_collision;
@@ -175,11 +175,11 @@ void CollisionObject2D::shape_owner_set_one_way_collision_margin(uint32_t p_owne
 	ShapeData &sd = shapes[p_owner];
 	sd.one_way_collision_margin = p_margin;
 	for (int i = 0; i < sd.shapes.size(); i++) {
-		PhysicsServer2D::get_singleton()->body_set_shape_as_one_way_collision(rid, sd.shapes[i].index, sd.one_way_collision, sd.one_way_collision_margin);
+		PhysicsServer2D::get_singleton()->body_enable_shape_one_way_collision(rid, sd.shapes[i].index, sd.one_way_collision, sd.one_way_collision_margin);
 	}
 }
 
-real_t CollisionObject2D::get_shape_owner_one_way_collision_margin(uint32_t p_owner) const {
+real_t CollisionObject2D::shape_owner_get_one_way_collision_margin(uint32_t p_owner) const {
 	ERR_FAIL_COND_V(!shapes.has(p_owner), 0);
 
 	return shapes[p_owner].one_way_collision_margin;
@@ -236,9 +236,9 @@ void CollisionObject2D::shape_owner_add_shape(uint32_t p_owner, const Ref<Shape2
 	s.index = total_subshapes;
 	s.shape = p_shape;
 	if (area) {
-		PhysicsServer2D::get_singleton()->area_add_shape(rid, p_shape->get_rid(), sd.xform, sd.disabled);
+		PhysicsServer2D::get_singleton()->area_add_shape(rid, p_shape->get_rid(), sd.xform, sd.enabled);
 	} else {
-		PhysicsServer2D::get_singleton()->body_add_shape(rid, p_shape->get_rid(), sd.xform, sd.disabled);
+		PhysicsServer2D::get_singleton()->body_add_shape(rid, p_shape->get_rid(), sd.xform, sd.enabled);
 	}
 	sd.shapes.push_back(s);
 
@@ -346,7 +346,7 @@ void CollisionObject2D::_mouse_exit() {
 	emit_signal(SceneStringNames::get_singleton()->mouse_exited);
 }
 
-void CollisionObject2D::set_only_update_transform_changes(bool p_enable) {
+void CollisionObject2D::enable_only_update_transform_changes(bool p_enable) {
 	only_update_transform_changes = p_enable;
 }
 
@@ -379,7 +379,7 @@ String CollisionObject2D::get_configuration_warning() const {
 void CollisionObject2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_rid"), &CollisionObject2D::get_rid);
 
-	ClassDB::bind_method(D_METHOD("set_pickable", "enabled"), &CollisionObject2D::set_pickable);
+	ClassDB::bind_method(D_METHOD("set_pickable", "pickable"), &CollisionObject2D::set_pickable);
 	ClassDB::bind_method(D_METHOD("is_pickable"), &CollisionObject2D::is_pickable);
 	ClassDB::bind_method(D_METHOD("create_shape_owner", "owner"), &CollisionObject2D::create_shape_owner);
 	ClassDB::bind_method(D_METHOD("remove_shape_owner", "owner_id"), &CollisionObject2D::remove_shape_owner);
@@ -387,12 +387,12 @@ void CollisionObject2D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("shape_owner_set_transform", "owner_id", "transform"), &CollisionObject2D::shape_owner_set_transform);
 	ClassDB::bind_method(D_METHOD("shape_owner_get_transform", "owner_id"), &CollisionObject2D::shape_owner_get_transform);
 	ClassDB::bind_method(D_METHOD("shape_owner_get_owner", "owner_id"), &CollisionObject2D::shape_owner_get_owner);
-	ClassDB::bind_method(D_METHOD("shape_owner_set_disabled", "owner_id", "disabled"), &CollisionObject2D::shape_owner_set_disabled);
-	ClassDB::bind_method(D_METHOD("is_shape_owner_disabled", "owner_id"), &CollisionObject2D::is_shape_owner_disabled);
-	ClassDB::bind_method(D_METHOD("shape_owner_set_one_way_collision", "owner_id", "enable"), &CollisionObject2D::shape_owner_set_one_way_collision);
-	ClassDB::bind_method(D_METHOD("is_shape_owner_one_way_collision_enabled", "owner_id"), &CollisionObject2D::is_shape_owner_one_way_collision_enabled);
+	ClassDB::bind_method(D_METHOD("enable_shape_owner", "owner_id", "enable"), &CollisionObject2D::enable_shape_owner, DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("is_shape_owner_enabled", "owner_id"), &CollisionObject2D::is_shape_owner_enabled);
+	ClassDB::bind_method(D_METHOD("shape_owner_enable_one_way_collision", "owner_id", "enable"), &CollisionObject2D::shape_owner_enable_one_way_collision, DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("shape_owner_is_one_way_collision_enabled", "owner_id"), &CollisionObject2D::shape_owner_is_one_way_collision_enabled);
 	ClassDB::bind_method(D_METHOD("shape_owner_set_one_way_collision_margin", "owner_id", "margin"), &CollisionObject2D::shape_owner_set_one_way_collision_margin);
-	ClassDB::bind_method(D_METHOD("get_shape_owner_one_way_collision_margin", "owner_id"), &CollisionObject2D::get_shape_owner_one_way_collision_margin);
+	ClassDB::bind_method(D_METHOD("shape_owner_get_one_way_collision_margin", "owner_id"), &CollisionObject2D::shape_owner_get_one_way_collision_margin);
 	ClassDB::bind_method(D_METHOD("shape_owner_add_shape", "owner_id", "shape"), &CollisionObject2D::shape_owner_add_shape);
 	ClassDB::bind_method(D_METHOD("shape_owner_get_shape_count", "owner_id"), &CollisionObject2D::shape_owner_get_shape_count);
 	ClassDB::bind_method(D_METHOD("shape_owner_get_shape", "owner_id", "shape_id"), &CollisionObject2D::shape_owner_get_shape);
@@ -407,9 +407,8 @@ void CollisionObject2D::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("mouse_entered"));
 	ADD_SIGNAL(MethodInfo("mouse_exited"));
 
-	ADD_GROUP("Pickable", "input_");
+	ADD_GROUP("Input", "input_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "input_pickable"), "set_pickable", "is_pickable");
-	ADD_GROUP("", "");
 }
 
 CollisionObject2D::CollisionObject2D(RID p_rid, bool p_area) {
