@@ -514,7 +514,7 @@ String XRAnchor3D::get_configuration_warning() const {
 };
 
 Plane XRAnchor3D::get_plane() const {
-	Vector3 location = get_translation();
+	Vector3 location = get_position();
 	Basis orientation = get_transform().basis;
 
 	Plane plane(location, orientation.get_axis(1).normalized());

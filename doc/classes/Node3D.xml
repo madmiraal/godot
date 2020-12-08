@@ -307,8 +307,8 @@
 		<member name="transform" type="Transform" setter="set_transform" getter="get_transform" default="Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )">
 			Local space [Transform] of this node, with respect to the parent node.
 		</member>
-		<member name="translation" type="Vector3" setter="set_translation" getter="get_translation" default="Vector3( 0, 0, 0 )">
-			Local translation of this node.
+		<member name="position" type="Vector3" setter="set_position" getter="get_position" default="Vector3( 0, 0, 0 )">
+			Local position or translation of this node relative to the parent. This is equivalent to [code]transform.origin[/code].
 		</member>
 		<member name="visible" type="bool" setter="set_visible" getter="is_visible" default="true">
 			If [code]true[/code], this node is drawn. The node is only visible if all of its antecedents are visible as well (in other words, [method is_visible_in_tree] must return [code]true[/code]).
