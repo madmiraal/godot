@@ -371,7 +371,7 @@ ResourcePreloaderEditor::ResourcePreloaderEditor() {
 	tree->set_column_min_width(1, 3);
 	tree->set_column_expand(0, true);
 	tree->set_column_expand(1, true);
-	tree->set_v_size_flags(SIZE_EXPAND_FILL);
+	tree->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	tree->set_drag_forwarding(this);
 	vbc->add_child(tree);

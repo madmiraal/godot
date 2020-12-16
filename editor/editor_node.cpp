@@ -4824,7 +4824,7 @@ Button *EditorNode::add_bottom_panel_item(String p_text, Control *p_item) {
 	bottom_panel_vb->add_child(p_item);
 	bottom_panel_hb->raise();
 	bottom_panel_hb_editors->add_child(tb);
-	p_item->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	p_item->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	p_item->hide();
 	BottomPanelItem bpi;
 	bpi.button = tb;
@@ -5815,7 +5815,7 @@ EditorNode::EditorNode() {
 	left_l_hsplit = memnew(HSplitContainer);
 	main_vbox->add_child(left_l_hsplit);
 
-	left_l_hsplit->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	left_l_hsplit->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	left_l_vsplit = memnew(VSplitContainer);
 	left_l_hsplit->add_child(left_l_vsplit);
@@ -5837,10 +5837,10 @@ EditorNode::EditorNode() {
 	left_r_hsplit->add_child(main_hsplit);
 	VBoxContainer *center_vb = memnew(VBoxContainer);
 	main_hsplit->add_child(center_vb);
-	center_vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	center_vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	center_split = memnew(VSplitContainer);
-	center_split->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	center_split->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	center_split->set_collapsed(false);
 	center_vb->add_child(center_split);
 
@@ -5896,7 +5896,7 @@ EditorNode::EditorNode() {
 
 	Label *dock_label = memnew(Label);
 	dock_label->set_text(TTR("Dock Position"));
-	dock_label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	dock_label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	dock_label->set_align(Label::ALIGN_CENTER);
 	dock_hb->add_child(dock_label);
 
@@ -5918,13 +5918,13 @@ EditorNode::EditorNode() {
 	dock_select->connect("gui_input", callable_mp(this, &EditorNode::_dock_select_input));
 	dock_select->connect("draw", callable_mp(this, &EditorNode::_dock_select_draw));
 	dock_select->connect("mouse_exited", callable_mp(this, &EditorNode::_dock_popup_exit));
-	dock_select->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	dock_select->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	dock_vb->add_child(dock_select);
 
 	dock_float = memnew(Button);
 	dock_float->set_text(TTR("Make Floating"));
 	dock_float->set_focus_mode(Control::FOCUS_NONE);
-	dock_float->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
+	dock_float->set_size_flags_horizontal(Control::SIZE_SHRINK_CENTER);
 	dock_float->connect("pressed", callable_mp(this, &EditorNode::_dock_make_float));
 
 	dock_vb->add_child(dock_float);
@@ -5934,7 +5934,7 @@ EditorNode::EditorNode() {
 	dock_popup_selected = -1;
 	for (int i = 0; i < DOCK_SLOT_MAX; i++) {
 		dock_slot[i]->set_custom_minimum_size(Size2(170, 0) * EDSCALE);
-		dock_slot[i]->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+		dock_slot[i]->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 		dock_slot[i]->set_popup(dock_select_popup);
 		dock_slot[i]->connect("pre_popup_pressed", callable_mp(this, &EditorNode::_dock_pre_popup), varray(i));
 		dock_slot[i]->set_tab_align(TabContainer::ALIGN_LEFT);
@@ -5952,11 +5952,11 @@ EditorNode::EditorNode() {
 
 	top_split = memnew(VSplitContainer);
 	center_split->add_child(top_split);
-	top_split->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	top_split->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	top_split->set_collapsed(true);
 
 	VBoxContainer *srt = memnew(VBoxContainer);
-	srt->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	srt->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	top_split->add_child(srt);
 	srt->add_theme_constant_override("separation", 0);
 
@@ -5991,7 +5991,7 @@ EditorNode::EditorNode() {
 	scene_tabs->connect("resized", callable_mp(this, &EditorNode::_update_scene_tabs));
 
 	tabbar_container = memnew(HBoxContainer);
-	scene_tabs->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	scene_tabs->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	scene_tabs_context_menu = memnew(PopupMenu);
 	tabbar_container->add_child(scene_tabs_context_menu);
@@ -6025,7 +6025,7 @@ EditorNode::EditorNode() {
 	scene_root_parent->add_theme_style_override("panel", gui_base->get_theme_stylebox("Content", "EditorStyles"));
 	scene_root_parent->set_draw_behind_parent(true);
 	srt->add_child(scene_root_parent);
-	scene_root_parent->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	scene_root_parent->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	scene_root = memnew(SubViewport);
 	//scene_root->set_usage(Viewport::USAGE_2D); canvas BG mode prevents usage of this as 2D
@@ -6035,7 +6035,7 @@ EditorNode::EditorNode() {
 	scene_root->set_as_audio_listener_2d(true);
 
 	viewport = memnew(VBoxContainer);
-	viewport->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	viewport->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	viewport->add_theme_constant_override("separation", 0);
 	scene_root_parent->add_child(viewport);
 
@@ -6492,7 +6492,7 @@ EditorNode::EditorNode() {
 	bottom_panel_vb->add_child(bottom_panel_hb);
 
 	bottom_panel_hb_editors = memnew(HBoxContainer);
-	bottom_panel_hb_editors->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	bottom_panel_hb_editors->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	bottom_panel_hb->add_child(bottom_panel_hb_editors);
 
 	version_label = memnew(Label);

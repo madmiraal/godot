@@ -1161,7 +1161,7 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	add_child(ec);
 
 	spatial_editor_hb = memnew(HBoxContainer);
-	spatial_editor_hb->set_h_size_flags(SIZE_EXPAND_FILL);
+	spatial_editor_hb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	spatial_editor_hb->set_alignment(BoxContainer::ALIGN_END);
 	Node3DEditor::get_singleton()->add_control_to_menu_panel(spatial_editor_hb);
 
@@ -1239,10 +1239,10 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 
 	HBoxContainer *hb = memnew(HBoxContainer);
 	add_child(hb);
-	hb->set_h_size_flags(SIZE_EXPAND_FILL);
+	hb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	search_box = memnew(LineEdit);
-	search_box->set_h_size_flags(SIZE_EXPAND_FILL);
+	search_box->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	search_box->set_placeholder(TTR("Filter meshes"));
 	hb->add_child(search_box);
 	search_box->connect("text_changed", callable_mp(this, &GridMapEditor::_text_changed));
@@ -1265,7 +1265,7 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 	mode_list->connect("pressed", callable_mp(this, &GridMapEditor::_set_display_mode), varray(DISPLAY_LIST));
 
 	size_slider = memnew(HSlider);
-	size_slider->set_h_size_flags(SIZE_EXPAND_FILL);
+	size_slider->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	size_slider->set_min(0.2f);
 	size_slider->set_max(4.0f);
 	size_slider->set_step(0.1f);
@@ -1279,7 +1279,7 @@ GridMapEditor::GridMapEditor(EditorNode *p_editor) {
 
 	mesh_library_palette = memnew(ItemList);
 	add_child(mesh_library_palette);
-	mesh_library_palette->set_v_size_flags(SIZE_EXPAND_FILL);
+	mesh_library_palette->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	mesh_library_palette->connect("gui_input", callable_mp(this, &GridMapEditor::_mesh_library_palette_input));
 
 	info_message = memnew(Label);

@@ -68,12 +68,12 @@ void BoxContainer::_resort() {
 		if (vertical) { /* VERTICAL */
 			stretch_min += size.height;
 			msc.min_size = size.height;
-			msc.will_stretch = c->get_v_size_flags() & SIZE_EXPAND;
+			msc.will_stretch = c->get_size_flags_vertical() & SIZE_EXPAND;
 
 		} else { /* HORIZONTAL */
 			stretch_min += size.width;
 			msc.min_size = size.width;
-			msc.will_stretch = c->get_h_size_flags() & SIZE_EXPAND;
+			msc.will_stretch = c->get_size_flags_horizontal() & SIZE_EXPAND;
 		}
 
 		if (msc.will_stretch) {
@@ -318,9 +318,9 @@ void BoxContainer::add_spacer(bool p_begin) {
 	c->set_mouse_filter(MOUSE_FILTER_PASS); //allow spacer to pass mouse events
 
 	if (vertical) {
-		c->set_v_size_flags(SIZE_EXPAND_FILL);
+		c->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	} else {
-		c->set_h_size_flags(SIZE_EXPAND_FILL);
+		c->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	}
 
 	add_child(c);
@@ -355,7 +355,7 @@ MarginContainer *VBoxContainer::add_margin_child(const String &p_label, Control 
 	mc->add_child(p_control);
 	add_child(mc);
 	if (p_expand) {
-		mc->set_v_size_flags(SIZE_EXPAND_FILL);
+		mc->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	}
 
 	return mc;

@@ -1365,14 +1365,14 @@ void VisualScriptEditor::_add_node_dialog() {
 
 void VisualScriptEditor::_add_func_input() {
 	HBoxContainer *hbox = memnew(HBoxContainer);
-	hbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	hbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	Label *name_label = memnew(Label);
 	name_label->set_text(TTR("Name:"));
 	hbox->add_child(name_label);
 
 	LineEdit *name_box = memnew(LineEdit);
-	name_box->set_h_size_flags(SIZE_EXPAND_FILL);
+	name_box->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	name_box->set_text("input");
 	name_box->connect("focus_entered", callable_mp(this, &VisualScriptEditor::_deselect_input_names));
 	hbox->add_child(name_box);
@@ -4747,7 +4747,7 @@ VisualScriptEditor::VisualScriptEditor() {
 	members_section = memnew(VBoxContainer);
 	// Add but wait until done setting up this.
 	ScriptEditor::get_singleton()->get_left_list_split()->call_deferred("add_child", members_section);
-	members_section->set_v_size_flags(SIZE_EXPAND_FILL);
+	members_section->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	CheckButton *tool_script_check = memnew(CheckButton);
 	tool_script_check->set_text(TTR("Make Tool:"));
@@ -4785,7 +4785,7 @@ VisualScriptEditor::VisualScriptEditor() {
 
 	graph = memnew(GraphEdit);
 	add_child(graph);
-	graph->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	graph->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	graph->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 	graph->connect("node_selected", callable_mp(this, &VisualScriptEditor::_node_selected));
 	graph->connect("begin_node_move", callable_mp(this, &VisualScriptEditor::_begin_node_move));
@@ -4820,7 +4820,7 @@ VisualScriptEditor::VisualScriptEditor() {
 
 	// Add Function Dialog.
 	VBoxContainer *function_vb = memnew(VBoxContainer);
-	function_vb->set_v_size_flags(SIZE_EXPAND_FILL);
+	function_vb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	function_vb->set_custom_minimum_size(Size2(450, 300) * EDSCALE);
 
 	HBoxContainer *func_name_hbox = memnew(HBoxContainer);
@@ -4831,7 +4831,7 @@ VisualScriptEditor::VisualScriptEditor() {
 	func_name_hbox->add_child(func_name_label);
 
 	func_name_box = memnew(LineEdit);
-	func_name_box->set_h_size_flags(SIZE_EXPAND_FILL);
+	func_name_box->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	func_name_box->set_placeholder(TTR("function_name"));
 	func_name_box->set_text("");
 	func_name_box->connect("focus_entered", callable_mp(this, &VisualScriptEditor::_deselect_input_names));
@@ -4842,17 +4842,17 @@ VisualScriptEditor::VisualScriptEditor() {
 	function_vb->add_child(memnew(HSeparator));
 
 	Button *add_input_button = memnew(Button);
-	add_input_button->set_h_size_flags(SIZE_EXPAND_FILL);
+	add_input_button->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_input_button->set_text(TTR("Add Input"));
 	add_input_button->connect("pressed", callable_mp(this, &VisualScriptEditor::_add_func_input));
 	function_vb->add_child(add_input_button);
 
 	func_input_scroll = memnew(ScrollContainer);
-	func_input_scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	func_input_scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	function_vb->add_child(func_input_scroll);
 
 	func_input_vbox = memnew(VBoxContainer);
-	func_input_vbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	func_input_vbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	func_input_scroll->add_child(func_input_vbox);
 
 	function_create_dialog = memnew(ConfirmationDialog);
@@ -4866,7 +4866,7 @@ VisualScriptEditor::VisualScriptEditor() {
 	select_func_text->set_text(TTR("Select or create a function to edit its graph."));
 	select_func_text->set_align(Label::ALIGN_CENTER);
 	select_func_text->set_valign(Label::VALIGN_CENTER);
-	select_func_text->set_h_size_flags(SIZE_EXPAND_FILL);
+	select_func_text->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_child(select_func_text);
 
 	hint_text = memnew(Label);

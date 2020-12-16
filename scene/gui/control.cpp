@@ -1321,10 +1321,6 @@ void Control::set_anchor(Margin p_margin, float p_anchor, bool p_keep_margin, bo
 	_change_notify("anchor_bottom");
 }
 
-void Control::_set_anchor(Margin p_margin, float p_anchor) {
-	set_anchor(p_margin, p_anchor);
-}
-
 void Control::set_anchor_and_margin(Margin p_margin, float p_anchor, float p_pos, bool p_push_opposite_anchor) {
 	set_anchor(p_margin, p_anchor, false, p_push_opposite_anchor);
 	set_margin(p_margin, p_pos);
@@ -1650,10 +1646,6 @@ Point2 Control::get_screen_position() const {
 	return global_pos;
 }
 
-void Control::_set_global_position(const Point2 &p_point) {
-	set_global_position(p_point);
-}
-
 void Control::set_global_position(const Point2 &p_point, bool p_keep_margins) {
 	Transform2D inv;
 
@@ -1692,10 +1684,6 @@ void Control::_compute_margins(Rect2 p_rect, const float p_anchors[4], float (&r
 	r_margins[3] = p_rect.position.y + p_rect.size.y - (p_anchors[3] * parent_rect_size.y);
 }
 
-void Control::_set_position(const Size2 &p_point) {
-	set_position(p_point);
-}
-
 void Control::set_position(const Size2 &p_point, bool p_keep_margins) {
 	if (p_keep_margins) {
 		_compute_anchors(Rect2(p_point, data.size_cache), data.margin, data.anchor);
@@ -1718,10 +1706,6 @@ void Control::set_rect(const Rect2 &p_rect) {
 	if (is_inside_tree()) {
 		_size_changed();
 	}
-}
-
-void Control::_set_size(const Size2 &p_size) {
-	set_size(p_size);
 }
 
 void Control::set_size(const Size2 &p_size, bool p_keep_margins) {
@@ -2202,10 +2186,6 @@ Transform2D Control::get_transform() const {
 	return xform;
 }
 
-String Control::_get_tooltip() const {
-	return data.tooltip;
-}
-
 void Control::set_focus_neighbour(Margin p_margin, const NodePath &p_neighbour) {
 	ERR_FAIL_INDEX((int)p_margin, 4);
 	data.focus_neighbour[p_margin] = p_neighbour;
@@ -2372,7 +2352,7 @@ void Control::_window_find_focus_neighbour(const Vector2 &p_dir, Node *p_at, con
 	}
 }
 
-void Control::set_h_size_flags(int p_flags) {
+void Control::set_size_flags_horizontal(int p_flags) {
 	if (data.h_size_flags == p_flags) {
 		return;
 	}
@@ -2380,11 +2360,11 @@ void Control::set_h_size_flags(int p_flags) {
 	emit_signal(SceneStringNames::get_singleton()->size_flags_changed);
 }
 
-int Control::get_h_size_flags() const {
+int Control::get_size_flags_horizontal() const {
 	return data.h_size_flags;
 }
 
-void Control::set_v_size_flags(int p_flags) {
+void Control::set_size_flags_vertical(int p_flags) {
 	if (data.v_size_flags == p_flags) {
 		return;
 	}
@@ -2446,7 +2426,7 @@ void Control::minimum_size_changed() {
 	MessageQueue::get_singleton()->push_call(this, "_update_minimum_size");
 }
 
-int Control::get_v_size_flags() const {
+int Control::get_size_flags_vertical() const {
 	return data.v_size_flags;
 }
 
@@ -2716,25 +2696,25 @@ bool Control::is_clipping_contents() {
 	return data.clip_contents;
 }
 
-void Control::set_h_grow_direction(GrowDirection p_direction) {
+void Control::set_grow_horizontal(GrowDirection p_direction) {
 	ERR_FAIL_INDEX((int)p_direction, 3);
 
 	data.h_grow = p_direction;
 	_size_changed();
 }
 
-Control::GrowDirection Control::get_h_grow_direction() const {
+Control::GrowDirection Control::get_grow_horizontal() const {
 	return data.h_grow;
 }
 
-void Control::set_v_grow_direction(GrowDirection p_direction) {
+void Control::set_grow_vertical(GrowDirection p_direction) {
 	ERR_FAIL_INDEX((int)p_direction, 3);
 
 	data.v_grow = p_direction;
 	_size_changed();
 }
 
-Control::GrowDirection Control::get_v_grow_direction() const {
+Control::GrowDirection Control::get_grow_vertical() const {
 	return data.v_grow;
 }
 
@@ -2748,7 +2728,6 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_anchors_preset", "preset", "keep_margins"), &Control::set_anchors_preset, DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("set_margins_preset", "preset", "resize_mode", "margin"), &Control::set_margins_preset, DEFVAL(PRESET_MODE_MINSIZE), DEFVAL(0));
 	ClassDB::bind_method(D_METHOD("set_anchors_and_margins_preset", "preset", "resize_mode", "margin"), &Control::set_anchors_and_margins_preset, DEFVAL(PRESET_MODE_MINSIZE), DEFVAL(0));
-	ClassDB::bind_method(D_METHOD("_set_anchor", "margin", "anchor"), &Control::_set_anchor);
 	ClassDB::bind_method(D_METHOD("set_anchor", "margin", "anchor", "keep_margin", "push_opposite_anchor"), &Control::set_anchor, DEFVAL(false), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("get_anchor", "margin"), &Control::get_anchor);
 	ClassDB::bind_method(D_METHOD("set_margin", "margin", "offset"), &Control::set_margin);
@@ -2756,12 +2735,9 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_begin", "position"), &Control::set_begin);
 	ClassDB::bind_method(D_METHOD("set_end", "position"), &Control::set_end);
 	ClassDB::bind_method(D_METHOD("set_position", "position", "keep_margins"), &Control::set_position, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("_set_position", "margin"), &Control::_set_position);
 	ClassDB::bind_method(D_METHOD("set_size", "size", "keep_margins"), &Control::set_size, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("_set_size", "size"), &Control::_set_size);
 	ClassDB::bind_method(D_METHOD("set_custom_minimum_size", "size"), &Control::set_custom_minimum_size);
 	ClassDB::bind_method(D_METHOD("set_global_position", "position", "keep_margins"), &Control::set_global_position, DEFVAL(false));
-	ClassDB::bind_method(D_METHOD("_set_global_position", "position"), &Control::_set_global_position);
 	ClassDB::bind_method(D_METHOD("set_rotation", "radians"), &Control::set_rotation);
 	ClassDB::bind_method(D_METHOD("set_rotation_degrees", "degrees"), &Control::set_rotation_degrees);
 	ClassDB::bind_method(D_METHOD("set_scale", "scale"), &Control::set_scale);
@@ -2787,14 +2763,14 @@ void Control::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("release_focus"), &Control::release_focus);
 	ClassDB::bind_method(D_METHOD("get_focus_owner"), &Control::get_focus_owner);
 
-	ClassDB::bind_method(D_METHOD("set_h_size_flags", "flags"), &Control::set_h_size_flags);
-	ClassDB::bind_method(D_METHOD("get_h_size_flags"), &Control::get_h_size_flags);
+	ClassDB::bind_method(D_METHOD("set_size_flags_horizontal", "flags"), &Control::set_size_flags_horizontal);
+	ClassDB::bind_method(D_METHOD("get_size_flags_horizontal"), &Control::get_size_flags_horizontal);
 
 	ClassDB::bind_method(D_METHOD("set_stretch_ratio", "ratio"), &Control::set_stretch_ratio);
 	ClassDB::bind_method(D_METHOD("get_stretch_ratio"), &Control::get_stretch_ratio);
 
-	ClassDB::bind_method(D_METHOD("set_v_size_flags", "flags"), &Control::set_v_size_flags);
-	ClassDB::bind_method(D_METHOD("get_v_size_flags"), &Control::get_v_size_flags);
+	ClassDB::bind_method(D_METHOD("set_size_flags_vertical", "flags"), &Control::set_size_flags_vertical);
+	ClassDB::bind_method(D_METHOD("get_size_flags_vertical"), &Control::get_size_flags_vertical);
 
 	ClassDB::bind_method(D_METHOD("set_theme", "theme"), &Control::set_theme);
 	ClassDB::bind_method(D_METHOD("get_theme"), &Control::get_theme);
@@ -2829,15 +2805,14 @@ void Control::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_parent_control"), &Control::get_parent_control);
 
-	ClassDB::bind_method(D_METHOD("set_h_grow_direction", "direction"), &Control::set_h_grow_direction);
-	ClassDB::bind_method(D_METHOD("get_h_grow_direction"), &Control::get_h_grow_direction);
+	ClassDB::bind_method(D_METHOD("set_grow_horizontal", "direction"), &Control::set_grow_horizontal);
+	ClassDB::bind_method(D_METHOD("get_grow_horizontal"), &Control::get_grow_horizontal);
 
-	ClassDB::bind_method(D_METHOD("set_v_grow_direction", "direction"), &Control::set_v_grow_direction);
-	ClassDB::bind_method(D_METHOD("get_v_grow_direction"), &Control::get_v_grow_direction);
+	ClassDB::bind_method(D_METHOD("set_grow_vertical", "direction"), &Control::set_grow_vertical);
+	ClassDB::bind_method(D_METHOD("get_grow_vertical"), &Control::get_grow_vertical);
 
 	ClassDB::bind_method(D_METHOD("set_tooltip", "tooltip"), &Control::set_tooltip);
 	ClassDB::bind_method(D_METHOD("get_tooltip", "at_position"), &Control::get_tooltip, DEFVAL(Point2()));
-	ClassDB::bind_method(D_METHOD("_get_tooltip"), &Control::_get_tooltip);
 
 	ClassDB::bind_method(D_METHOD("set_default_cursor_shape", "shape"), &Control::set_default_cursor_shape);
 	ClassDB::bind_method(D_METHOD("get_default_cursor_shape"), &Control::get_default_cursor_shape);
@@ -2902,30 +2877,30 @@ void Control::_bind_methods() {
 	ADD_PROPERTYI(PropertyInfo(Variant::INT, "margin_bottom", PROPERTY_HINT_RANGE, "-4096,4096"), "set_margin", "get_margin", MARGIN_BOTTOM);
 
 	ADD_GROUP("Grow Direction", "grow_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_horizontal", PROPERTY_HINT_ENUM, "Begin,End,Both"), "set_h_grow_direction", "get_h_grow_direction");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_vertical", PROPERTY_HINT_ENUM, "Begin,End,Both"), "set_v_grow_direction", "get_v_grow_direction");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_horizontal", PROPERTY_HINT_ENUM, "Begin,End,Both"), "set_grow_horizontal", "get_grow_horizontal");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "grow_vertical", PROPERTY_HINT_ENUM, "Begin,End,Both"), "set_grow_vertical", "get_grow_vertical");
 
 	ADD_GROUP("Layout Direction", "layout_");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "layout_direction", PROPERTY_HINT_ENUM, "Inherited,Locale,Left-to-right,Right-to-left"), "set_layout_direction", "get_layout_direction");
 
-	ADD_GROUP("Rect", "rect_");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_position", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "_set_position", "get_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_global_position", PROPERTY_HINT_NONE, "", 0), "_set_global_position", "get_global_position");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_size", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "_set_size", "get_size");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_min_size"), "set_custom_minimum_size", "get_custom_minimum_size");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rect_rotation", PROPERTY_HINT_RANGE, "-360,360,0.1,or_lesser,or_greater"), "set_rotation_degrees", "get_rotation_degrees");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_scale"), "set_scale", "get_scale");
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "rect_pivot_offset"), "set_pivot_offset", "get_pivot_offset");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "rect_clip_content"), "set_clip_contents", "is_clipping_contents");
+	ADD_GROUP("Bounding Box", "");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "position", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "set_position", "get_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "global_position", PROPERTY_HINT_NONE, "", 0), "set_global_position", "get_global_position");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "size", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR), "set_size", "get_size");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "minimum_size"), "set_custom_minimum_size", "get_custom_minimum_size");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "rotation", PROPERTY_HINT_RANGE, "-360,360,0.1,or_lesser,or_greater"), "set_rotation_degrees", "get_rotation_degrees");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "scale"), "set_scale", "get_scale");
+	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "pivot_offset"), "set_pivot_offset", "get_pivot_offset");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "clip_content"), "set_clip_contents", "is_clipping_contents");
 
-	ADD_GROUP("Hint", "hint_");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "hint_tooltip", PROPERTY_HINT_MULTILINE_TEXT), "set_tooltip", "_get_tooltip");
+	ADD_GROUP("Hint", "");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "tooltip", PROPERTY_HINT_MULTILINE_TEXT), "set_tooltip", "get_tooltip");
 
 	ADD_GROUP("Focus", "focus_");
 	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_left", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_LEFT);
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_top", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_TOP);
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_up", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_TOP);
 	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_right", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_RIGHT);
-	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_bottom", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_BOTTOM);
+	ADD_PROPERTYI(PropertyInfo(Variant::NODE_PATH, "focus_neighbour_down", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_neighbour", "get_focus_neighbour", MARGIN_BOTTOM);
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_next", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_next", "get_focus_next");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "focus_previous", PROPERTY_HINT_NODE_PATH_VALID_TYPES, "Control"), "set_focus_previous", "get_focus_previous");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "focus_mode", PROPERTY_HINT_ENUM, "None,Click,All"), "set_focus_mode", "get_focus_mode");
@@ -2935,8 +2910,8 @@ void Control::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mouse_default_cursor_shape", PROPERTY_HINT_ENUM, "Arrow,Ibeam,Pointing hand,Cross,Wait,Busy,Drag,Can drop,Forbidden,Vertical resize,Horizontal resize,Secondary diagonal resize,Main diagonal resize,Move,Vertical split,Horizontal split,Help"), "set_default_cursor_shape", "get_default_cursor_shape");
 
 	ADD_GROUP("Size Flags", "size_flags_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PROPERTY_HINT_FLAGS, "Fill,Expand,Shrink Center,Shrink End"), "set_h_size_flags", "get_h_size_flags");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_vertical", PROPERTY_HINT_FLAGS, "Fill,Expand,Shrink Center,Shrink End"), "set_v_size_flags", "get_v_size_flags");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_horizontal", PROPERTY_HINT_FLAGS, "Fill,Expand,Shrink Center,Shrink End"), "set_size_flags_horizontal", "get_size_flags_horizontal");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "size_flags_vertical", PROPERTY_HINT_FLAGS, "Fill,Expand,Shrink Center,Shrink End"), "set_size_flags_vertical", "get_size_flags_vertical");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size_flags_stretch_ratio", PROPERTY_HINT_RANGE, "0,20,0.01,or_greater"), "set_stretch_ratio", "get_stretch_ratio");
 	ADD_GROUP("Theme", "");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "theme", PROPERTY_HINT_RESOURCE_TYPE, "Theme"), "set_theme", "get_theme");

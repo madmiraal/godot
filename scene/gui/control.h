@@ -226,11 +226,6 @@ private:
 	void _window_find_focus_neighbour(const Vector2 &p_dir, Node *p_at, const Point2 *p_points, float p_min, float &r_closest_dist, Control **r_closest);
 	Control *_get_focus_neighbour(Margin p_margin, int p_count = 0);
 
-	void _set_anchor(Margin p_margin, float p_anchor);
-	void _set_position(const Point2 &p_point);
-	void _set_global_position(const Point2 &p_point);
-	void _set_size(const Size2 &p_size);
-
 	void _theme_changed();
 
 	void _change_notify_margins();
@@ -242,7 +237,6 @@ private:
 	void _compute_anchors(Rect2 p_rect, const float p_margins[4], float (&r_anchors)[4]);
 
 	void _size_changed();
-	String _get_tooltip() const;
 
 	void _override_changed();
 
@@ -399,11 +393,11 @@ public:
 	float get_rotation() const;
 	float get_rotation_degrees() const;
 
-	void set_h_grow_direction(GrowDirection p_direction);
-	GrowDirection get_h_grow_direction() const;
+	void set_grow_horizontal(GrowDirection p_direction);
+	GrowDirection get_grow_horizontal() const;
 
-	void set_v_grow_direction(GrowDirection p_direction);
-	GrowDirection get_v_grow_direction() const;
+	void set_grow_vertical(GrowDirection p_direction);
+	GrowDirection get_grow_vertical() const;
 
 	void set_pivot_offset(const Vector2 &p_pivot);
 	Vector2 get_pivot_offset() const;
@@ -414,11 +408,11 @@ public:
 	void set_theme(const Ref<Theme> &p_theme);
 	Ref<Theme> get_theme() const;
 
-	void set_h_size_flags(int p_flags);
-	int get_h_size_flags() const;
+	void set_size_flags_horizontal(int p_flags);
+	int get_size_flags_horizontal() const;
 
-	void set_v_size_flags(int p_flags);
-	int get_v_size_flags() const;
+	void set_size_flags_vertical(int p_flags);
+	int get_size_flags_vertical() const;
 
 	void set_stretch_ratio(float p_ratio);
 	float get_stretch_ratio() const;

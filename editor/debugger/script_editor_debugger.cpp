@@ -1497,7 +1497,7 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		reason = memnew(Label);
 		reason->set_text("");
 		hbc->add_child(reason);
-		reason->set_h_size_flags(SIZE_EXPAND_FILL);
+		reason->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		reason->set_autowrap(true);
 		reason->set_max_lines_visible(3);
 		reason->set_mouse_filter(Control::MOUSE_FILTER_PASS);
@@ -1552,20 +1552,20 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 
 		HSplitContainer *sc = memnew(HSplitContainer);
 		vbc->add_child(sc);
-		sc->set_v_size_flags(SIZE_EXPAND_FILL);
+		sc->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 		stack_dump = memnew(Tree);
 		stack_dump->set_allow_reselect(true);
 		stack_dump->set_columns(1);
 		stack_dump->set_column_titles_visible(true);
 		stack_dump->set_column_title(0, TTR("Stack Frames"));
-		stack_dump->set_h_size_flags(SIZE_EXPAND_FILL);
+		stack_dump->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		stack_dump->set_hide_root(true);
 		stack_dump->connect("cell_selected", callable_mp(this, &ScriptEditorDebugger::_stack_dump_frame_selected));
 		sc->add_child(stack_dump);
 
 		inspector = memnew(EditorDebuggerInspector);
-		inspector->set_h_size_flags(SIZE_EXPAND_FILL);
+		inspector->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		inspector->set_enable_capitalize_paths(false);
 		inspector->set_read_only(true);
 		inspector->connect("object_selected", callable_mp(this, &ScriptEditorDebugger::_remote_object_selected));
@@ -1593,12 +1593,12 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		errhb->add_child(collapse_all);
 
 		Control *space = memnew(Control);
-		space->set_h_size_flags(SIZE_EXPAND_FILL);
+		space->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		errhb->add_child(space);
 
 		clearbutton = memnew(Button);
 		clearbutton->set_text(TTR("Clear"));
-		clearbutton->set_h_size_flags(0);
+		clearbutton->set_size_flags_horizontal(0);
 		clearbutton->connect("pressed", callable_mp(this, &ScriptEditorDebugger::_clear_errors_list));
 		errhb->add_child(clearbutton);
 
@@ -1612,7 +1612,7 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 
 		error_tree->set_select_mode(Tree::SELECT_ROW);
 		error_tree->set_hide_root(true);
-		error_tree->set_v_size_flags(SIZE_EXPAND_FILL);
+		error_tree->set_size_flags_vertical(SIZE_EXPAND_FILL);
 		error_tree->set_allow_rmb_select(true);
 		error_tree->connect("item_rmb_selected", callable_mp(this, &ScriptEditorDebugger::_error_tree_item_rmb_selected));
 		errors_tab->add_child(error_tree);
@@ -1661,7 +1661,7 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		VBoxContainer *vmem_vb = memnew(VBoxContainer);
 		HBoxContainer *vmem_hb = memnew(HBoxContainer);
 		Label *vmlb = memnew(Label(TTR("List of Video Memory Usage by Resource:") + " "));
-		vmlb->set_h_size_flags(SIZE_EXPAND_FILL);
+		vmlb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		vmem_hb->add_child(vmlb);
 		vmem_hb->add_child(memnew(Label(TTR("Total:") + " ")));
 		vmem_total = memnew(LineEdit);
@@ -1681,10 +1681,10 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 
 		VBoxContainer *vmmc = memnew(VBoxContainer);
 		vmem_tree = memnew(Tree);
-		vmem_tree->set_v_size_flags(SIZE_EXPAND_FILL);
-		vmem_tree->set_h_size_flags(SIZE_EXPAND_FILL);
+		vmem_tree->set_size_flags_vertical(SIZE_EXPAND_FILL);
+		vmem_tree->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		vmmc->add_child(vmem_tree);
-		vmmc->set_v_size_flags(SIZE_EXPAND_FILL);
+		vmmc->set_size_flags_vertical(SIZE_EXPAND_FILL);
 		vmem_vb->add_child(vmmc);
 
 		vmem_vb->set_name(TTR("Video RAM"));
@@ -1715,7 +1715,7 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 		info_left->set_columns(2);
 		misc->add_child(info_left);
 		clicked_ctrl = memnew(LineEdit);
-		clicked_ctrl->set_h_size_flags(SIZE_EXPAND_FILL);
+		clicked_ctrl->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		info_left->add_child(memnew(Label(TTR("Clicked Control:"))));
 		info_left->add_child(clicked_ctrl);
 		clicked_ctrl_type = memnew(LineEdit);
@@ -1724,7 +1724,7 @@ ScriptEditorDebugger::ScriptEditorDebugger(EditorNode *p_editor) {
 
 		scene_tree = memnew(SceneDebuggerTree);
 		live_edit_root = memnew(LineEdit);
-		live_edit_root->set_h_size_flags(SIZE_EXPAND_FILL);
+		live_edit_root->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 		{
 			HBoxContainer *lehb = memnew(HBoxContainer);

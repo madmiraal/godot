@@ -234,7 +234,7 @@ EditorSubScene::EditorSubScene() {
 	path = memnew(LineEdit);
 	path->connect("text_entered", callable_mp(this, &EditorSubScene::_path_changed));
 	hb->add_child(path);
-	path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	path->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	Button *b = memnew(Button);
 	b->set_text(TTR("Browse"));
 	hb->add_child(b);
@@ -242,7 +242,7 @@ EditorSubScene::EditorSubScene() {
 	vb->add_margin_child(TTR("Scene Path:"), hb);
 
 	tree = memnew(Tree);
-	tree->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	tree->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	vb->add_margin_child(TTR("Import From Node:"), tree, true);
 	tree->set_select_mode(Tree::SELECT_MULTI);
 	tree->connect("multi_selected", callable_mp(this, &EditorSubScene::_item_multi_selected));

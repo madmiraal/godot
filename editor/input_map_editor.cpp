@@ -935,7 +935,7 @@ InputMapEditor::InputMapEditor() {
 	hbc->add_child(l);
 
 	action_name = memnew(LineEdit);
-	action_name->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	action_name->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	action_name->connect("text_entered", callable_mp(this, &InputMapEditor::_action_adds));
 	action_name->connect("text_changed", callable_mp(this, &InputMapEditor::_action_check));
 	hbc->add_child(action_name);
@@ -952,7 +952,7 @@ InputMapEditor::InputMapEditor() {
 	action_add = add;
 
 	input_editor = memnew(Tree);
-	input_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	input_editor->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	input_editor->set_columns(3);
 	input_editor->set_column_titles_visible(true);
 	input_editor->set_column_title(0, TTR("Action"));
@@ -1016,7 +1016,7 @@ InputMapEditor::InputMapEditor() {
 	vbc_left->add_child(device_id);
 
 	VBoxContainer *vbc_right = memnew(VBoxContainer);
-	vbc_right->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	vbc_right->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	hbc->add_child(vbc_right);
 
 	l = memnew(Label);

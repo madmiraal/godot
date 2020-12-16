@@ -1656,8 +1656,8 @@ PopupMenu::PopupMenu() {
 	control = memnew(Control);
 	control->set_clip_contents(false);
 	control->set_anchors_and_margins_preset(Control::PRESET_WIDE);
-	control->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-	control->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	control->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
+	control->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	scroll_container->add_child(control);
 	control->connect("draw", callable_mp(this, &PopupMenu::_draw_items));
 

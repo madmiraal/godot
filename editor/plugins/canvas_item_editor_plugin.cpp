@@ -100,7 +100,7 @@ public:
 		label = memnew(Label);
 		label->set_text(TTR("Grid Offset:"));
 		child_container->add_child(label);
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		grid_offset_x = memnew(SpinBox);
 		grid_offset_x->set_min(-SPIN_BOX_GRID_RANGE);
@@ -108,7 +108,7 @@ public:
 		grid_offset_x->set_allow_lesser(true);
 		grid_offset_x->set_allow_greater(true);
 		grid_offset_x->set_suffix("px");
-		grid_offset_x->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		grid_offset_x->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(grid_offset_x);
 
 		grid_offset_y = memnew(SpinBox);
@@ -117,20 +117,20 @@ public:
 		grid_offset_y->set_allow_lesser(true);
 		grid_offset_y->set_allow_greater(true);
 		grid_offset_y->set_suffix("px");
-		grid_offset_y->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		grid_offset_y->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(grid_offset_y);
 
 		label = memnew(Label);
 		label->set_text(TTR("Grid Step:"));
 		child_container->add_child(label);
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		grid_step_x = memnew(SpinBox);
 		grid_step_x->set_min(0.01);
 		grid_step_x->set_max(SPIN_BOX_GRID_RANGE);
 		grid_step_x->set_allow_greater(true);
 		grid_step_x->set_suffix("px");
-		grid_step_x->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		grid_step_x->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(grid_step_x);
 
 		grid_step_y = memnew(SpinBox);
@@ -138,7 +138,7 @@ public:
 		grid_step_y->set_max(SPIN_BOX_GRID_RANGE);
 		grid_step_y->set_allow_greater(true);
 		grid_step_y->set_suffix("px");
-		grid_step_y->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		grid_step_y->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(grid_step_y);
 
 		child_container = memnew(GridContainer);
@@ -147,7 +147,7 @@ public:
 
 		label = memnew(Label);
 		label->set_text(TTR("Primary Line Every:"));
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(label);
 
 		primary_grid_steps = memnew(SpinBox);
@@ -156,7 +156,7 @@ public:
 		primary_grid_steps->set_max(100);
 		primary_grid_steps->set_allow_greater(true);
 		primary_grid_steps->set_suffix(TTR("steps"));
-		primary_grid_steps->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		primary_grid_steps->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(primary_grid_steps);
 
 		container->add_child(memnew(HSeparator));
@@ -170,25 +170,25 @@ public:
 		label = memnew(Label);
 		label->set_text(TTR("Rotation Offset:"));
 		child_container->add_child(label);
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		rotation_offset = memnew(SpinBox);
 		rotation_offset->set_min(-SPIN_BOX_ROTATION_RANGE);
 		rotation_offset->set_max(SPIN_BOX_ROTATION_RANGE);
 		rotation_offset->set_suffix("deg");
-		rotation_offset->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		rotation_offset->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(rotation_offset);
 
 		label = memnew(Label);
 		label->set_text(TTR("Rotation Step:"));
 		child_container->add_child(label);
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		rotation_step = memnew(SpinBox);
 		rotation_step->set_min(-SPIN_BOX_ROTATION_RANGE);
 		rotation_step->set_max(SPIN_BOX_ROTATION_RANGE);
 		rotation_step->set_suffix("deg");
-		rotation_step->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		rotation_step->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		child_container->add_child(rotation_step);
 
 		container->add_child(memnew(HSeparator));
@@ -199,13 +199,13 @@ public:
 		label = memnew(Label);
 		label->set_text(TTR("Scale Step:"));
 		child_container->add_child(label);
-		label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		label->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		scale_step = memnew(SpinBox);
 		scale_step->set_min(SPIN_BOX_SCALE_MIN);
 		scale_step->set_max(SPIN_BOX_SCALE_MAX);
 		scale_step->set_allow_greater(true);
-		scale_step->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		scale_step->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		scale_step->set_step(0.01f);
 		child_container->add_child(scale_step);
 	}
@@ -5570,7 +5570,7 @@ void CanvasItemEditor::set_state(const Dictionary &p_state) {
 void CanvasItemEditor::add_control_to_info_overlay(Control *p_control) {
 	ERR_FAIL_COND(!p_control);
 
-	p_control->set_h_size_flags(p_control->get_h_size_flags() & ~Control::SIZE_EXPAND_FILL);
+	p_control->set_size_flags_horizontal(p_control->get_size_flags_horizontal() & ~Control::SIZE_EXPAND_FILL);
 	info_overlay->add_child(p_control);
 	info_overlay->set_margin(MARGIN_LEFT, (show_rulers ? RULER_WIDTH : 0) + 10);
 }
@@ -5678,18 +5678,18 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 
 	bottom_split = memnew(VSplitContainer);
 	add_child(bottom_split);
-	bottom_split->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	bottom_split->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	palette_split = memnew(HSplitContainer);
 	bottom_split->add_child(palette_split);
-	palette_split->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	palette_split->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	viewport_scrollable = memnew(Control);
 	palette_split->add_child(viewport_scrollable);
 	viewport_scrollable->set_mouse_filter(MOUSE_FILTER_PASS);
 	viewport_scrollable->set_clip_contents(true);
-	viewport_scrollable->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	viewport_scrollable->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	viewport_scrollable->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
+	viewport_scrollable->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	viewport_scrollable->connect("draw", callable_mp(this, &CanvasItemEditor::_update_scrollbars));
 
 	SubViewportContainer *scene_tree = memnew(SubViewportContainer);
@@ -5719,7 +5719,7 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	info_overlay->set_anchors_and_margins_preset(Control::PRESET_BOTTOM_LEFT);
 	info_overlay->set_margin(MARGIN_LEFT, 10);
 	info_overlay->set_margin(MARGIN_BOTTOM, -15);
-	info_overlay->set_v_grow_direction(Control::GROW_DIRECTION_BEGIN);
+	info_overlay->set_grow_vertical(Control::GROW_DIRECTION_BEGIN);
 	info_overlay->add_theme_constant_override("separation", 10);
 	viewport_scrollable->add_child(info_overlay);
 
@@ -5880,7 +5880,7 @@ CanvasItemEditor::CanvasItemEditor(EditorNode *p_editor) {
 	snap_config_menu = memnew(MenuButton);
 	snap_config_menu->set_shortcut_context(this);
 	hb->add_child(snap_config_menu);
-	snap_config_menu->set_h_size_flags(SIZE_SHRINK_END);
+	snap_config_menu->set_size_flags_horizontal(SIZE_SHRINK_END);
 	snap_config_menu->set_tooltip(TTR("Snapping Options"));
 	snap_config_menu->set_switch_on_hover(true);
 
@@ -6138,7 +6138,7 @@ void CanvasItemEditorPlugin::set_state(const Dictionary &p_state) {
 CanvasItemEditorPlugin::CanvasItemEditorPlugin(EditorNode *p_node) {
 	editor = p_node;
 	canvas_item_editor = memnew(CanvasItemEditor(editor));
-	canvas_item_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	canvas_item_editor->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	editor->get_viewport()->add_child(canvas_item_editor);
 	canvas_item_editor->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 	canvas_item_editor->hide();
@@ -6580,13 +6580,13 @@ CanvasItemEditorViewport::CanvasItemEditorViewport(EditorNode *p_node, CanvasIte
 
 	VBoxContainer *vbc = memnew(VBoxContainer);
 	selector->add_child(vbc);
-	vbc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
-	vbc->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	vbc->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
+	vbc->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	vbc->set_custom_minimum_size(Size2(240, 260) * EDSCALE);
 
 	btn_group = memnew(VBoxContainer);
 	vbc->add_child(btn_group);
-	btn_group->set_h_size_flags(0);
+	btn_group->set_size_flags_horizontal(0);
 
 	button_group.instance();
 	for (int i = 0; i < types.size(); i++) {

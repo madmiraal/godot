@@ -273,24 +273,24 @@ void EditorPropertyArray::update_property() {
 			HBoxContainer *hbc = memnew(HBoxContainer);
 			vbox->add_child(hbc);
 			Label *label = memnew(Label(TTR("Size: ")));
-			label->set_h_size_flags(SIZE_EXPAND_FILL);
+			label->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			hbc->add_child(label);
 			length = memnew(EditorSpinSlider);
 			length->set_step(1);
 			length->set_max(1000000);
-			length->set_h_size_flags(SIZE_EXPAND_FILL);
+			length->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			hbc->add_child(length);
 			length->connect("value_changed", callable_mp(this, &EditorPropertyArray::_length_changed));
 
 			page_hb = memnew(HBoxContainer);
 			vbox->add_child(page_hb);
 			label = memnew(Label(TTR("Page: ")));
-			label->set_h_size_flags(SIZE_EXPAND_FILL);
+			label->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			page_hb->add_child(label);
 			page = memnew(EditorSpinSlider);
 			page->set_step(1);
 			page_hb->add_child(page);
-			page->set_h_size_flags(SIZE_EXPAND_FILL);
+			page->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			page->connect("value_changed", callable_mp(this, &EditorPropertyArray::_page_changed));
 		} else {
 			//bye bye children of the box
@@ -345,7 +345,7 @@ void EditorPropertyArray::update_property() {
 			prop->set_selectable(false);
 			prop->connect("property_changed", callable_mp(this, &EditorPropertyArray::_property_changed));
 			prop->connect("object_id_selected", callable_mp(this, &EditorPropertyArray::_object_id_selected));
-			prop->set_h_size_flags(SIZE_EXPAND_FILL);
+			prop->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 			HBoxContainer *hb = memnew(HBoxContainer);
 
@@ -577,7 +577,7 @@ EditorPropertyArray::EditorPropertyArray() {
 	page_len = 10;
 	edit = memnew(Button);
 	edit->set_flat(true);
-	edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	edit->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	edit->set_clip_text(true);
 	edit->connect("pressed", callable_mp(this, &EditorPropertyArray::_edit_pressed));
 	edit->set_toggle_mode(true);
@@ -725,12 +725,12 @@ void EditorPropertyDictionary::update_property() {
 			page_hb = memnew(HBoxContainer);
 			vbox->add_child(page_hb);
 			Label *label = memnew(Label(TTR("Page: ")));
-			label->set_h_size_flags(SIZE_EXPAND_FILL);
+			label->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			page_hb->add_child(label);
 			page = memnew(EditorSpinSlider);
 			page->set_step(1);
 			page_hb->add_child(page);
-			page->set_h_size_flags(SIZE_EXPAND_FILL);
+			page->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			page->connect("value_changed", callable_mp(this, &EditorPropertyDictionary::_page_changed));
 		} else {
 			// Queue children for deletion, deleting immediately might cause errors.
@@ -1010,7 +1010,7 @@ void EditorPropertyDictionary::update_property() {
 				vbox->add_child(hb);
 			}
 			hb->add_child(prop);
-			prop->set_h_size_flags(SIZE_EXPAND_FILL);
+			prop->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			Button *edit = memnew(Button);
 			edit->set_icon(get_theme_icon("Edit", "EditorIcons"));
 			hb->add_child(edit);
@@ -1073,7 +1073,7 @@ EditorPropertyDictionary::EditorPropertyDictionary() {
 	page_len = 10;
 	edit = memnew(Button);
 	edit->set_flat(true);
-	edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	edit->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	edit->set_clip_text(true);
 	edit->connect("pressed", callable_mp(this, &EditorPropertyDictionary::_edit_pressed));
 	edit->set_toggle_mode(true);

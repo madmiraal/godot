@@ -165,7 +165,7 @@ EditorPropertyMultilineText::EditorPropertyMultilineText() {
 	text->set_wrap_enabled(true);
 	add_focusable(text);
 	hb->add_child(text);
-	text->set_h_size_flags(SIZE_EXPAND_FILL);
+	text->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	open_big_text = memnew(Button);
 	open_big_text->set_flat(true);
 	open_big_text->connect("pressed", callable_mp(this, &EditorPropertyMultilineText::_open_big_text));
@@ -295,7 +295,7 @@ EditorPropertyPath::EditorPropertyPath() {
 	path_hb->add_child(path);
 	path->connect("text_entered", callable_mp(this, &EditorPropertyPath::_path_selected));
 	path->connect("focus_exited", callable_mp(this, &EditorPropertyPath::_path_focus_exited));
-	path->set_h_size_flags(SIZE_EXPAND_FILL);
+	path->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	path_edit = memnew(Button);
 	path_edit->set_clip_text(true);
@@ -778,7 +778,7 @@ EditorPropertyLayers::EditorPropertyLayers() {
 	add_child(hb);
 	grid = memnew(EditorPropertyLayersGrid);
 	grid->connect("flag_changed", callable_mp(this, &EditorPropertyLayers::_grid_changed));
-	grid->set_h_size_flags(SIZE_EXPAND_FILL);
+	grid->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	hb->add_child(grid);
 	button = memnew(Button);
 	button->set_toggle_mode(true);
@@ -1201,7 +1201,7 @@ EditorPropertyVector2::EditorPropertyVector2(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyVector2::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1287,7 +1287,7 @@ EditorPropertyRect2::EditorPropertyRect2(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyRect2::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1382,7 +1382,7 @@ EditorPropertyVector3::EditorPropertyVector3(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyVector3::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1464,7 +1464,7 @@ EditorPropertyVector2i::EditorPropertyVector2i(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyVector2i::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1550,7 +1550,7 @@ EditorPropertyRect2i::EditorPropertyRect2i(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyRect2i::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1633,7 +1633,7 @@ EditorPropertyVector3i::EditorPropertyVector3i(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyVector3i::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1719,7 +1719,7 @@ EditorPropertyPlane::EditorPropertyPlane(bool p_force_wide) {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyPlane::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1802,7 +1802,7 @@ EditorPropertyQuat::EditorPropertyQuat() {
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyQuat::_value_changed), varray(desc[i]));
 		if (horizontal) {
-			spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		}
 	}
 
@@ -1880,7 +1880,7 @@ EditorPropertyAABB::EditorPropertyAABB() {
 		spin[i]->set_flat(true);
 
 		g->add_child(spin[i]);
-		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyAABB::_value_changed), varray(desc[i]));
 	}
@@ -1955,7 +1955,7 @@ EditorPropertyTransform2D::EditorPropertyTransform2D() {
 		spin[i]->set_label(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
-		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyTransform2D::_value_changed), varray(desc[i]));
 	}
@@ -2036,7 +2036,7 @@ EditorPropertyBasis::EditorPropertyBasis() {
 		spin[i]->set_label(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
-		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyBasis::_value_changed), varray(desc[i]));
 	}
@@ -2125,7 +2125,7 @@ EditorPropertyTransform::EditorPropertyTransform() {
 		spin[i]->set_label(desc[i]);
 		spin[i]->set_flat(true);
 		g->add_child(spin[i]);
-		spin[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		spin[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		add_focusable(spin[i]);
 		spin[i]->connect("value_changed", callable_mp(this, &EditorPropertyTransform::_value_changed), varray(desc[i]));
 	}
@@ -2309,7 +2309,7 @@ EditorPropertyNodePath::EditorPropertyNodePath() {
 	add_child(hbc);
 	assign = memnew(Button);
 	assign->set_flat(true);
-	assign->set_h_size_flags(SIZE_EXPAND_FILL);
+	assign->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	assign->set_clip_text(true);
 	assign->connect("pressed", callable_mp(this, &EditorPropertyNodePath::_node_assign));
 	hbc->add_child(assign);
@@ -3157,7 +3157,7 @@ EditorPropertyResource::EditorPropertyResource() {
 	add_child(hbc);
 	assign = memnew(Button);
 	assign->set_flat(true);
-	assign->set_h_size_flags(SIZE_EXPAND_FILL);
+	assign->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	assign->set_clip_text(true);
 	assign->connect("pressed", callable_mp(this, &EditorPropertyResource::_resource_selected));
 	assign->set_drag_forwarding(this);

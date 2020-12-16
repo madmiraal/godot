@@ -667,13 +667,13 @@ AnimationNodeBlendSpace1DEditor::AnimationNodeBlendSpace1DEditor() {
 
 	VBoxContainer *main_vb = memnew(VBoxContainer);
 	add_child(main_vb);
-	main_vb->set_v_size_flags(SIZE_EXPAND_FILL);
+	main_vb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	panel = memnew(PanelContainer);
 	panel->set_clip_contents(true);
 	main_vb->add_child(panel);
-	panel->set_h_size_flags(SIZE_EXPAND_FILL);
-	panel->set_v_size_flags(SIZE_EXPAND_FILL);
+	panel->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	panel->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	blend_space_draw = memnew(Control);
 	blend_space_draw->connect("gui_input", callable_mp(this, &AnimationNodeBlendSpace1DEditor::_blend_space_gui_input));
@@ -685,7 +685,7 @@ AnimationNodeBlendSpace1DEditor::AnimationNodeBlendSpace1DEditor() {
 	{
 		HBoxContainer *bottom_hb = memnew(HBoxContainer);
 		main_vb->add_child(bottom_hb);
-		bottom_hb->set_h_size_flags(SIZE_EXPAND_FILL);
+		bottom_hb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 		min_value = memnew(SpinBox);
 		min_value->set_min(-10000);

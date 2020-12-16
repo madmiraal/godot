@@ -180,7 +180,7 @@ void AnimationNodeBlendTreeEditor::_update_graph() {
 			open_in_editor->set_icon(get_theme_icon("Edit", "EditorIcons"));
 			node->add_child(open_in_editor);
 			open_in_editor->connect("pressed", callable_mp(this, &AnimationNodeBlendTreeEditor::_open_in_editor), varray(E->get()), CONNECT_DEFERRED);
-			open_in_editor->set_h_size_flags(SIZE_SHRINK_CENTER);
+			open_in_editor->set_size_flags_horizontal(SIZE_SHRINK_CENTER);
 		}
 
 		if (agnode->has_filter()) {
@@ -190,7 +190,7 @@ void AnimationNodeBlendTreeEditor::_update_graph() {
 			edit_filters->set_icon(get_theme_icon("AnimationFilter", "EditorIcons"));
 			node->add_child(edit_filters);
 			edit_filters->connect("pressed", callable_mp(this, &AnimationNodeBlendTreeEditor::_edit_filters), varray(E->get()), CONNECT_DEFERRED);
-			edit_filters->set_h_size_flags(SIZE_SHRINK_CENTER);
+			edit_filters->set_size_flags_horizontal(SIZE_SHRINK_CENTER);
 		}
 
 		Ref<AnimationNodeAnimation> anim = agnode;
@@ -881,7 +881,7 @@ AnimationNodeBlendTreeEditor::AnimationNodeBlendTreeEditor() {
 	add_child(graph);
 	graph->add_valid_right_disconnect_type(0);
 	graph->add_valid_left_disconnect_type(0);
-	graph->set_v_size_flags(SIZE_EXPAND_FILL);
+	graph->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	graph->connect("connection_request", callable_mp(this, &AnimationNodeBlendTreeEditor::_connection_request), varray(), CONNECT_DEFERRED);
 	graph->connect("disconnection_request", callable_mp(this, &AnimationNodeBlendTreeEditor::_disconnection_request), varray(), CONNECT_DEFERRED);
 	graph->connect("node_selected", callable_mp(this, &AnimationNodeBlendTreeEditor::_node_selected));
@@ -935,7 +935,7 @@ AnimationNodeBlendTreeEditor::AnimationNodeBlendTreeEditor() {
 
 	filters = memnew(Tree);
 	filter_vbox->add_child(filters);
-	filters->set_v_size_flags(SIZE_EXPAND_FILL);
+	filters->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	filters->set_hide_root(true);
 	filters->connect("item_edited", callable_mp(this, &AnimationNodeBlendTreeEditor::_filter_edited));
 

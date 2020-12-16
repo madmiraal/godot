@@ -754,7 +754,7 @@ EditorVisualProfiler::EditorVisualProfiler() {
 	hb->add_child(memnew(Label(TTR("Frame #:"))));
 
 	cursor_metric_edit = memnew(SpinBox);
-	cursor_metric_edit->set_h_size_flags(SIZE_FILL);
+	cursor_metric_edit->set_size_flags_horizontal(SIZE_FILL);
 	hb->add_child(cursor_metric_edit);
 	cursor_metric_edit->connect("value_changed", callable_mp(this, &EditorVisualProfiler::_cursor_metric_changed));
 
@@ -762,7 +762,7 @@ EditorVisualProfiler::EditorVisualProfiler() {
 
 	h_split = memnew(HSplitContainer);
 	add_child(h_split);
-	h_split->set_v_size_flags(SIZE_EXPAND_FILL);
+	h_split->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	variables = memnew(Tree);
 	variables->set_custom_minimum_size(Size2(300, 0) * EDSCALE);
@@ -791,7 +791,7 @@ EditorVisualProfiler::EditorVisualProfiler() {
 	graph->connect("mouse_exited", callable_mp(this, &EditorVisualProfiler::_graph_tex_mouse_exit));
 
 	h_split->add_child(graph);
-	graph->set_h_size_flags(SIZE_EXPAND_FILL);
+	graph->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	int metric_size = CLAMP(int(EDITOR_DEF("debugger/profiler_frame_history_size", 600)), 60, 1024);
 	frame_metrics.resize(metric_size);

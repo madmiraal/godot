@@ -1013,16 +1013,16 @@
 		</method>
 	</methods>
 	<members>
-		<member name="anchor_bottom" type="float" setter="_set_anchor" getter="get_anchor" default="0.0">
+		<member name="anchor_bottom" type="float" setter="set_anchor" getter="get_anchor" default="0.0">
 			Anchors the bottom edge of the node to the origin, the center, or the end of its parent control. It changes how the bottom margin updates when the node moves or changes size. You can use one of the [enum Anchor] constants for convenience.
 		</member>
-		<member name="anchor_left" type="float" setter="_set_anchor" getter="get_anchor" default="0.0">
+		<member name="anchor_left" type="float" setter="set_anchor" getter="get_anchor" default="0.0">
 			Anchors the left edge of the node to the origin, the center or the end of its parent control. It changes how the left margin updates when the node moves or changes size. You can use one of the [enum Anchor] constants for convenience.
 		</member>
-		<member name="anchor_right" type="float" setter="_set_anchor" getter="get_anchor" default="0.0">
+		<member name="anchor_right" type="float" setter="set_anchor" getter="get_anchor" default="0.0">
 			Anchors the right edge of the node to the origin, the center or the end of its parent control. It changes how the right margin updates when the node moves or changes size. You can use one of the [enum Anchor] constants for convenience.
 		</member>
-		<member name="anchor_top" type="float" setter="_set_anchor" getter="get_anchor" default="0.0">
+		<member name="anchor_top" type="float" setter="set_anchor" getter="get_anchor" default="0.0">
 			Anchors the top edge of the node to the origin, the center or the end of its parent control. It changes how the top margin updates when the node moves or changes size. You can use  one of the [enum Anchor] constants for convenience.
 		</member>
 		<member name="focus_mode" type="int" setter="set_focus_mode" getter="get_focus_mode" enum="Control.FocusMode" default="0">
@@ -1048,13 +1048,13 @@
 			Tells Godot which node it should give keyboard focus to if the user presses [kbd]Shift + Tab[/kbd] on a keyboard by default. You can change the key by editing the [code]ui_focus_prev[/code] input action.
 			If this property is not set, Godot will select a "best guess" based on surrounding nodes in the scene tree.
 		</member>
-		<member name="grow_horizontal" type="int" setter="set_h_grow_direction" getter="get_h_grow_direction" enum="Control.GrowDirection" default="1">
+		<member name="grow_horizontal" type="int" setter="set_grow_horizontal" getter="get_grow_horizontal" enum="Control.GrowDirection" default="1">
 			Controls the direction on the horizontal axis in which the control should grow if its horizontal minimum size is changed to be greater than its current size, as the control always has to be at least the minimum size.
 		</member>
-		<member name="grow_vertical" type="int" setter="set_v_grow_direction" getter="get_v_grow_direction" enum="Control.GrowDirection" default="1">
+		<member name="grow_vertical" type="int" setter="set_grow_vertical" getter="get_grow_vertical" enum="Control.GrowDirection" default="1">
 			Controls the direction on the vertical axis in which the control should grow if its vertical minimum size is changed to be greater than its current size, as the control always has to be at least the minimum size.
 		</member>
-		<member name="hint_tooltip" type="String" setter="set_tooltip" getter="_get_tooltip" default="&quot;&quot;">
+		<member name="hint_tooltip" type="String" setter="set_tooltip" getter="get_tooltip" default="&quot;&quot;">
 			Changes the tooltip text. The tooltip appears when the user's mouse cursor stays idle over this control for a few moments, provided that the [member mouse_filter] property is not [constant MOUSE_FILTER_IGNORE]. You can change the time required for the tooltip to appear with [code]gui/timers/tooltip_delay_sec[/code] option in Project Settings.
 			The tooltip popup will use either a default implementation, or a custom one that you can provide by overriding [method _make_custom_tooltip]. The default tooltip includes a [PopupPanel] and [Label] whose theme properties can be customized using [Theme] methods with the [code]"TooltipPanel"[/code] and [code]"TooltipLabel"[/code] respectively. For example:
 			[codeblocks]
@@ -1105,7 +1105,7 @@
 		<member name="rect_clip_content" type="bool" setter="set_clip_contents" getter="is_clipping_contents" default="false">
 			Enables whether rendering of [CanvasItem] based children should be clipped to this control's rectangle. If [code]true[/code], parts of a child which would be visibly outside of this control's rectangle will not be rendered.
 		</member>
-		<member name="rect_global_position" type="Vector2" setter="_set_global_position" getter="get_global_position">
+		<member name="rect_global_position" type="Vector2" setter="set_global_position" getter="get_global_position">
 			The node's global position, relative to the world (usually to the top-left corner of the window).
 		</member>
 		<member name="rect_min_size" type="Vector2" setter="set_custom_minimum_size" getter="get_custom_minimum_size" default="Vector2( 0, 0 )">
@@ -1114,7 +1114,7 @@
 		<member name="rect_pivot_offset" type="Vector2" setter="set_pivot_offset" getter="get_pivot_offset" default="Vector2( 0, 0 )">
 			By default, the node's pivot is its top-left corner. When you change its [member rect_scale], it will scale around this pivot. Set this property to [member rect_size] / 2 to center the pivot in the node's rectangle.
 		</member>
-		<member name="rect_position" type="Vector2" setter="_set_position" getter="get_position" default="Vector2( 0, 0 )">
+		<member name="rect_position" type="Vector2" setter="set_position" getter="get_position" default="Vector2( 0, 0 )">
 			The node's position, relative to its parent. It corresponds to the rectangle's top-left corner. The property is not affected by [member rect_pivot_offset].
 		</member>
 		<member name="rect_rotation" type="float" setter="set_rotation_degrees" getter="get_rotation_degrees" default="0.0">
@@ -1125,16 +1125,16 @@
 			[b]Note:[/b] This property is mainly intended to be used for animation purposes. Text inside the Control will look pixelated or blurry when the Control is scaled. To support multiple resolutions in your project, use an appropriate viewport stretch mode as described in the [url=https://docs.godotengine.org/en/latest/tutorials/viewports/multiple_resolutions.html]documentation[/url] instead of scaling Controls individually.
 			[b]Note:[/b] If the Control node is a child of a [Container] node, the scale will be reset to [code]Vector2(1, 1)[/code] when the scene is instanced. To set the Control's scale when it's instanced, wait for one frame using [code]yield(get_tree(), "idle_frame")[/code] then set its [member rect_scale] property.
 		</member>
-		<member name="rect_size" type="Vector2" setter="_set_size" getter="get_size" default="Vector2( 0, 0 )">
+		<member name="rect_size" type="Vector2" setter="set_size" getter="get_size" default="Vector2( 0, 0 )">
 			The size of the node's bounding rectangle, in pixels. [Container] nodes update this property automatically.
 		</member>
-		<member name="size_flags_horizontal" type="int" setter="set_h_size_flags" getter="get_h_size_flags" default="1">
+		<member name="size_flags_horizontal" type="int" setter="set_size_flags_horizontal" getter="get_size_flags_horizontal" default="1">
 			Tells the parent [Container] nodes how they should resize and place the node on the X axis. Use one of the [enum SizeFlags] constants to change the flags. See the constants to learn what each does.
 		</member>
 		<member name="size_flags_stretch_ratio" type="float" setter="set_stretch_ratio" getter="get_stretch_ratio" default="1.0">
 			If the node and at least one of its neighbours uses the [constant SIZE_EXPAND] size flag, the parent [Container] will let it take more or less space depending on this property. If this node has a stretch ratio of 2 and its neighbour a ratio of 1, this node will take two thirds of the available space.
 		</member>
-		<member name="size_flags_vertical" type="int" setter="set_v_size_flags" getter="get_v_size_flags" default="1">
+		<member name="size_flags_vertical" type="int" setter="set_size_flags_vertical" getter="get_size_flags_vertical" default="1">
 			Tells the parent [Container] nodes how they should resize and place the node on the Y axis. Use one of the [enum SizeFlags] constants to change the flags. See the constants to learn what each does.
 		</member>
 		<member name="theme" type="Theme" setter="set_theme" getter="get_theme">

@@ -73,7 +73,7 @@ OpenTypeFeaturesEditor::OpenTypeFeaturesEditor() {
 	bc->add_child(spin);
 	add_focusable(spin);
 	spin->connect("value_changed", callable_mp(this, &OpenTypeFeaturesEditor::_value_changed));
-	spin->set_h_size_flags(SIZE_EXPAND_FILL);
+	spin->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	spin->set_min(0);
 	spin->set_max(65536);

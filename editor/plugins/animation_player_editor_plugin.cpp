@@ -1540,7 +1540,7 @@ AnimationPlayerEditor::AnimationPlayerEditor(EditorNode *p_editor, AnimationPlay
 
 	scale = memnew(LineEdit);
 	hb->add_child(scale);
-	scale->set_h_size_flags(SIZE_EXPAND_FILL);
+	scale->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	scale->set_stretch_ratio(1);
 	scale->set_tooltip(TTR("Scale animation playback globally for the node."));
 	scale->hide();
@@ -1574,7 +1574,7 @@ AnimationPlayerEditor::AnimationPlayerEditor(EditorNode *p_editor, AnimationPlay
 
 	animation = memnew(OptionButton);
 	hb->add_child(animation);
-	animation->set_h_size_flags(SIZE_EXPAND_FILL);
+	animation->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	animation->set_tooltip(TTR("Display list of animations in player."));
 	animation->set_clip_text(true);
 
@@ -1685,7 +1685,7 @@ AnimationPlayerEditor::AnimationPlayerEditor(EditorNode *p_editor, AnimationPlay
 	set_process_unhandled_key_input(true);
 
 	add_child(track_editor);
-	track_editor->set_v_size_flags(SIZE_EXPAND_FILL);
+	track_editor->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	track_editor->connect("timeline_changed", callable_mp(this, &AnimationPlayerEditor::_animation_key_editor_seek));
 	track_editor->connect("animation_len_changed", callable_mp(this, &AnimationPlayerEditor::_animation_key_editor_anim_len_changed));
 

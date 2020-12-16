@@ -1755,7 +1755,7 @@ CustomPropertyEditor::CustomPropertyEditor() {
 		value_label[i]->hide();
 		value_editor[i] = memnew(LineEdit);
 		value_hboxes[hbox_idx]->add_child(value_editor[i]);
-		value_editor[i]->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		value_editor[i]->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		value_editor[i]->hide();
 		value_editor[i]->connect("text_entered", callable_mp(this, &CustomPropertyEditor::_modified));
 		value_editor[i]->connect("focus_entered", callable_mp(this, &CustomPropertyEditor::_focus_enter));

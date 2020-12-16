@@ -731,22 +731,22 @@ ColorPicker::ColorPicker() :
 
 	HBoxContainer *hb_edit = memnew(HBoxContainer);
 	add_child(hb_edit);
-	hb_edit->set_v_size_flags(SIZE_EXPAND_FILL);
+	hb_edit->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	uv_edit = memnew(Control);
 	hb_edit->add_child(uv_edit);
 	uv_edit->connect("gui_input", callable_mp(this, &ColorPicker::_uv_input));
 	uv_edit->set_mouse_filter(MOUSE_FILTER_PASS);
-	uv_edit->set_h_size_flags(SIZE_EXPAND_FILL);
-	uv_edit->set_v_size_flags(SIZE_EXPAND_FILL);
+	uv_edit->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	uv_edit->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	uv_edit->set_custom_minimum_size(Size2(get_theme_constant("sv_width"), get_theme_constant("sv_height")));
 	uv_edit->connect("draw", callable_mp(this, &ColorPicker::_hsv_draw), make_binds(0, uv_edit));
 
 	w_edit = memnew(Control);
 	hb_edit->add_child(w_edit);
 	w_edit->set_custom_minimum_size(Size2(get_theme_constant("h_width"), 0));
-	w_edit->set_h_size_flags(SIZE_FILL);
-	w_edit->set_v_size_flags(SIZE_EXPAND_FILL);
+	w_edit->set_size_flags_horizontal(SIZE_FILL);
+	w_edit->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	w_edit->connect("gui_input", callable_mp(this, &ColorPicker::_w_input));
 	w_edit->connect("draw", callable_mp(this, &ColorPicker::_hsv_draw), make_binds(1, w_edit));
 
@@ -755,7 +755,7 @@ ColorPicker::ColorPicker() :
 
 	sample = memnew(TextureRect);
 	hb_smpl->add_child(sample);
-	sample->set_h_size_flags(SIZE_EXPAND_FILL);
+	sample->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	sample->connect("draw", callable_mp(this, &ColorPicker::_sample_draw));
 
 	btn_pick = memnew(Button);
@@ -772,18 +772,18 @@ ColorPicker::ColorPicker() :
 
 	VBoxContainer *vbr = memnew(VBoxContainer);
 	add_child(vbr);
-	vbr->set_h_size_flags(SIZE_EXPAND_FILL);
+	vbr->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	for (int i = 0; i < 4; i++) {
 		HBoxContainer *hbc = memnew(HBoxContainer);
 
 		labels[i] = memnew(Label());
 		labels[i]->set_custom_minimum_size(Size2(get_theme_constant("label_width"), 0));
-		labels[i]->set_v_size_flags(SIZE_SHRINK_CENTER);
+		labels[i]->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 		hbc->add_child(labels[i]);
 
 		scroll[i] = memnew(HSlider);
-		scroll[i]->set_v_size_flags(SIZE_SHRINK_CENTER);
+		scroll[i]->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 		scroll[i]->set_focus_mode(FOCUS_NONE);
 		hbc->add_child(scroll[i]);
 
@@ -795,7 +795,7 @@ ColorPicker::ColorPicker() :
 
 		scroll[i]->set_min(0);
 		scroll[i]->set_page(0);
-		scroll[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		scroll[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 		scroll[i]->connect("value_changed", callable_mp(this, &ColorPicker::_value_changed));
 
@@ -832,7 +832,7 @@ ColorPicker::ColorPicker() :
 
 	c_text = memnew(LineEdit);
 	hhb->add_child(c_text);
-	c_text->set_h_size_flags(SIZE_EXPAND_FILL);
+	c_text->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	c_text->connect("text_entered", callable_mp(this, &ColorPicker::_html_entered));
 	c_text->connect("focus_entered", callable_mp(this, &ColorPicker::_focus_enter));
 	c_text->connect("focus_exited", callable_mp(this, &ColorPicker::_html_focus_exit));
@@ -846,7 +846,7 @@ ColorPicker::ColorPicker() :
 	add_child(preset_separator);
 
 	preset_container = memnew(HBoxContainer);
-	preset_container->set_h_size_flags(SIZE_EXPAND_FILL);
+	preset_container->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_child(preset_container);
 
 	preset = memnew(TextureRect);
@@ -855,7 +855,7 @@ ColorPicker::ColorPicker() :
 	preset->connect("draw", callable_mp(this, &ColorPicker::_update_presets));
 
 	preset_container2 = memnew(HBoxContainer);
-	preset_container2->set_h_size_flags(SIZE_EXPAND_FILL);
+	preset_container2->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_child(preset_container2);
 	bt_add_preset = memnew(Button);
 	preset_container2->add_child(bt_add_preset);

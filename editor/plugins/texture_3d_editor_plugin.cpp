@@ -162,7 +162,7 @@ Texture3DEditor::Texture3DEditor() {
 	add_child(layer);
 	layer->set_anchor(MARGIN_RIGHT, 1);
 	layer->set_anchor(MARGIN_LEFT, 1);
-	layer->set_h_grow_direction(GROW_DIRECTION_BEGIN);
+	layer->set_grow_horizontal(GROW_DIRECTION_BEGIN);
 	layer->set_modulate(Color(1, 1, 1, 0.8));
 	info = memnew(Label);
 	add_child(info);
@@ -170,8 +170,8 @@ Texture3DEditor::Texture3DEditor() {
 	info->set_anchor(MARGIN_LEFT, 1);
 	info->set_anchor(MARGIN_BOTTOM, 1);
 	info->set_anchor(MARGIN_TOP, 1);
-	info->set_h_grow_direction(GROW_DIRECTION_BEGIN);
-	info->set_v_grow_direction(GROW_DIRECTION_BEGIN);
+	info->set_grow_horizontal(GROW_DIRECTION_BEGIN);
+	info->set_grow_vertical(GROW_DIRECTION_BEGIN);
 	info->add_theme_color_override("font_color", Color(1, 1, 1, 1));
 	info->add_theme_color_override("font_color_shadow", Color(0, 0, 0, 0.5));
 	info->add_theme_color_override("font_color_shadow", Color(0, 0, 0, 0.5));

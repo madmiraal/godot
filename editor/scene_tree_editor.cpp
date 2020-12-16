@@ -1251,14 +1251,14 @@ SceneTreeDialog::SceneTreeDialog() {
 	add_child(vbc);
 
 	filter = memnew(LineEdit);
-	filter->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	filter->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	filter->set_placeholder(TTR("Filter nodes"));
 	filter->add_theme_constant_override("minimum_spaces", 0);
 	filter->connect("text_changed", callable_mp(this, &SceneTreeDialog::_filter_changed));
 	vbc->add_child(filter);
 
 	tree = memnew(SceneTreeEditor(false, false, true));
-	tree->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	tree->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	tree->get_scene_tree()->connect("item_activated", callable_mp(this, &SceneTreeDialog::_select));
 	vbc->add_child(tree);
 }

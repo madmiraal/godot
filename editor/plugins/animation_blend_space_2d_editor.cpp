@@ -927,16 +927,16 @@ AnimationNodeBlendSpace2DEditor::AnimationNodeBlendSpace2DEditor() {
 
 	HBoxContainer *main_hb = memnew(HBoxContainer);
 	add_child(main_hb);
-	main_hb->set_v_size_flags(SIZE_EXPAND_FILL);
+	main_hb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	GridContainer *main_grid = memnew(GridContainer);
 	main_grid->set_columns(2);
 	main_hb->add_child(main_grid);
-	main_grid->set_h_size_flags(SIZE_EXPAND_FILL);
+	main_grid->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	{
 		VBoxContainer *left_vbox = memnew(VBoxContainer);
 		main_grid->add_child(left_vbox);
-		left_vbox->set_v_size_flags(SIZE_EXPAND_FILL);
+		left_vbox->set_size_flags_vertical(SIZE_EXPAND_FILL);
 		max_y_value = memnew(SpinBox);
 		left_vbox->add_child(max_y_value);
 		left_vbox->add_spacer();
@@ -959,7 +959,7 @@ AnimationNodeBlendSpace2DEditor::AnimationNodeBlendSpace2DEditor() {
 	panel = memnew(PanelContainer);
 	panel->set_clip_contents(true);
 	main_grid->add_child(panel);
-	panel->set_h_size_flags(SIZE_EXPAND_FILL);
+	panel->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	blend_space_draw = memnew(Control);
 	blend_space_draw->connect("gui_input", callable_mp(this, &AnimationNodeBlendSpace2DEditor::_blend_space_gui_input));
@@ -972,7 +972,7 @@ AnimationNodeBlendSpace2DEditor::AnimationNodeBlendSpace2DEditor() {
 	{
 		HBoxContainer *bottom_vbox = memnew(HBoxContainer);
 		main_grid->add_child(bottom_vbox);
-		bottom_vbox->set_h_size_flags(SIZE_EXPAND_FILL);
+		bottom_vbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		min_x_value = memnew(SpinBox);
 		bottom_vbox->add_child(min_x_value);
 		bottom_vbox->add_spacer();

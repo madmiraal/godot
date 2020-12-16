@@ -257,7 +257,7 @@ ShaderFileEditor::ShaderFileEditor(EditorNode *p_node) {
 	main_hs->add_child(versions);
 
 	VBoxContainer *main_vb = memnew(VBoxContainer);
-	main_vb->set_h_size_flags(SIZE_EXPAND_FILL);
+	main_vb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	main_hs->add_child(main_vb);
 
 	static const char *stage_str[RD::SHADER_STAGE_MAX] = {
@@ -284,7 +284,7 @@ ShaderFileEditor::ShaderFileEditor(EditorNode *p_node) {
 	}
 
 	error_text = memnew(RichTextLabel);
-	error_text->set_v_size_flags(SIZE_EXPAND_FILL);
+	error_text->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	main_vb->add_child(error_text);
 }
 

@@ -556,7 +556,7 @@ void ShaderEditor::_make_context_menu(bool p_selection, Vector2 p_position) {
 
 ShaderEditor::ShaderEditor(EditorNode *p_node) {
 	shader_editor = memnew(ShaderTextEditor);
-	shader_editor->set_v_size_flags(SIZE_EXPAND_FILL);
+	shader_editor->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	shader_editor->add_theme_constant_override("separation", 0);
 	shader_editor->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 

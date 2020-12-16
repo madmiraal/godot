@@ -1027,7 +1027,7 @@ TextureRegionEditor::TextureRegionEditor(EditorNode *p_editor) {
 
 	edit_draw = memnew(Panel);
 	add_child(edit_draw);
-	edit_draw->set_v_size_flags(SIZE_EXPAND_FILL);
+	edit_draw->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	edit_draw->connect("draw", callable_mp(this, &TextureRegionEditor::_region_draw));
 	edit_draw->connect("gui_input", callable_mp(this, &TextureRegionEditor::_region_input));
 

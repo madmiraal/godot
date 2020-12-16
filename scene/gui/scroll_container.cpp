@@ -308,17 +308,17 @@ void ScrollContainer::_notification(int p_what) {
 			child_max_size.y = MAX(child_max_size.y, minsize.y);
 
 			Rect2 r = Rect2(-scroll, minsize);
-			if (!scroll_h || (!h_scroll->is_visible_in_tree() && c->get_h_size_flags() & SIZE_EXPAND)) {
+			if (!scroll_h || (!h_scroll->is_visible_in_tree() && c->get_size_flags_horizontal() & SIZE_EXPAND)) {
 				r.position.x = 0;
-				if (c->get_h_size_flags() & SIZE_EXPAND) {
+				if (c->get_size_flags_horizontal() & SIZE_EXPAND) {
 					r.size.width = MAX(size.width, minsize.width);
 				} else {
 					r.size.width = minsize.width;
 				}
 			}
-			if (!scroll_v || (!v_scroll->is_visible_in_tree() && c->get_v_size_flags() & SIZE_EXPAND)) {
+			if (!scroll_v || (!v_scroll->is_visible_in_tree() && c->get_size_flags_vertical() & SIZE_EXPAND)) {
 				r.position.y = 0;
-				if (c->get_v_size_flags() & SIZE_EXPAND) {
+				if (c->get_size_flags_vertical() & SIZE_EXPAND) {
 					r.size.height = MAX(size.height, minsize.height);
 				} else {
 					r.size.height = minsize.height;

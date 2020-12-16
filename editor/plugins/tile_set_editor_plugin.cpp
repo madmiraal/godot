@@ -338,7 +338,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 
 	texture_list = memnew(ItemList);
 	left_container->add_child(texture_list);
-	texture_list->set_v_size_flags(SIZE_EXPAND_FILL);
+	texture_list->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	texture_list->set_custom_minimum_size(Size2(200, 0));
 	texture_list->connect("item_selected", callable_mp(this, &TileSetEditor::_on_texture_list_selected));
 	texture_list->set_drag_forwarding(this);
@@ -359,7 +359,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 	tileset_toolbar_buttons[TOOL_TILESET_REMOVE_TEXTURE]->set_tooltip(TTR("Remove selected Texture from TileSet."));
 
 	Control *toolbar_separator = memnew(Control);
-	toolbar_separator->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	toolbar_separator->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	tileset_toolbar_container->add_child(toolbar_separator);
 
 	tileset_toolbar_tools = memnew(MenuButton);
@@ -372,7 +372,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 
 	//---------------
 	VBoxContainer *right_container = memnew(VBoxContainer);
-	right_container->set_v_size_flags(SIZE_EXPAND_FILL);
+	right_container->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	add_child(right_container);
 
 	dragging_point = -1;
@@ -384,7 +384,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 
 	VBoxContainer *main_vb = memnew(VBoxContainer);
 	right_container->add_child(main_vb);
-	main_vb->set_v_size_flags(SIZE_EXPAND_FILL);
+	main_vb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	HBoxContainer *tool_hb = memnew(HBoxContainer);
 	Ref<ButtonGroup> g(memnew(ButtonGroup));
@@ -405,7 +405,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 	}
 
 	Control *spacer = memnew(Control);
-	spacer->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	spacer->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	tool_hb->add_child(spacer);
 	tool_hb->move_child(spacer, WORKSPACE_CREATE_SINGLE);
 
@@ -579,7 +579,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 	toolbar->add_child(tools[TOOL_GRID_SNAP]);
 
 	Control *separator = memnew(Control);
-	separator->set_h_size_flags(SIZE_EXPAND_FILL);
+	separator->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	toolbar->add_child(separator);
 
 	tools[ZOOM_OUT] = memnew(Button);
@@ -608,7 +608,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 
 	scroll = memnew(ScrollContainer);
 	main_vb->add_child(scroll);
-	scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	scroll->connect("gui_input", callable_mp(this, &TileSetEditor::_on_scroll_container_input));
 	scroll->set_clip_contents(true);
 
@@ -618,7 +618,7 @@ TileSetEditor::TileSetEditor(EditorNode *p_editor) {
 	empty_message->set_align(Label::ALIGN_CENTER);
 	empty_message->set_autowrap(true);
 	empty_message->set_custom_minimum_size(Size2(100 * EDSCALE, 0));
-	empty_message->set_v_size_flags(SIZE_EXPAND_FILL);
+	empty_message->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	main_vb->add_child(empty_message);
 
 	workspace_container = memnew(Control);

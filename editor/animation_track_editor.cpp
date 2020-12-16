@@ -1755,10 +1755,10 @@ AnimationTimelineEdit::AnimationTimelineEdit() {
 	len_hb = memnew(HBoxContainer);
 
 	Control *expander = memnew(Control);
-	expander->set_h_size_flags(SIZE_EXPAND_FILL);
+	expander->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	len_hb->add_child(expander);
 	time_icon = memnew(TextureRect);
-	time_icon->set_v_size_flags(SIZE_SHRINK_CENTER);
+	time_icon->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 	time_icon->set_tooltip(TTR("Animation length (seconds)"));
 	len_hb->add_child(time_icon);
 	length = memnew(EditorSpinSlider);
@@ -5558,15 +5558,15 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	main_panel = memnew(PanelContainer);
 	main_panel->set_focus_mode(FOCUS_ALL); // allow panel to have focus so that shortcuts work as expected.
 	add_child(main_panel);
-	main_panel->set_v_size_flags(SIZE_EXPAND_FILL);
+	main_panel->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	HBoxContainer *timeline_scroll = memnew(HBoxContainer);
 	main_panel->add_child(timeline_scroll);
-	timeline_scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	timeline_scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	VBoxContainer *timeline_vbox = memnew(VBoxContainer);
 	timeline_scroll->add_child(timeline_vbox);
-	timeline_vbox->set_v_size_flags(SIZE_EXPAND_FILL);
-	timeline_vbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	timeline_vbox->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	timeline_vbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	timeline_vbox->add_theme_constant_override("separation", 0);
 
 	info_message = memnew(Label);
@@ -5589,7 +5589,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 
 	scroll = memnew(ScrollContainer);
 	timeline_vbox->add_child(scroll);
-	scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	VScrollBar *sb = scroll->get_v_scrollbar();
 	scroll->remove_child(sb);
 	timeline_scroll->add_child(sb); //move here so timeline and tracks are always aligned
@@ -5601,7 +5601,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	bezier_edit->set_editor(this);
 	bezier_edit->set_timeline(timeline);
 	bezier_edit->hide();
-	bezier_edit->set_v_size_flags(SIZE_EXPAND_FILL);
+	bezier_edit->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	bezier_edit->connect("close_request", callable_mp(this, &AnimationTrackEditor::_cancel_bezier_edit));
 
 	timeline_vbox->set_custom_minimum_size(Size2(0, 150) * EDSCALE);
@@ -5615,7 +5615,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 
 	track_vbox = memnew(VBoxContainer);
 	scroll->add_child(track_vbox);
-	track_vbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	track_vbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	scroll->set_enable_h_scroll(false);
 	scroll->set_enable_v_scroll(true);
 	track_vbox->add_theme_constant_override("separation", 0);
@@ -5677,7 +5677,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	bottom_hb->add_child(memnew(VSeparator));
 
 	zoom_icon = memnew(TextureRect);
-	zoom_icon->set_v_size_flags(SIZE_SHRINK_CENTER);
+	zoom_icon->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 	bottom_hb->add_child(zoom_icon);
 	zoom = memnew(HSlider);
 	zoom->set_step(0.01);
@@ -5685,7 +5685,7 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	zoom->set_max(2.0);
 	zoom->set_value(1.0);
 	zoom->set_custom_minimum_size(Size2(200, 0) * EDSCALE);
-	zoom->set_v_size_flags(SIZE_SHRINK_CENTER);
+	zoom->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 	bottom_hb->add_child(zoom);
 	timeline->set_zoom(zoom);
 
@@ -5845,8 +5845,8 @@ AnimationTrackEditor::AnimationTrackEditor() {
 	track_vbox->add_child(select_all_button);
 
 	track_copy_select = memnew(Tree);
-	track_copy_select->set_h_size_flags(SIZE_EXPAND_FILL);
-	track_copy_select->set_v_size_flags(SIZE_EXPAND_FILL);
+	track_copy_select->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	track_copy_select->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	track_copy_select->set_hide_root(true);
 	track_vbox->add_child(track_copy_select);
 	track_copy_dialog->connect("confirmed", callable_mp(this, &AnimationTrackEditor::_edit_menu_pressed), varray(EDIT_COPY_TRACKS_CONFIRM));

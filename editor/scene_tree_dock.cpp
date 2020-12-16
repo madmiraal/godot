@@ -1096,7 +1096,7 @@ void SceneTreeDock::_notification(int p_what) {
 			// create_root_dialog
 			HBoxContainer *top_row = memnew(HBoxContainer);
 			top_row->set_name("NodeShortcutsTopRow");
-			top_row->set_h_size_flags(SIZE_EXPAND_FILL);
+			top_row->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			top_row->add_child(memnew(Label(TTR("Create Root Node:"))));
 			top_row->add_spacer();
 
@@ -2852,7 +2852,7 @@ SceneTreeDock::SceneTreeDock(EditorNode *p_editor, Node *p_scene_root, EditorSel
 
 	vbc->add_child(filter_hbc);
 	filter = memnew(LineEdit);
-	filter->set_h_size_flags(SIZE_EXPAND_FILL);
+	filter->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	filter->set_placeholder(TTR("Filter nodes"));
 	filter_hbc->add_child(filter);
 	filter->add_theme_constant_override("minimum_spaces", 0);
@@ -2880,7 +2880,7 @@ SceneTreeDock::SceneTreeDock(EditorNode *p_editor, Node *p_scene_root, EditorSel
 	edit_remote = memnew(Button);
 	edit_remote->set_flat(true);
 	button_hb->add_child(edit_remote);
-	edit_remote->set_h_size_flags(SIZE_EXPAND_FILL);
+	edit_remote->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	edit_remote->set_text(TTR("Remote"));
 	edit_remote->set_toggle_mode(true);
 	edit_remote->connect("pressed", callable_mp(this, &SceneTreeDock::_remote_tree_selected));
@@ -2888,7 +2888,7 @@ SceneTreeDock::SceneTreeDock(EditorNode *p_editor, Node *p_scene_root, EditorSel
 	edit_local = memnew(Button);
 	edit_local->set_flat(true);
 	button_hb->add_child(edit_local);
-	edit_local->set_h_size_flags(SIZE_EXPAND_FILL);
+	edit_local->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	edit_local->set_text(TTR("Local"));
 	edit_local->set_toggle_mode(true);
 	edit_local->set_pressed(true);
@@ -2904,7 +2904,7 @@ SceneTreeDock::SceneTreeDock(EditorNode *p_editor, Node *p_scene_root, EditorSel
 	scene_tree = memnew(SceneTreeEditor(false, true, true));
 
 	vbc->add_child(scene_tree);
-	scene_tree->set_v_size_flags(SIZE_EXPAND | SIZE_FILL);
+	scene_tree->set_size_flags_vertical(SIZE_EXPAND | SIZE_FILL);
 	scene_tree->connect("rmb_pressed", callable_mp(this, &SceneTreeDock::_tree_rmb));
 
 	scene_tree->connect("node_selected", callable_mp(this, &SceneTreeDock::_node_selected), varray(), CONNECT_DEFERRED);

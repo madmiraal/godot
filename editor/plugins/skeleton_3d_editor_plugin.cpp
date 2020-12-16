@@ -549,7 +549,7 @@ void Skeleton3DEditor::update_editors() {
 }
 
 void Skeleton3DEditor::create_editors() {
-	set_h_size_flags(SIZE_EXPAND_FILL);
+	set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_theme_constant_override("separation", 0);
 
 	set_focus_mode(FOCUS_ALL);
@@ -573,7 +573,7 @@ void Skeleton3DEditor::create_editors() {
 	bones_section->unfold();
 
 	ScrollContainer *s_con = memnew(ScrollContainer);
-	s_con->set_h_size_flags(SIZE_EXPAND_FILL);
+	s_con->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	s_con->set_custom_minimum_size(Size2(1, 350) * EDSCALE);
 	bones_section->get_vbox()->add_child(s_con);
 
@@ -582,8 +582,8 @@ void Skeleton3DEditor::create_editors() {
 	joint_tree->set_focus_mode(Control::FocusMode::FOCUS_NONE);
 	joint_tree->set_select_mode(Tree::SELECT_SINGLE);
 	joint_tree->set_hide_root(true);
-	joint_tree->set_v_size_flags(SIZE_EXPAND_FILL);
-	joint_tree->set_h_size_flags(SIZE_EXPAND_FILL);
+	joint_tree->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	joint_tree->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	joint_tree->set_allow_rmb_select(true);
 	joint_tree->set_drag_forwarding(this);
 	s_con->add_child(joint_tree);

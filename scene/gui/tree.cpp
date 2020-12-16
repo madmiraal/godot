@@ -4252,11 +4252,11 @@ Tree::Tree() {
 	popup_editor_vb->set_anchors_and_margins_preset(PRESET_WIDE);
 	text_editor = memnew(LineEdit);
 	popup_editor_vb->add_child(text_editor);
-	text_editor->set_v_size_flags(SIZE_EXPAND_FILL);
-	text_editor->set_h_size_flags(SIZE_EXPAND_FILL);
+	text_editor->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	text_editor->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	value_editor = memnew(HSlider);
-	value_editor->set_v_size_flags(SIZE_EXPAND_FILL);
-	value_editor->set_h_size_flags(SIZE_EXPAND_FILL);
+	value_editor->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	value_editor->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	popup_editor_vb->add_child(value_editor);
 	value_editor->hide();
 

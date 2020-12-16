@@ -335,7 +335,7 @@ GDNativeLibraryEditor::GDNativeLibraryEditor() {
 	label->set_text(TTR("Platform:"));
 	hbox->add_child(label);
 	filter = memnew(MenuButton);
-	filter->set_h_size_flags(SIZE_EXPAND_FILL);
+	filter->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	filter->set_text_align(filter->ALIGN_LEFT);
 	hbox->add_child(filter);
 	PopupMenu *filter_list = filter->get_popup();
@@ -352,7 +352,7 @@ GDNativeLibraryEditor::GDNativeLibraryEditor() {
 
 	tree = memnew(Tree);
 	container->add_child(tree);
-	tree->set_v_size_flags(SIZE_EXPAND_FILL);
+	tree->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	tree->set_hide_root(true);
 	tree->set_column_titles_visible(true);
 	tree->set_columns(4);

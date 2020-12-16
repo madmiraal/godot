@@ -767,7 +767,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	builtin_warning_label->hide();
 
 	status_panel = memnew(PanelContainer);
-	status_panel->set_h_size_flags(Control::SIZE_FILL);
+	status_panel->set_size_flags_horizontal(Control::SIZE_FILL);
 	status_panel->add_child(vb);
 
 	/* Spacing */
@@ -788,7 +788,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 
 	language_menu = memnew(OptionButton);
 	language_menu->set_custom_minimum_size(Size2(250, 0) * EDSCALE);
-	language_menu->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	language_menu->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	gc->add_child(memnew(Label(TTR("Language:"))));
 	gc->add_child(language_menu);
 
@@ -812,10 +812,10 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	base_type = "Object";
 
 	hb = memnew(HBoxContainer);
-	hb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	hb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	parent_name = memnew(LineEdit);
 	parent_name->connect("text_changed", callable_mp(this, &ScriptCreateDialog::_parent_name_changed));
-	parent_name->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	parent_name->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	hb->add_child(parent_name);
 	parent_search_button = memnew(Button);
 	parent_search_button->set_flat(true);
@@ -833,7 +833,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 
 	class_name = memnew(LineEdit);
 	class_name->connect("text_changed", callable_mp(this, &ScriptCreateDialog::_class_name_changed));
-	class_name->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	class_name->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	gc->add_child(memnew(Label(TTR("Class Name:"))));
 	gc->add_child(class_name);
 
@@ -858,7 +858,7 @@ ScriptCreateDialog::ScriptCreateDialog() {
 	hb->connect("sort_children", callable_mp(this, &ScriptCreateDialog::_path_hbox_sorted));
 	file_path = memnew(LineEdit);
 	file_path->connect("text_changed", callable_mp(this, &ScriptCreateDialog::_path_changed));
-	file_path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	file_path->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	hb->add_child(file_path);
 	path_button = memnew(Button);
 	path_button->set_flat(true);

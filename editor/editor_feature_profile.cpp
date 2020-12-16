@@ -800,7 +800,7 @@ EditorFeatureProfileManager::EditorFeatureProfileManager() {
 	name_hbc->add_child(current_profile_name);
 	current_profile_name->set_text(TTR("(none)"));
 	current_profile_name->set_editable(false);
-	current_profile_name->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	current_profile_name->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	profile_actions[PROFILE_CLEAR] = memnew(Button(TTR("Unset")));
 	name_hbc->add_child(profile_actions[PROFILE_CLEAR]);
 	profile_actions[PROFILE_CLEAR]->set_disabled(true);
@@ -810,7 +810,7 @@ EditorFeatureProfileManager::EditorFeatureProfileManager() {
 
 	HBoxContainer *profiles_hbc = memnew(HBoxContainer);
 	profile_list = memnew(OptionButton);
-	profile_list->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	profile_list->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	profiles_hbc->add_child(profile_list);
 	profile_list->connect("item_selected", callable_mp(this, &EditorFeatureProfileManager::_profile_selected));
 
@@ -844,12 +844,12 @@ EditorFeatureProfileManager::EditorFeatureProfileManager() {
 	main_vbc->add_margin_child(TTR("Available Profiles:"), profiles_hbc);
 
 	h_split = memnew(HSplitContainer);
-	h_split->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	h_split->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	main_vbc->add_child(h_split);
 
 	class_list_vbc = memnew(VBoxContainer);
 	h_split->add_child(class_list_vbc);
-	class_list_vbc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	class_list_vbc->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	class_list = memnew(Tree);
 	class_list_vbc->add_margin_child(TTR("Enabled Classes:"), class_list, true);
@@ -862,7 +862,7 @@ EditorFeatureProfileManager::EditorFeatureProfileManager() {
 
 	property_list_vbc = memnew(VBoxContainer);
 	h_split->add_child(property_list_vbc);
-	property_list_vbc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	property_list_vbc->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	property_list = memnew(Tree);
 	property_list_vbc->add_margin_child(TTR("Class Options:"), property_list, true);
@@ -879,7 +879,7 @@ EditorFeatureProfileManager::EditorFeatureProfileManager() {
 	sb->set_default_margin(MARGIN_TOP, 20 * EDSCALE);
 	no_profile_selected_help->add_theme_style_override("normal", sb);
 	no_profile_selected_help->set_align(Label::ALIGN_CENTER);
-	no_profile_selected_help->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	no_profile_selected_help->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	h_split->add_child(no_profile_selected_help);
 
 	new_profile_dialog = memnew(ConfirmationDialog);

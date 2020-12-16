@@ -1280,7 +1280,7 @@ AnimationNodeStateMachineEditor::AnimationNodeStateMachineEditor() {
 	panel = memnew(PanelContainer);
 	panel->set_clip_contents(true);
 	add_child(panel);
-	panel->set_v_size_flags(SIZE_EXPAND_FILL);
+	panel->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	state_machine_draw = memnew(Control);
 	panel->add_child(state_machine_draw);

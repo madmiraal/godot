@@ -80,7 +80,7 @@ void ExportTemplateManager::_update_template_list() {
 			String(VERSION_STATUS) != String("rc");
 
 	Label *current = memnew(Label);
-	current->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	current->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	current_hb->add_child(current);
 
 	if (templates.has(current_version)) {
@@ -124,7 +124,7 @@ void ExportTemplateManager::_update_template_list() {
 			text += " " + TTR("(Current)");
 		}
 		version->set_text(text);
-		version->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		version->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		hbc->add_child(version);
 
 		Button *uninstall = memnew(Button);
@@ -659,7 +659,7 @@ ExportTemplateManager::ExportTemplateManager() {
 	installed_scroll->add_child(installed_vb);
 	installed_scroll->set_enable_v_scroll(true);
 	installed_scroll->set_enable_h_scroll(false);
-	installed_vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	installed_vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	get_cancel_button()->set_text(TTR("Close"));
 	get_ok_button()->set_text(TTR("Install From File"));

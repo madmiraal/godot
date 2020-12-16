@@ -3891,7 +3891,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 
 	view_menu = memnew(MenuButton);
 	view_menu->set_flat(false);
-	view_menu->set_h_size_flags(0);
+	view_menu->set_size_flags_horizontal(0);
 	view_menu->set_shortcut_context(this);
 	vbox->add_child(view_menu);
 
@@ -4000,7 +4000,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 	preview_camera = memnew(CheckBox);
 	preview_camera->set_text(TTR("Preview"));
 	vbox->add_child(preview_camera);
-	preview_camera->set_h_size_flags(0);
+	preview_camera->set_size_flags_horizontal(0);
 	preview_camera->hide();
 	preview_camera->connect("toggled", callable_mp(this, &Node3DEditorViewport::_toggle_camera_preview));
 	previewing = nullptr;
@@ -4013,8 +4013,8 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 	info_label->set_anchor_and_margin(MARGIN_TOP, ANCHOR_END, -90 * EDSCALE);
 	info_label->set_anchor_and_margin(MARGIN_RIGHT, ANCHOR_END, -10 * EDSCALE);
 	info_label->set_anchor_and_margin(MARGIN_BOTTOM, ANCHOR_END, -10 * EDSCALE);
-	info_label->set_h_grow_direction(GROW_DIRECTION_BEGIN);
-	info_label->set_v_grow_direction(GROW_DIRECTION_BEGIN);
+	info_label->set_grow_horizontal(GROW_DIRECTION_BEGIN);
+	info_label->set_grow_vertical(GROW_DIRECTION_BEGIN);
 	surface->add_child(info_label);
 	info_label->hide();
 
@@ -4022,7 +4022,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 	fps_label->set_anchor_and_margin(MARGIN_LEFT, ANCHOR_END, -90 * EDSCALE);
 	fps_label->set_anchor_and_margin(MARGIN_TOP, ANCHOR_BEGIN, 10 * EDSCALE);
 	fps_label->set_anchor_and_margin(MARGIN_RIGHT, ANCHOR_END, -10 * EDSCALE);
-	fps_label->set_h_grow_direction(GROW_DIRECTION_BEGIN);
+	fps_label->set_grow_horizontal(GROW_DIRECTION_BEGIN);
 	fps_label->set_tooltip(TTR("Note: The FPS is estimated on a 60hz refresh rate."));
 	fps_label->set_mouse_filter(MOUSE_FILTER_PASS); // Otherwise tooltip doesn't show.
 	surface->add_child(fps_label);
@@ -4030,7 +4030,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 
 	cinema_label = memnew(Label);
 	cinema_label->set_anchor_and_margin(MARGIN_TOP, ANCHOR_BEGIN, 10 * EDSCALE);
-	cinema_label->set_h_grow_direction(GROW_DIRECTION_END);
+	cinema_label->set_grow_horizontal(GROW_DIRECTION_END);
 	cinema_label->set_align(Label::ALIGN_CENTER);
 	surface->add_child(cinema_label);
 	cinema_label->set_text(TTR("Cinematic Preview"));
@@ -4040,8 +4040,8 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 	locked_label = memnew(Label);
 	locked_label->set_anchor_and_margin(MARGIN_TOP, ANCHOR_END, -20 * EDSCALE);
 	locked_label->set_anchor_and_margin(MARGIN_BOTTOM, ANCHOR_END, -10 * EDSCALE);
-	locked_label->set_h_grow_direction(GROW_DIRECTION_END);
-	locked_label->set_v_grow_direction(GROW_DIRECTION_BEGIN);
+	locked_label->set_grow_horizontal(GROW_DIRECTION_END);
+	locked_label->set_grow_vertical(GROW_DIRECTION_BEGIN);
 	locked_label->set_align(Label::ALIGN_CENTER);
 	surface->add_child(locked_label);
 	locked_label->set_text(TTR("View Rotation Locked"));
@@ -4049,11 +4049,11 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 
 	top_right_vbox = memnew(VBoxContainer);
 	top_right_vbox->set_anchors_and_margins_preset(PRESET_TOP_RIGHT, PRESET_MODE_MINSIZE, 2.0 * EDSCALE);
-	top_right_vbox->set_h_grow_direction(GROW_DIRECTION_BEGIN);
+	top_right_vbox->set_grow_horizontal(GROW_DIRECTION_BEGIN);
 
 	rotation_control = memnew(ViewportRotationControl);
 	rotation_control->set_custom_minimum_size(Size2(80, 80) * EDSCALE);
-	rotation_control->set_h_size_flags(SIZE_SHRINK_END);
+	rotation_control->set_size_flags_horizontal(SIZE_SHRINK_END);
 	rotation_control->set_viewport(this);
 	top_right_vbox->add_child(rotation_control);
 
@@ -4061,7 +4061,7 @@ Node3DEditorViewport::Node3DEditorViewport(Node3DEditor *p_spatial_editor, Edito
 	fps_label->set_anchor_and_margin(MARGIN_LEFT, ANCHOR_END, -90 * EDSCALE);
 	fps_label->set_anchor_and_margin(MARGIN_TOP, ANCHOR_BEGIN, 10 * EDSCALE);
 	fps_label->set_anchor_and_margin(MARGIN_RIGHT, ANCHOR_END, -10 * EDSCALE);
-	fps_label->set_h_grow_direction(GROW_DIRECTION_BEGIN);
+	fps_label->set_grow_horizontal(GROW_DIRECTION_BEGIN);
 	fps_label->set_tooltip(TTR("Note: The FPS value displayed is the editor's framerate.\nIt cannot be used as a reliable indication of in-game performance."));
 	fps_label->set_mouse_filter(MOUSE_FILTER_PASS); // Otherwise tooltip doesn't show.
 	top_right_vbox->add_child(fps_label);
@@ -6396,15 +6396,15 @@ Node3DEditor::Node3DEditor(EditorNode *p_editor) {
 	/* REST OF MENU */
 
 	palette_split = memnew(HSplitContainer);
-	palette_split->set_v_size_flags(SIZE_EXPAND_FILL);
+	palette_split->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	vbc->add_child(palette_split);
 
 	shader_split = memnew(VSplitContainer);
-	shader_split->set_h_size_flags(SIZE_EXPAND_FILL);
+	shader_split->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	palette_split->add_child(shader_split);
 	viewport_base = memnew(Node3DEditorViewportContainer);
 	shader_split->add_child(viewport_base);
-	viewport_base->set_v_size_flags(SIZE_EXPAND_FILL);
+	viewport_base->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	for (uint32_t i = 0; i < VIEWPORTS_COUNT; i++) {
 		viewports[i] = memnew(Node3DEditorViewport(this, editor, i));
 		viewports[i]->connect("toggle_maximize_view", callable_mp(this, &Node3DEditor::_toggle_maximize_view));
@@ -6491,7 +6491,7 @@ Node3DEditor::Node3DEditor(EditorNode *p_editor) {
 
 	for (int i = 0; i < 3; i++) {
 		xform_translate[i] = memnew(LineEdit);
-		xform_translate[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		xform_translate[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		xform_hbc->add_child(xform_translate[i]);
 	}
 
@@ -6504,7 +6504,7 @@ Node3DEditor::Node3DEditor(EditorNode *p_editor) {
 
 	for (int i = 0; i < 3; i++) {
 		xform_rotate[i] = memnew(LineEdit);
-		xform_rotate[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		xform_rotate[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		xform_hbc->add_child(xform_rotate[i]);
 	}
 
@@ -6517,7 +6517,7 @@ Node3DEditor::Node3DEditor(EditorNode *p_editor) {
 
 	for (int i = 0; i < 3; i++) {
 		xform_scale[i] = memnew(LineEdit);
-		xform_scale[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+		xform_scale[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 		xform_hbc->add_child(xform_scale[i]);
 	}
 
@@ -6526,7 +6526,7 @@ Node3DEditor::Node3DEditor(EditorNode *p_editor) {
 	xform_vbc->add_child(l);
 
 	xform_type = memnew(OptionButton);
-	xform_type->set_h_size_flags(SIZE_EXPAND_FILL);
+	xform_type->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	xform_type->add_item(TTR("Pre"));
 	xform_type->add_item(TTR("Post"));
 	xform_vbc->add_child(xform_type);
@@ -6671,7 +6671,7 @@ void Node3DEditor::remove_gizmo_plugin(Ref<EditorNode3DGizmoPlugin> p_plugin) {
 Node3DEditorPlugin::Node3DEditorPlugin(EditorNode *p_node) {
 	editor = p_node;
 	spatial_editor = memnew(Node3DEditor(p_node));
-	spatial_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	spatial_editor->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	editor->get_viewport()->add_child(spatial_editor);
 
 	spatial_editor->hide();

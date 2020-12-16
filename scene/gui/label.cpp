@@ -710,7 +710,7 @@ Label::Label(const String &p_text) {
 
 	set_mouse_filter(MOUSE_FILTER_IGNORE);
 	set_text(p_text);
-	set_v_size_flags(SIZE_SHRINK_CENTER);
+	set_size_flags_vertical(SIZE_SHRINK_CENTER);
 }
 
 Label::~Label() {

@@ -549,7 +549,7 @@ TextEditor::TextEditor() {
 	code_editor->connect("load_theme_settings", callable_mp(this, &TextEditor::_load_theme_settings));
 	code_editor->connect("validate_script", callable_mp(this, &TextEditor::_validate_script));
 	code_editor->set_anchors_and_margins_preset(Control::PRESET_WIDE);
-	code_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	code_editor->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	update_settings();
 

@@ -108,7 +108,7 @@ EditorAssetLibraryItem::EditorAssetLibraryItem() {
 	VBoxContainer *vb = memnew(VBoxContainer);
 
 	hb->add_child(vb);
-	vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	title = memnew(LinkButton);
 	title->set_underline_mode(LinkButton::UNDERLINE_MODE_ON_HOVER);
@@ -129,7 +129,7 @@ EditorAssetLibraryItem::EditorAssetLibraryItem() {
 	vb->add_child(price);
 
 	set_custom_minimum_size(Size2(250, 100) * EDSCALE);
-	set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -268,14 +268,14 @@ EditorAssetLibraryItemDescription::EditorAssetLibraryItemDescription() {
 
 	description = memnew(RichTextLabel);
 	desc_vbox->add_child(description);
-	description->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	description->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	description->connect("meta_clicked", callable_mp(this, &EditorAssetLibraryItemDescription::_link_click));
 	description->add_theme_constant_override("line_separation", Math::round(5 * EDSCALE));
 
 	VBoxContainer *previews_vbox = memnew(VBoxContainer);
 	hbox->add_child(previews_vbox);
 	previews_vbox->add_theme_constant_override("separation", 15 * EDSCALE);
-	previews_vbox->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	previews_vbox->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	preview = memnew(TextureRect);
 	previews_vbox->add_child(preview);
@@ -292,7 +292,7 @@ EditorAssetLibraryItemDescription::EditorAssetLibraryItemDescription() {
 	previews->set_enable_v_scroll(false);
 	previews->set_enable_h_scroll(true);
 	preview_hb = memnew(HBoxContainer);
-	preview_hb->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	preview_hb->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	previews->add_child(preview_hb);
 	get_ok_button()->set_text(TTR("Download"));
@@ -482,13 +482,13 @@ EditorAssetLibraryItemDownload::EditorAssetLibraryItemDownload() {
 
 	VBoxContainer *vb = memnew(VBoxContainer);
 	hb->add_child(vb);
-	vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	HBoxContainer *title_hb = memnew(HBoxContainer);
 	vb->add_child(title_hb);
 	title = memnew(Label);
 	title_hb->add_child(title);
-	title->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	title->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	dismiss = memnew(TextureButton);
 	dismiss->connect("pressed", callable_mp(this, &EditorAssetLibraryItemDownload::_close));
@@ -1306,7 +1306,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 
 	filter = memnew(LineEdit);
 	search_hb->add_child(filter);
-	filter->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	filter->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	filter->connect("text_changed", callable_mp(this, &EditorAssetLibrary::_search_text_changed));
 
 	// Perform a search automatically if the user hasn't entered any text for a certain duration.
@@ -1347,7 +1347,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 
 	search_hb2->add_child(sort);
 
-	sort->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	sort->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	sort->connect("item_selected", callable_mp(this, &EditorAssetLibrary::_rerun_search));
 
 	search_hb2->add_child(memnew(VSeparator));
@@ -1356,7 +1356,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 	categories = memnew(OptionButton);
 	categories->add_item(TTR("All"));
 	search_hb2->add_child(categories);
-	categories->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	categories->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	categories->connect("item_selected", callable_mp(this, &EditorAssetLibrary::_rerun_search));
 
 	search_hb2->add_child(memnew(VSeparator));
@@ -1372,7 +1372,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 	repository->connect("item_selected", callable_mp(this, &EditorAssetLibrary::_repository_changed));
 
 	search_hb2->add_child(repository);
-	repository->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	repository->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	search_hb2->add_child(memnew(VSeparator));
 
@@ -1390,7 +1390,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 
 	library_scroll_bg = memnew(PanelContainer);
 	library_main->add_child(library_scroll_bg);
-	library_scroll_bg->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	library_scroll_bg->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 
 	library_scroll = memnew(ScrollContainer);
 	library_scroll->set_enable_v_scroll(true);
@@ -1408,10 +1408,10 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 	PanelContainer *library_vb_border = memnew(PanelContainer);
 	library_scroll->add_child(library_vb_border);
 	library_vb_border->add_theme_style_override("panel", border2);
-	library_vb_border->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	library_vb_border->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	library_vb = memnew(VBoxContainer);
-	library_vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	library_vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 	library_vb_border->add_child(library_vb);
 
@@ -1452,7 +1452,7 @@ EditorAssetLibrary::EditorAssetLibrary(bool p_templates_only) {
 	error_label->add_theme_color_override("color", get_theme_color("error_color", "Editor"));
 	error_hb->add_child(error_label);
 	error_tr = memnew(TextureRect);
-	error_tr->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
+	error_tr->set_size_flags_vertical(Control::SIZE_SHRINK_CENTER);
 	error_hb->add_child(error_tr);
 
 	description = nullptr;
@@ -1491,7 +1491,7 @@ void AssetLibraryEditorPlugin::make_visible(bool p_visible) {
 AssetLibraryEditorPlugin::AssetLibraryEditorPlugin(EditorNode *p_node) {
 	editor = p_node;
 	addon_library = memnew(EditorAssetLibrary);
-	addon_library->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	addon_library->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	editor->get_viewport()->add_child(addon_library);
 	addon_library->set_anchors_and_margins_preset(Control::PRESET_WIDE);
 	addon_library->hide();

@@ -672,15 +672,15 @@ ThemeEditor::ThemeEditor() {
 	add_child(scroll);
 	scroll->set_enable_v_scroll(true);
 	scroll->set_enable_h_scroll(true);
-	scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	MarginContainer *root_container = memnew(MarginContainer);
 	scroll->add_child(root_container);
 	root_container->set_theme(Theme::get_default());
 	root_container->set_clip_contents(true);
 	root_container->set_custom_minimum_size(Size2(700, 0) * EDSCALE);
-	root_container->set_v_size_flags(SIZE_EXPAND_FILL);
-	root_container->set_h_size_flags(SIZE_EXPAND_FILL);
+	root_container->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	root_container->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	//// Preview Controls ////
 
@@ -699,7 +699,7 @@ ThemeEditor::ThemeEditor() {
 
 	VBoxContainer *first_vb = memnew(VBoxContainer);
 	main_hb->add_child(first_vb);
-	first_vb->set_h_size_flags(SIZE_EXPAND_FILL);
+	first_vb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	first_vb->add_theme_constant_override("separation", 10 * EDSCALE);
 
 	first_vb->add_child(memnew(Label("Label")));
@@ -759,7 +759,7 @@ ThemeEditor::ThemeEditor() {
 	first_vb->add_child(memnew(ColorPickerButton));
 
 	VBoxContainer *second_vb = memnew(VBoxContainer);
-	second_vb->set_h_size_flags(SIZE_EXPAND_FILL);
+	second_vb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	main_hb->add_child(second_vb);
 	second_vb->add_theme_constant_override("separation", 10 * EDSCALE);
 	LineEdit *le = memnew(LineEdit);
@@ -786,7 +786,7 @@ ThemeEditor::ThemeEditor() {
 	VBoxContainer *hvb = memnew(VBoxContainer);
 	vhb->add_child(hvb);
 	hvb->set_alignment(ALIGN_CENTER);
-	hvb->set_h_size_flags(SIZE_EXPAND_FILL);
+	hvb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	hvb->add_child(memnew(HSlider));
 	HScrollBar *hsb = memnew(HScrollBar);
 	hsb->set_page(25);
@@ -800,7 +800,7 @@ ThemeEditor::ThemeEditor() {
 	hvb->add_child(pb);
 
 	VBoxContainer *third_vb = memnew(VBoxContainer);
-	third_vb->set_h_size_flags(SIZE_EXPAND_FILL);
+	third_vb->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	third_vb->add_theme_constant_override("separation", 10 * EDSCALE);
 	main_hb->add_child(third_vb);
 
@@ -866,7 +866,7 @@ ThemeEditor::ThemeEditor() {
 	dialog_vbc->add_child(type_hbc);
 
 	type_edit = memnew(LineEdit);
-	type_edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	type_edit->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	type_hbc->add_child(type_edit);
 	type_menu = memnew(MenuButton);
 	type_menu->set_flat(false);
@@ -884,7 +884,7 @@ ThemeEditor::ThemeEditor() {
 	dialog_vbc->add_child(name_hbc);
 
 	name_edit = memnew(LineEdit);
-	name_edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	name_edit->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	name_hbc->add_child(name_edit);
 	name_menu = memnew(MenuButton);
 	type_menu->set_flat(false);

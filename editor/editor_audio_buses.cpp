@@ -765,7 +765,7 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 	VBoxContainer *vb = memnew(VBoxContainer);
 	add_child(vb);
 
-	set_v_size_flags(SIZE_EXPAND_FILL);
+	set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	track_name = memnew(LineEdit);
 	track_name->connect("text_entered", callable_mp(this, &EditorAudioBus::_name_changed));
@@ -820,13 +820,13 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 
 	audio_value_preview_box = memnew(Panel);
 	HBoxContainer *audioprev_hbc = memnew(HBoxContainer);
-	audioprev_hbc->set_v_size_flags(SIZE_EXPAND_FILL);
-	audioprev_hbc->set_h_size_flags(SIZE_EXPAND_FILL);
+	audioprev_hbc->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	audioprev_hbc->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	audio_value_preview_box->add_child(audioprev_hbc);
 
 	audio_value_preview_label = memnew(Label);
-	audio_value_preview_label->set_v_size_flags(SIZE_EXPAND_FILL);
-	audio_value_preview_label->set_h_size_flags(SIZE_EXPAND_FILL);
+	audio_value_preview_label->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	audio_value_preview_label->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	audio_value_preview_label->set_mouse_filter(MOUSE_FILTER_PASS);
 
 	audioprev_hbc->add_child(audio_value_preview_label);
@@ -882,7 +882,7 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 	effects->set_hide_root(true);
 	effects->set_custom_minimum_size(Size2(0, 80) * EDSCALE);
 	effects->set_hide_folding(true);
-	effects->set_v_size_flags(SIZE_EXPAND_FILL);
+	effects->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	vb->add_child(effects);
 	effects->connect("item_edited", callable_mp(this, &EditorAudioBus::_effect_edited));
 	effects->connect("cell_selected", callable_mp(this, &EditorAudioBus::_effect_selected));
@@ -921,7 +921,7 @@ EditorAudioBus::EditorAudioBus(EditorAudioBuses *p_buses, bool p_is_master) {
 
 	bus_options = memnew(MenuButton);
 	bus_options->set_shortcut_context(this);
-	bus_options->set_h_size_flags(SIZE_SHRINK_END);
+	bus_options->set_size_flags_horizontal(SIZE_SHRINK_END);
 	bus_options->set_anchor(MARGIN_RIGHT, 0.0);
 	bus_options->set_tooltip(TTR("Bus options"));
 	hbc->add_child(bus_options);
@@ -1260,7 +1260,7 @@ EditorAudioBuses::EditorAudioBuses() {
 	String layout_path = ProjectSettings::get_singleton()->get("audio/default_bus_layout");
 	file->set_text(String(TTR("Layout")) + ": " + layout_path.get_file());
 	file->set_clip_text(true);
-	file->set_h_size_flags(SIZE_EXPAND_FILL);
+	file->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	top_hb->add_child(file);
 
 	add = memnew(Button);
@@ -1297,12 +1297,12 @@ EditorAudioBuses::EditorAudioBuses() {
 	_new->connect("pressed", callable_mp(this, &EditorAudioBuses::_new_layout));
 
 	bus_scroll = memnew(ScrollContainer);
-	bus_scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	bus_scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	bus_scroll->set_enable_h_scroll(true);
 	bus_scroll->set_enable_v_scroll(false);
 	add_child(bus_scroll);
 	bus_hb = memnew(HBoxContainer);
-	bus_hb->set_v_size_flags(SIZE_EXPAND_FILL);
+	bus_hb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	bus_scroll->add_child(bus_hb);
 
 	save_timer = memnew(Timer);
@@ -1311,7 +1311,7 @@ EditorAudioBuses::EditorAudioBuses() {
 	add_child(save_timer);
 	save_timer->connect("timeout", callable_mp(this, &EditorAudioBuses::_server_save));
 
-	set_v_size_flags(SIZE_EXPAND_FILL);
+	set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	edited_path = ProjectSettings::get_singleton()->get("audio/default_bus_layout");
 

@@ -2606,7 +2606,7 @@ EditorInspector::EditorInspector() {
 	object = nullptr;
 	undo_redo = nullptr;
 	main_vbox = memnew(VBoxContainer);
-	main_vbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	main_vbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	main_vbox->add_theme_constant_override("separation", 0);
 	add_child(main_vbox);
 	set_enable_h_scroll(false);

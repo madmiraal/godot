@@ -168,8 +168,8 @@ void AnimationTreeEditor::add_plugin(AnimationTreeNodeEditorPlugin *p_editor) {
 	ERR_FAIL_COND(p_editor->get_parent());
 	editor_base->add_child(p_editor);
 	editors.push_back(p_editor);
-	p_editor->set_h_size_flags(SIZE_EXPAND_FILL);
-	p_editor->set_v_size_flags(SIZE_EXPAND_FILL);
+	p_editor->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	p_editor->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	p_editor->hide();
 }
 
@@ -236,7 +236,7 @@ AnimationTreeEditor::AnimationTreeEditor() {
 
 	singleton = this;
 	editor_base = memnew(MarginContainer);
-	editor_base->set_v_size_flags(SIZE_EXPAND_FILL);
+	editor_base->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	add_child(editor_base);
 
 	add_plugin(memnew(AnimationNodeBlendTreeEditor));

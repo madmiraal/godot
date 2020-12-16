@@ -1300,7 +1300,7 @@ Polygon2DEditor::Polygon2DEditor(EditorNode *p_editor) :
 	bone_paint_strength = memnew(HSlider);
 	uv_mode_hb->add_child(bone_paint_strength);
 	bone_paint_strength->set_custom_minimum_size(Size2(75 * EDSCALE, 0));
-	bone_paint_strength->set_v_size_flags(SIZE_SHRINK_CENTER);
+	bone_paint_strength->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 	bone_paint_strength->set_min(0);
 	bone_paint_strength->set_max(1);
 	bone_paint_strength->set_step(0.01);
@@ -1321,15 +1321,15 @@ Polygon2DEditor::Polygon2DEditor(EditorNode *p_editor) :
 
 	HSplitContainer *uv_main_hsc = memnew(HSplitContainer);
 	uv_main_vb->add_child(uv_main_hsc);
-	uv_main_hsc->set_v_size_flags(SIZE_EXPAND_FILL);
+	uv_main_hsc->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	uv_edit_draw = memnew(Panel);
 	uv_main_hsc->add_child(uv_edit_draw);
-	uv_edit_draw->set_h_size_flags(SIZE_EXPAND_FILL);
+	uv_edit_draw->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	uv_edit_draw->set_custom_minimum_size(Size2(200, 200) * EDSCALE);
 
 	Control *space = memnew(Control);
 	uv_mode_hb->add_child(space);
-	space->set_h_size_flags(SIZE_EXPAND_FILL);
+	space->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 
 	uv_menu = memnew(MenuButton);
 	uv_mode_hb->add_child(uv_menu);
@@ -1415,7 +1415,7 @@ Polygon2DEditor::Polygon2DEditor(EditorNode *p_editor) :
 	uv_zoom->set_max(16);
 	uv_zoom->set_value(1);
 	uv_zoom->set_step(0.01);
-	uv_zoom->set_v_size_flags(SIZE_SHRINK_CENTER);
+	uv_zoom->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 
 	uv_mode_hb->add_child(uv_zoom);
 	uv_zoom->set_custom_minimum_size(Size2(80 * EDSCALE, 0));
@@ -1439,14 +1439,14 @@ Polygon2DEditor::Polygon2DEditor(EditorNode *p_editor) :
 	bone_scroll_main_vb->set_custom_minimum_size(Size2(150 * EDSCALE, 0));
 	sync_bones = memnew(Button(TTR("Sync Bones to Polygon")));
 	bone_scroll_main_vb->add_child(sync_bones);
-	sync_bones->set_h_size_flags(0);
+	sync_bones->set_size_flags_horizontal(0);
 	sync_bones->connect("pressed", callable_mp(this, &Polygon2DEditor::_sync_bones));
 	uv_main_hsc->add_child(bone_scroll_main_vb);
 	bone_scroll = memnew(ScrollContainer);
 	bone_scroll->set_v_scroll(true);
 	bone_scroll->set_h_scroll(false);
 	bone_scroll_main_vb->add_child(bone_scroll);
-	bone_scroll->set_v_size_flags(SIZE_EXPAND_FILL);
+	bone_scroll->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	bone_scroll_vb = memnew(VBoxContainer);
 	bone_scroll->add_child(bone_scroll_vb);
 

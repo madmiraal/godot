@@ -151,7 +151,7 @@ void VisualShaderGraphPlugin::show_port_preview(VisualShader::Type p_type, int p
 
 			VisualShaderNodePortPreview *port_preview = memnew(VisualShaderNodePortPreview);
 			port_preview->setup(visual_shader, visual_shader->get_shader_type(), p_node_id, p_port_id);
-			port_preview->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
+			port_preview->set_size_flags_horizontal(Control::SIZE_SHRINK_CENTER);
 			vbox->add_child(port_preview);
 			links[p_node_id].preview_visible = true;
 			links[p_node_id].preview_box = vbox;
@@ -427,7 +427,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 		}
 
 		HBoxContainer *hbox = memnew(HBoxContainer);
-		custom_editor->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		custom_editor->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		hbox->add_child(custom_editor);
 		custom_editor = hbox;
 	}
@@ -463,7 +463,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 			node->add_child(curve_editor);
 			register_curve_editor(p_id, curve_editor);
 			curve_editor->set_custom_minimum_size(Size2(300, 0));
-			curve_editor->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+			curve_editor->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 			if (curve->get_texture().is_valid()) {
 				curve_editor->set_curve(curve->get_texture()->get_curve());
 			}
@@ -472,7 +472,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 			preview->set_toggle_mode(true);
 			preview->set_normal_texture(VisualShaderEditor::get_singleton()->get_theme_icon("GuiVisibilityHidden", "EditorIcons"));
 			preview->set_pressed_texture(VisualShaderEditor::get_singleton()->get_theme_icon("GuiVisibilityVisible", "EditorIcons"));
-			preview->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
+			preview->set_size_flags_vertical(Control::SIZE_SHRINK_CENTER);
 
 			register_output_port(p_id, 0, preview);
 
@@ -580,7 +580,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 
 		if (i == 0 && custom_editor) {
 			hb->add_child(custom_editor);
-			custom_editor->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+			custom_editor->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		} else {
 			if (valid_left) {
 				if (is_group) {
@@ -599,7 +599,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 					LineEdit *name_box = memnew(LineEdit);
 					hb->add_child(name_box);
 					name_box->set_custom_minimum_size(Size2(65 * EDSCALE, 0));
-					name_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+					name_box->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 					name_box->set_text(name_left);
 					name_box->connect("text_entered", callable_mp(VisualShaderEditor::get_singleton(), &VisualShaderEditor::_change_input_port_name), varray(name_box, p_id, i), CONNECT_DEFERRED);
 					name_box->connect("focus_exited", callable_mp(VisualShaderEditor::get_singleton(), &VisualShaderEditor::_port_name_focus_out), varray(name_box, p_id, i, false), CONNECT_DEFERRED);
@@ -640,7 +640,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 					LineEdit *name_box = memnew(LineEdit);
 					hb->add_child(name_box);
 					name_box->set_custom_minimum_size(Size2(65 * EDSCALE, 0));
-					name_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+					name_box->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 					name_box->set_text(name_right);
 					name_box->connect("text_entered", callable_mp(VisualShaderEditor::get_singleton(), &VisualShaderEditor::_change_output_port_name), varray(name_box, p_id, i), CONNECT_DEFERRED);
 					name_box->connect("focus_exited", callable_mp(VisualShaderEditor::get_singleton(), &VisualShaderEditor::_port_name_focus_out), varray(name_box, p_id, i, true), CONNECT_DEFERRED);
@@ -669,7 +669,7 @@ void VisualShaderGraphPlugin::add_node(VisualShader::Type p_type, int p_id) {
 			preview->set_toggle_mode(true);
 			preview->set_normal_texture(VisualShaderEditor::get_singleton()->get_theme_icon("GuiVisibilityHidden", "EditorIcons"));
 			preview->set_pressed_texture(VisualShaderEditor::get_singleton()->get_theme_icon("GuiVisibilityVisible", "EditorIcons"));
-			preview->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
+			preview->set_size_flags_vertical(Control::SIZE_SHRINK_CENTER);
 
 			register_output_port(p_id, i, preview);
 
@@ -2883,14 +2883,14 @@ VisualShaderEditor::VisualShaderEditor() {
 	from_slot = -1;
 
 	main_box = memnew(HSplitContainer);
-	main_box->set_v_size_flags(SIZE_EXPAND_FILL);
-	main_box->set_h_size_flags(SIZE_EXPAND_FILL);
+	main_box->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	main_box->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	add_child(main_box);
 
 	graph = memnew(GraphEdit);
-	graph->get_zoom_hbox()->set_h_size_flags(SIZE_EXPAND_FILL);
-	graph->set_v_size_flags(SIZE_EXPAND_FILL);
-	graph->set_h_size_flags(SIZE_EXPAND_FILL);
+	graph->get_zoom_hbox()->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	graph->set_size_flags_vertical(SIZE_EXPAND_FILL);
+	graph->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	main_box->add_child(graph);
 	graph->set_drag_forwarding(this);
 	graph->add_valid_right_disconnect_type(VisualShaderNode::PORT_TYPE_SCALAR);
@@ -2900,7 +2900,7 @@ VisualShaderEditor::VisualShaderEditor() {
 	graph->add_valid_right_disconnect_type(VisualShaderNode::PORT_TYPE_TRANSFORM);
 	graph->add_valid_right_disconnect_type(VisualShaderNode::PORT_TYPE_SAMPLER);
 	//graph->add_valid_left_disconnect_type(0);
-	graph->set_v_size_flags(SIZE_EXPAND_FILL);
+	graph->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	graph->connect("connection_request", callable_mp(this, &VisualShaderEditor::_connection_request), varray(), CONNECT_DEFERRED);
 	graph->connect("disconnection_request", callable_mp(this, &VisualShaderEditor::_disconnection_request), varray(), CONNECT_DEFERRED);
 	graph->connect("node_selected", callable_mp(this, &VisualShaderEditor::_node_selected));
@@ -2980,8 +2980,8 @@ VisualShaderEditor::VisualShaderEditor() {
 	preview_text = memnew(CodeEdit);
 	syntax_highlighter.instance();
 	preview_vbox->add_child(preview_text);
-	preview_text->set_h_size_flags(SIZE_EXPAND_FILL);
-	preview_text->set_v_size_flags(SIZE_EXPAND_FILL);
+	preview_text->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	preview_text->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	preview_text->set_custom_minimum_size(Size2(400 * EDSCALE, 0));
 	preview_text->set_syntax_highlighter(syntax_highlighter);
 	preview_text->set_draw_line_numbers(true);
@@ -3010,7 +3010,7 @@ VisualShaderEditor::VisualShaderEditor() {
 	///////////////////////////////////////
 
 	VBoxContainer *members_vb = memnew(VBoxContainer);
-	members_vb->set_v_size_flags(SIZE_EXPAND_FILL);
+	members_vb->set_size_flags_vertical(SIZE_EXPAND_FILL);
 
 	HBoxContainer *filter_hb = memnew(HBoxContainer);
 	members_vb->add_child(filter_hb);
@@ -3019,7 +3019,7 @@ VisualShaderEditor::VisualShaderEditor() {
 	filter_hb->add_child(node_filter);
 	node_filter->connect("text_changed", callable_mp(this, &VisualShaderEditor::_member_filter_changed));
 	node_filter->connect("gui_input", callable_mp(this, &VisualShaderEditor::_sbox_input));
-	node_filter->set_h_size_flags(SIZE_EXPAND_FILL);
+	node_filter->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 	node_filter->set_placeholder(TTR("Search"));
 
 	tools = memnew(MenuButton);
@@ -3032,8 +3032,8 @@ VisualShaderEditor::VisualShaderEditor() {
 	members = memnew(Tree);
 	members_vb->add_child(members);
 	members->set_drag_forwarding(this);
-	members->set_h_size_flags(SIZE_EXPAND_FILL);
-	members->set_v_size_flags(SIZE_EXPAND_FILL);
+	members->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	members->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	members->set_hide_root(true);
 	members->set_allow_reselect(true);
 	members->set_hide_folding(false);
@@ -3060,8 +3060,8 @@ VisualShaderEditor::VisualShaderEditor() {
 
 	node_desc = memnew(RichTextLabel);
 	members_vb->add_child(node_desc);
-	node_desc->set_h_size_flags(SIZE_EXPAND_FILL);
-	node_desc->set_v_size_flags(SIZE_FILL);
+	node_desc->set_size_flags_horizontal(SIZE_EXPAND_FILL);
+	node_desc->set_size_flags_vertical(SIZE_FILL);
 	node_desc->set_custom_minimum_size(Size2(0, 70 * EDSCALE));
 
 	members_dialog = memnew(ConfirmationDialog);
@@ -3764,7 +3764,7 @@ public:
 
 		for (int i = 0; i < p_properties.size(); i++) {
 			HBoxContainer *hbox = memnew(HBoxContainer);
-			hbox->set_h_size_flags(SIZE_EXPAND_FILL);
+			hbox->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			add_child(hbox);
 
 			Label *prop_name = memnew(Label);
@@ -3775,7 +3775,7 @@ public:
 			hbox->add_child(prop_name);
 			prop_names.push_back(prop_name);
 
-			p_properties[i]->set_h_size_flags(SIZE_EXPAND_FILL);
+			p_properties[i]->set_size_flags_horizontal(SIZE_EXPAND_FILL);
 			hbox->add_child(p_properties[i]);
 
 			bool res_prop = Object::cast_to<EditorPropertyResource>(p_properties[i]);

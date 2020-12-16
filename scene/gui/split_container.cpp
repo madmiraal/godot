@@ -72,8 +72,8 @@ void SplitContainer::_resort() {
 	}
 
 	// Determine expanded children
-	bool first_expanded = (vertical ? first->get_v_size_flags() : first->get_h_size_flags()) & SIZE_EXPAND;
-	bool second_expanded = (vertical ? second->get_v_size_flags() : second->get_h_size_flags()) & SIZE_EXPAND;
+	bool first_expanded = (vertical ? first->get_size_flags_vertical() : first->get_size_flags_horizontal()) & SIZE_EXPAND;
+	bool second_expanded = (vertical ? second->get_size_flags_vertical() : second->get_size_flags_horizontal()) & SIZE_EXPAND;
 
 	// Determine the separation between items
 	Ref<Texture2D> g = get_theme_icon("grabber");

@@ -784,7 +784,7 @@ public:
 		name_container->add_child(pnhb);
 
 		project_name = memnew(LineEdit);
-		project_name->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		project_name->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		pnhb->add_child(project_name);
 
 		create_dir = memnew(Button);
@@ -803,7 +803,7 @@ public:
 		path_container->add_child(pphb);
 
 		project_path = memnew(LineEdit);
-		project_path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		project_path->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		project_path->set_structured_text_bidi_override(Control::STRUCTURED_TEXT_FILE);
 		pphb->add_child(project_path);
 
@@ -818,7 +818,7 @@ public:
 		install_path_container->add_child(iphb);
 
 		install_path = memnew(LineEdit);
-		install_path->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		install_path->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		install_path->set_structured_text_bidi_override(Control::STRUCTURED_TEXT_FILE);
 		iphb->add_child(install_path);
 
@@ -857,7 +857,7 @@ public:
 		rasterizer_button_group.instance();
 
 		Container *rvb = memnew(VBoxContainer);
-		rvb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		rvb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		rshb->add_child(rvb);
 		Button *rs_button = memnew(CheckBox);
 		rs_button->set_button_group(rasterizer_button_group);
@@ -876,7 +876,7 @@ public:
 				TTR("The GLES2 renderer is currently unavailable, as it needs to be reworked for Godot 4.0.\nUse Godot 3.2 if you need GLES2 support.");
 
 		rvb = memnew(VBoxContainer);
-		rvb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		rvb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		rshb->add_child(rvb);
 		rs_button = memnew(CheckBox);
 		rs_button->set_button_group(rasterizer_button_group);
@@ -1100,7 +1100,7 @@ struct ProjectListComparator {
 ProjectList::ProjectList() {
 	_order_option = FilterOption::NAME;
 	_scroll_children = memnew(VBoxContainer);
-	_scroll_children->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	_scroll_children->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	add_child(_scroll_children);
 
 	_icon_load_index = 0;
@@ -1350,7 +1350,7 @@ void ProjectList::create_project_item_control(int p_index) {
 	// The project icon may not be loaded by the time the control is displayed,
 	// so use a loading placeholder.
 	tf->set_texture(get_theme_icon("ProjectIconLoading", "EditorIcons"));
-	tf->set_v_size_flags(SIZE_SHRINK_CENTER);
+	tf->set_size_flags_vertical(SIZE_SHRINK_CENTER);
 	if (item.missing) {
 		tf->set_modulate(Color(1, 1, 1, 0.5));
 	}
@@ -1361,7 +1361,7 @@ void ProjectList::create_project_item_control(int p_index) {
 	if (item.grayed) {
 		vb->set_modulate(Color(1, 1, 1, 0.5));
 	}
-	vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	hb->add_child(vb);
 	Control *ec = memnew(Control);
 	ec->set_custom_minimum_size(Size2(0, 1));
@@ -1375,7 +1375,7 @@ void ProjectList::create_project_item_control(int p_index) {
 	vb->add_child(title);
 
 	HBoxContainer *path_hb = memnew(HBoxContainer);
-	path_hb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	path_hb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	vb->add_child(path_hb);
 
 	Button *show = memnew(Button);
@@ -1398,7 +1398,7 @@ void ProjectList::create_project_item_control(int p_index) {
 	Label *fpath = memnew(Label(item.path));
 	fpath->set_structured_text_bidi_override(Control::STRUCTURED_TEXT_FILE);
 	path_hb->add_child(fpath);
-	fpath->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	fpath->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 	fpath->set_modulate(Color(1, 1, 1, 0.5));
 	fpath->add_theme_color_override("font_color", font_color);
 	fpath->set_clip_text(true);
@@ -2455,7 +2455,7 @@ ProjectManager::ProjectManager() {
 	vb->set_anchors_and_margins_preset(Control::PRESET_WIDE, Control::PRESET_MODE_MINSIZE, 8 * EDSCALE);
 
 	Control *center_box = memnew(Control);
-	center_box->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	center_box->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 	vb->add_child(center_box);
 
 	tabs = memnew(TabContainer);
@@ -2471,17 +2471,17 @@ ProjectManager::ProjectManager() {
 		// Projects + search bar
 		VBoxContainer *search_tree_vb = memnew(VBoxContainer);
 		projects_hb->add_child(search_tree_vb);
-		search_tree_vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		search_tree_vb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 
 		HBoxContainer *hb = memnew(HBoxContainer);
-		hb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		hb->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		search_tree_vb->add_child(hb);
 
 		search_box = memnew(LineEdit);
 		search_box->set_placeholder(TTR("Search"));
 		search_box->set_tooltip(TTR("The search box filters projects by name and last path component.\nTo filter projects by name and full path, the query must contain at least one `/` character."));
 		search_box->connect("text_changed", callable_mp(this, &ProjectManager::_on_search_term_changed));
-		search_box->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		search_box->set_size_flags_horizontal(Control::SIZE_EXPAND_FILL);
 		hb->add_child(search_box);
 
 		hb->add_spacer();
@@ -2507,7 +2507,7 @@ ProjectManager::ProjectManager() {
 
 		PanelContainer *pc = memnew(PanelContainer);
 		pc->add_theme_style_override("panel", get_theme_stylebox("bg", "Tree"));
-		pc->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+		pc->set_size_flags_vertical(Control::SIZE_EXPAND_FILL);
 		search_tree_vb->add_child(pc);
 
 		_project_list = memnew(ProjectList);
@@ -2570,7 +2570,7 @@ ProjectManager::ProjectManager() {
 		// Version info and language options
 		settings_hb = memnew(HBoxContainer);
 		settings_hb->set_alignment(BoxContainer::ALIGN_END);
-		settings_hb->set_h_grow_direction(Control::GROW_DIRECTION_BEGIN);
+		settings_hb->set_grow_horizontal(Control::GROW_DIRECTION_BEGIN);
 		settings_hb->set_anchors_and_margins_preset(Control::PRESET_TOP_RIGHT);
 
 		Label *version_label = memnew(Label);

@@ -171,7 +171,7 @@ EditorNetworkProfiler::EditorNetworkProfiler() {
 
 	counters_display = memnew(Tree);
 	counters_display->set_custom_minimum_size(Size2(300, 0) * EDSCALE);
-	counters_display->set_v_size_flags(SIZE_EXPAND_FILL);
+	counters_display->set_size_flags_vertical(SIZE_EXPAND_FILL);
 	counters_display->set_hide_folding(true);
 	counters_display->set_hide_root(true);
 	counters_display->set_columns(5);
