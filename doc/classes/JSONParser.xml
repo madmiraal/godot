@@ -1,14 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="JSONParser" inherits="Reference" version="4.0">
 	<brief_description>
+		Helper class for creating and parsing JSON data.
 	</brief_description>
 	<description>
+		The [JSONParser] enables all data types to be converted to and from a JSON string. This useful for serializing data to save to a file or send over the network.
+		[method stringify] is used to convert any data type into a JSON string.
+		[method parse] is used to convert any existing JSON data into a [Variant] that can be used within Godot. If successfully parsed, use [method get_data] to retrieve the [Variant], and use [code]typeof[/code] to check if the Variant's type is what you expect. JSON Objects are converted into a [Dictionary], but JSON data can be used to store [Array]s, numbers, [String]s and even just a boolean.
+		[b]Example[/b]
+		[codeblock]
+		var data_to_send = ["a", "b", "c"]
+		var json_parser = JSONParser.new()
+		var json_string = json_parser.stringify(data_to_send)
+		# Save data
+		# ...
+		# Retrieve data
+		var error = json_parser.parse(json_string)
+		if error == OK:
+		    var data_received = json_parser.get_data()
+		    if typeof(data_received) == TYPE_ARRAY:
+		        print(data_received) # Prints array
+		    else:
+		        print("Unexpected data")
+		else:
+		    print("JSONParse Error: ", json_parser.get_error_message(), " in ", json_string, " at line ", json_parser.get_error_line())
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="decode_data">
+		<method name="get_data" qualifiers="const">
+			<return type="Variant">
+			</return>
+			<description>
+				Returns the [Variant] containing the data of a successful [method parse].
+				[b]Note:[/b] It will return [code]Null[/code] if the last call to parse was unsuccessful or [method parse] has not yet been called.
+			</description>
+		</method>
+		<method name="get_error_line" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+				Returns [code]0[/code] if the last call to [method parse] was successful, or the line number where the parse failed.
+			</description>
+		</method>
+		<method name="get_error_message" qualifiers="const">
+			<return type="String">
+			</return>
+			<description>
+				Returns an empty string if the last call to [method parse] was successful, or the error message if it failed.
+			</description>
+		</method>
+		<method name="parse">
 			<return type="int" enum="Error">
+			</return>
+			<argument index="0" name="json_string" type="String">
+			</argument>
+			<description>
+				Attempts to parse the [code]json_string[/code] provided.
+				Returns an [enum Error]. If the parse was successful, it returns [code]OK[/code] and the result can be retrieved using [method get_data]. If unsuccessful, use [method get_error_line] and [method get_error_message] for identifying the source of the failure.
+			</description>
+		</method>
+		<method name="stringify">
+			<return type="String">
 			</return>
 			<argument index="0" name="data" type="Variant">
 			</argument>
@@ -17,38 +71,31 @@
 			<argument index="2" name="sort_keys" type="bool" default="true">
 			</argument>
 			<description>
-			</description>
-		</method>
-		<method name="get_data" qualifiers="const">
-			<return type="Variant">
-			</return>
-			<description>
-			</description>
-		</method>
-		<method name="get_error_line" qualifiers="const">
-			<return type="int">
-			</return>
-			<description>
-			</description>
-		</method>
-		<method name="get_error_text" qualifiers="const">
-			<return type="String">
-			</return>
-			<description>
-			</description>
-		</method>
-		<method name="get_string" qualifiers="const">
-			<return type="String">
-			</return>
-			<description>
-			</description>
-		</method>
-		<method name="parse_string">
-			<return type="int" enum="Error">
-			</return>
-			<argument index="0" name="json_string" type="String">
-			</argument>
-			<description>
+				Converts the [Variant] [code]data[/code] to JSON text and returns the result.
+				By default it creates a minimal form of JSON text. However, the [code]indent[/code] parameter can be used to prettify the output. If used, each name-value pair will be on a separate line and indented by the [code]indent[/code] parameter.
+				If [code]sort_keys[/code] is [code]false[/code], the keys will not be sorted. The default is for the keys to be sorted.
+				[b]Note:[/b] The JSON specification does not define integer or float types, but only a [i]number[/i] type. Therefore, converting a Variant to JSON text will convert all numerical values to [float] types.
+				[b]Example output:[/b]
+				[codeblock]
+				## stringify(my_dictionary)
+				{"name":"my_dictionary","version":"1.0.0","entities":[{"name":"entity_0","value":"value_0"},{"name":"entity_1","value":"value_1"}]}
+
+				## stringify(my_dictionary, "\t")
+				{
+				        "name": "my_dictionary",
+				        "version": "1.0.0",
+				        "entities": [
+				                {
+				                        "name": "entity_0",
+				                        "value": "value_0"
+				                },
+				                {
+				                        "name": "entity_1",
+				                        "value": "value_1"
+				                }
+				        ]
+				}
+				[/codeblock]
 			</description>
 		</method>
 	</methods>

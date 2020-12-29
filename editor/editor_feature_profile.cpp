@@ -30,7 +30,7 @@
 
 #include "editor_feature_profile.h"
 
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 #include "core/os/dir_access.h"
 #include "editor/editor_settings.h"
 #include "editor_node.h"
@@ -172,7 +172,8 @@ Error EditorFeatureProfile::save_to_file(const String &p_path) {
 	FileAccessRef f = FileAccess::open(p_path, FileAccess::WRITE);
 	ERR_FAIL_COND_V_MSG(!f, ERR_CANT_CREATE, "Cannot create file '" + p_path + "'.");
 
-	String text = JSON::print(json, "\t");
+	JSONParser json_parser;
+	String text = json_parser.stringify(json, "\t");
 	f->store_string(text);
 	f->close();
 	return OK;
@@ -185,16 +186,14 @@ Error EditorFeatureProfile::load_from_file(const String &p_path) {
 		return err;
 	}
 
-	String err_str;
-	int err_line;
-	Variant v;
-	err = JSON::parse(text, v, err_str, err_line);
+	JSONParser json_parser;
+	err = json_parser.parse(text);
 	if (err != OK) {
-		ERR_PRINT("Error parsing '" + p_path + "' on line " + itos(err_line) + ": " + err_str);
+		ERR_PRINT("Error parsing '" + p_path + "' on line " + itos(json_parser.get_error_line()) + ": " + json_parser.get_error_message());
 		return ERR_PARSE_ERROR;
 	}
 
-	Dictionary json = v;
+	Dictionary json = json_parser.get_data();
 
 	if (!json.has("type") || String(json["type"]) != "feature_profile") {
 		ERR_PRINT("Error parsing '" + p_path + "', it's not a feature profile.");

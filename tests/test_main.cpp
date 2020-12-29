@@ -50,7 +50,7 @@
 #include "test_gui.h"
 #include "test_hashing_context.h"
 #include "test_image.h"
-#include "test_json.h"
+#include "test_json_parser.h"
 #include "test_list.h"
 #include "test_local_vector.h"
 #include "test_lru.h"

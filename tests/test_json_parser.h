@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  test_json.h                                                          */
+/*  test_json_parser.h                                                   */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -28,92 +28,84 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#ifndef TEST_JSON_H
-#define TEST_JSON_H
+#ifndef TEST_JSON_PARSER_H
+#define TEST_JSON_PARSER_H
 
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 
 #include "thirdparty/doctest/doctest.h"
 
-namespace TestJSON {
+namespace TestJSONParser {
 
-// NOTE: The current JSON parser accepts many non-conformant strings such as
+// NOTE: The current JSONParser accepts many non-conformant strings such as
 // single-quoted strings, duplicate commas and trailing commas.
 // This is intentionally not tested as users shouldn't rely on this behavior.
 
-TEST_CASE("[JSON] Parsing single data types") {
+TEST_CASE("[JSONParser] Parsing single data types") {
 	// Parsing a single data type as JSON is valid per the JSON specification.
 
-	JSON json;
-	Variant result;
-	String err_str;
-	int err_line;
+	JSONParser json_parser;
 
-	json.parse("null", result, err_str, err_line);
+	json_parser.parse("null");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing `null` as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			result == Variant(),
+			json_parser.get_data() == Variant(),
 			"Parsing a double quoted string as JSON should return the expected value.");
 
-	json.parse("true", result, err_str, err_line);
+	json_parser.parse("true");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing boolean `true` as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			result,
+			json_parser.get_data(),
 			"Parsing boolean `true` as JSON should return the expected value.");
 
-	json.parse("false", result, err_str, err_line);
+	json_parser.parse("false");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing boolean `false` as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			!result,
+			!json_parser.get_data(),
 			"Parsing boolean `false` as JSON should return the expected value.");
 
 	// JSON only has a floating-point number type, no integer type.
 	// This is why we use `is_equal_approx()` for the comparison.
-	json.parse("123456", result, err_str, err_line);
+	json_parser.parse("123456");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing an integer number as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			Math::is_equal_approx(result, 123'456),
+			Math::is_equal_approx(json_parser.get_data(), 123'456),
 			"Parsing an integer number as JSON should return the expected value.");
 
-	json.parse("0.123456", result, err_str, err_line);
+	json_parser.parse("0.123456");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing a floating-point number as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			Math::is_equal_approx(result, 0.123456),
+			Math::is_equal_approx(json_parser.get_data(), 0.123456),
 			"Parsing a floating-point number as JSON should return the expected value.");
 
-	json.parse("\"hello\"", result, err_str, err_line);
+	json_parser.parse("\"hello\"");
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing a double quoted string as JSON should parse successfully.");
 	CHECK_MESSAGE(
-			result == "hello",
+			json_parser.get_data() == "hello",
 			"Parsing a double quoted string as JSON should return the expected value.");
 }
 
-TEST_CASE("[JSON] Parsing arrays") {
-	JSON json;
-	Variant result;
-	String err_str;
-	int err_line;
+TEST_CASE("[JSONParser] Parsing arrays") {
+	JSONParser json_parser;
 
 	// JSON parsing fails if it's split over several lines (even if leading indentation is removed).
-	json.parse(
-			R"(["Hello", "world.", "This is",["a","json","array.",[]], "Empty arrays ahoy:", [[["Gotcha!"]]]])",
-			result, err_str, err_line);
+	json_parser.parse(R"(["Hello", "world.", "This is",["a","json","array.",[]], "Empty arrays ahoy:", [[["Gotcha!"]]]])");
 
-	const Array array = result;
+	const Array array = json_parser.get_data();
 	CHECK_MESSAGE(
-			err_line == 0,
+			json_parser.get_error_line() == 0,
 			"Parsing a JSON array should parse successfully.");
 	CHECK_MESSAGE(
 			array[0] == "Hello",
@@ -134,17 +126,12 @@ TEST_CASE("[JSON] Parsing arrays") {
 			"The parsed JSON should contain the expected values.");
 }
 
-TEST_CASE("[JSON] Parsing objects (dictionaries)") {
-	JSON json;
-	Variant result;
-	String err_str;
-	int err_line;
+TEST_CASE("[JSONParser] Parsing objects (dictionaries)") {
+	JSONParser json_parser;
 
-	json.parse(
-			R"({"name": "Godot Engine", "is_free": true, "bugs": null, "apples": {"red": 500, "green": 0, "blue": -20}, "empty_object": {}})",
-			result, err_str, err_line);
+	json_parser.parse(R"({"name": "Godot Engine", "is_free": true, "bugs": null, "apples": {"red": 500, "green": 0, "blue": -20}, "empty_object": {}})");
 
-	const Dictionary dictionary = result;
+	const Dictionary dictionary = json_parser.get_data();
 	CHECK_MESSAGE(
 			dictionary["name"] == "Godot Engine",
 			"The parsed JSON should contain the expected values.");
@@ -161,6 +148,6 @@ TEST_CASE("[JSON] Parsing objects (dictionaries)") {
 			dictionary["empty_object"].hash() == Dictionary().hash(),
 			"The parsed JSON should contain the expected values.");
 }
-} // namespace TestJSON
+} // namespace TestJSONParser
 
-#endif // TEST_JSON_H
+#endif // TEST_JSON_PARSER_H

@@ -43,7 +43,7 @@
 #include "core/io/dtls_server.h"
 #include "core/io/http_client.h"
 #include "core/io/image_loader.h"
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 #include "core/io/marshalls.h"
 #include "core/io/multiplayer_api.h"
 #include "core/io/networked_multiplayer_peer.h"
@@ -85,7 +85,6 @@ static _OS *_os = nullptr;
 static _Engine *_engine = nullptr;
 static _ClassDB *_classdb = nullptr;
 static _Marshalls *_marshalls = nullptr;
-static _JSON *_json = nullptr;
 static _EngineDebugger *_engine_debugger = nullptr;
 
 static IP *ip = nullptr;
@@ -211,8 +210,6 @@ void register_core_types() {
 	ClassDB::register_class<EncodedObjectAsID>();
 	ClassDB::register_class<RandomNumberGenerator>();
 
-	ClassDB::register_class<JSONParseResult>();
-
 	ClassDB::register_virtual_class<ResourceImporter>();
 
 	ip = IP::create();
@@ -226,7 +223,6 @@ void register_core_types() {
 	_engine = memnew(_Engine);
 	_classdb = memnew(_ClassDB);
 	_marshalls = memnew(_Marshalls);
-	_json = memnew(_JSON);
 	_engine_debugger = memnew(_EngineDebugger);
 }
 
@@ -255,7 +251,6 @@ void register_core_singletons() {
 	ClassDB::register_class<TranslationServer>();
 	ClassDB::register_virtual_class<Input>();
 	ClassDB::register_class<InputMap>();
-	ClassDB::register_class<_JSON>();
 	ClassDB::register_class<Expression>();
 	ClassDB::register_class<_EngineDebugger>();
 
@@ -272,7 +267,6 @@ void register_core_singletons() {
 	Engine::get_singleton()->add_singleton(Engine::Singleton("TranslationServer", TranslationServer::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Input", Input::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("InputMap", InputMap::get_singleton()));
-	Engine::get_singleton()->add_singleton(Engine::Singleton("JSON", _JSON::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("EngineDebugger", _EngineDebugger::get_singleton()));
 }
 
@@ -283,7 +277,6 @@ void unregister_core_types() {
 	memdelete(_engine);
 	memdelete(_classdb);
 	memdelete(_marshalls);
-	memdelete(_json);
 	memdelete(_engine_debugger);
 
 	memdelete(_geometry_2d);

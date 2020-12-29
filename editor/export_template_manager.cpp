@@ -31,7 +31,7 @@
 #include "export_template_manager.h"
 
 #include "core/input/input.h"
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 #include "core/io/zip_io.h"
 #include "core/os/dir_access.h"
 #include "core/os/keyboard.h"
@@ -352,10 +352,8 @@ void ExportTemplateManager::_http_download_mirror_completed(int p_status, int p_
 	template_list_state->hide();
 	template_download_progress->hide();
 
-	Variant r;
-	String errs;
-	int errline;
-	Error err = JSON::parse(mirror_str, r, errs, errline);
+	JSONParser json_parser;
+	Error err = json_parser.parse(mirror_str);
 	if (err != OK) {
 		EditorNode::get_singleton()->show_warning(TTR("Error parsing JSON of mirror list. Please report this issue!"));
 		return;
@@ -363,7 +361,7 @@ void ExportTemplateManager::_http_download_mirror_completed(int p_status, int p_
 
 	bool mirrors_found = false;
 
-	Dictionary d = r;
+	Dictionary d = json_parser.get_data();
 	if (d.has("mirrors")) {
 		Array mirrors = d["mirrors"];
 		for (int i = 0; i < mirrors.size(); i++) {

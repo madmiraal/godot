@@ -31,7 +31,7 @@
 #include "asset_library_editor_plugin.h"
 
 #include "core/input/input.h"
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 #include "core/os/keyboard.h"
 #include "core/version.h"
 #include "editor/editor_node.h"
@@ -1072,11 +1072,9 @@ void EditorAssetLibrary::_http_request_completed(int p_status, int p_code, const
 
 	Dictionary d;
 	{
-		Variant js;
-		String errs;
-		int errl;
-		JSON::parse(str, js, errs, errl);
-		d = js;
+		JSONParser json_parser;
+		json_parser.parse(str);
+		d = json_parser.get_data();
 	}
 
 	RequestType requested = requesting;

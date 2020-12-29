@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  json.cpp                                                             */
+/*  json_parser.cpp                                                      */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -28,11 +28,11 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#include "json.h"
+#include "json_parser.h"
 
 #include "core/string/print_string.h"
 
-const char *JSON::tk_name[TK_MAX] = {
+const char *JSONParser::tk_name[TK_MAX] = {
 	"'{'",
 	"'}'",
 	"'['",
@@ -45,7 +45,7 @@ const char *JSON::tk_name[TK_MAX] = {
 	"EOF",
 };
 
-static String _make_indent(const String &p_indent, int p_size) {
+String JSONParser::_make_indent(const String &p_indent, int p_size) {
 	String indent_text = "";
 	if (!p_indent.is_empty()) {
 		for (int i = 0; i < p_size; i++) {
@@ -55,7 +55,7 @@ static String _make_indent(const String &p_indent, int p_size) {
 	return indent_text;
 }
 
-String JSON::_print_var(const Variant &p_var, const String &p_indent, int p_cur_indent, bool p_sort_keys) {
+String JSONParser::_stringify(const Variant &p_var, const String &p_indent, int p_cur_indent, bool p_sort_keys) {
 	String colon = ":";
 	String end_statement = "";
 
@@ -87,7 +87,7 @@ String JSON::_print_var(const Variant &p_var, const String &p_indent, int p_cur_
 					s += ",";
 					s += end_statement;
 				}
-				s += _make_indent(p_indent, p_cur_indent + 1) + _print_var(a[i], p_indent, p_cur_indent + 1, p_sort_keys);
+				s += _make_indent(p_indent, p_cur_indent + 1) + _stringify(a[i], p_indent, p_cur_indent + 1, p_sort_keys);
 			}
 			s += end_statement + _make_indent(p_indent, p_cur_indent) + "]";
 			return s;
@@ -108,9 +108,9 @@ String JSON::_print_var(const Variant &p_var, const String &p_indent, int p_cur_
 					s += ",";
 					s += end_statement;
 				}
-				s += _make_indent(p_indent, p_cur_indent + 1) + _print_var(String(E->get()), p_indent, p_cur_indent + 1, p_sort_keys);
+				s += _make_indent(p_indent, p_cur_indent + 1) + _stringify(String(E->get()), p_indent, p_cur_indent + 1, p_sort_keys);
 				s += colon;
-				s += _print_var(d[E->get()], p_indent, p_cur_indent + 1, p_sort_keys);
+				s += _stringify(d[E->get()], p_indent, p_cur_indent + 1, p_sort_keys);
 			}
 
 			s += end_statement + _make_indent(p_indent, p_cur_indent) + "}";
@@ -121,11 +121,7 @@ String JSON::_print_var(const Variant &p_var, const String &p_indent, int p_cur_
 	}
 }
 
-String JSON::print(const Variant &p_var, const String &p_indent, bool p_sort_keys) {
-	return _print_var(p_var, p_indent, 0, p_sort_keys);
-}
-
-Error JSON::_get_token(const char32_t *p_str, int &index, int p_len, Token &r_token, int &line, String &r_err_str) {
+Error JSONParser::_get_token(const char32_t *p_str, int &index, int p_len, Token &r_token, int &line, String &r_err_str) {
 	while (p_len > 0) {
 		switch (p_str[index]) {
 			case '\n': {
@@ -339,7 +335,7 @@ Error JSON::_get_token(const char32_t *p_str, int &index, int p_len, Token &r_to
 	return ERR_PARSE_ERROR;
 }
 
-Error JSON::_parse_value(Variant &value, Token &token, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
+Error JSONParser::_parse_value(Variant &value, Token &token, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
 	if (token.type == TK_CURLY_BRACKET_OPEN) {
 		Dictionary d;
 		Error err = _parse_object(d, p_str, index, p_len, line, r_err_str);
@@ -383,7 +379,7 @@ Error JSON::_parse_value(Variant &value, Token &token, const char32_t *p_str, in
 	}
 }
 
-Error JSON::_parse_array(Array &array, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
+Error JSONParser::_parse_array(Array &array, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
 	Token token;
 	bool need_comma = false;
 
@@ -421,7 +417,7 @@ Error JSON::_parse_array(Array &array, const char32_t *p_str, int &index, int p_
 	return ERR_PARSE_ERROR;
 }
 
-Error JSON::_parse_object(Dictionary &object, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
+Error JSONParser::_parse_object(Dictionary &object, const char32_t *p_str, int &index, int p_len, int &line, String &r_err_str) {
 	bool at_key = true;
 	String key;
 	Token token;
@@ -484,7 +480,7 @@ Error JSON::_parse_object(Dictionary &object, const char32_t *p_str, int &index,
 	return ERR_PARSE_ERROR;
 }
 
-Error JSON::parse(const String &p_json, Variant &r_ret, String &r_err_str, int &r_err_line) {
+Error JSONParser::_parse_string(const String &p_json, Variant &r_ret, String &r_err_str, int &r_err_line) {
 	const char32_t *str = p_json.ptr();
 	int idx = 0;
 	int len = p_json.length();
@@ -502,34 +498,23 @@ Error JSON::parse(const String &p_json, Variant &r_ret, String &r_err_str, int &
 	return err;
 }
 
-Error JSONParser::parse_string(const String &p_json_string) {
-	return JSON::parse(p_json_string, data, err_text, err_line);
-}
-String JSONParser::get_error_text() const {
-	return err_text;
-}
-int JSONParser::get_error_line() const {
-	return err_line;
-}
-Variant JSONParser::get_data() const {
-	return data;
+String JSONParser::stringify(const Variant &p_data, const String &p_indent, bool p_sort_keys) {
+	return JSONParser::_stringify(p_data, p_indent, 0, p_sort_keys);
 }
 
-Error JSONParser::decode_data(const Variant &p_data, const String &p_indent, bool p_sort_keys) {
-	string = JSON::print(p_data, p_indent, p_sort_keys);
-	data = p_data;
-	return OK;
-}
-
-String JSONParser::get_string() const {
-	return string;
+Error JSONParser::parse(const String &p_json_string) {
+	Error err = _parse_string(p_json_string, data, err_str, err_line);
+	if (err == Error::OK) {
+		err_line = 0;
+	}
+	return err;
 }
 
 void JSONParser::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("parse_string", "json_string"), &JSONParser::parse_string);
-	ClassDB::bind_method(D_METHOD("get_error_text"), &JSONParser::get_error_text);
-	ClassDB::bind_method(D_METHOD("get_error_line"), &JSONParser::get_error_line);
+	ClassDB::bind_method(D_METHOD("stringify", "data", "indent", "sort_keys"), &JSONParser::stringify, DEFVAL(""), DEFVAL(true));
+	ClassDB::bind_method(D_METHOD("parse", "json_string"), &JSONParser::parse);
+
 	ClassDB::bind_method(D_METHOD("get_data"), &JSONParser::get_data);
-	ClassDB::bind_method(D_METHOD("decode_data", "data", "indent", "sort_keys"), &JSONParser::decode_data, DEFVAL(""), DEFVAL(true));
-	ClassDB::bind_method(D_METHOD("get_string"), &JSONParser::get_string);
+	ClassDB::bind_method(D_METHOD("get_error_line"), &JSONParser::get_error_line);
+	ClassDB::bind_method(D_METHOD("get_error_message"), &JSONParser::get_error_message);
 }

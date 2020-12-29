@@ -29,7 +29,6 @@
 /*************************************************************************/
 
 #include "core/crypto/crypto_core.h"
-#include "core/io/json.h"
 #include "core/math/disjoint_set.h"
 #include "core/math/math_defs.h"
 #include "core/os/file_access.h"

@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 #include "core/io/tcp_server.h"
 #include "core/io/zip_io.h"
 #include "editor/editor_export.h"
@@ -302,7 +302,7 @@ void EditorExportPlatformJavaScript::_fix_html(Vector<uint8_t> &p_html, const Re
 	config["executable"] = p_name;
 	config["args"] = args;
 	config["fileSizes"] = p_file_sizes;
-	const String str_config = JSON::print(config);
+	const String str_config = Variant(config).to_json_string();
 
 	for (int i = 0; i < lines.size(); i++) {
 		String current_line = lines[i];

@@ -29,7 +29,7 @@
 /*************************************************************************/
 
 #include "jsonrpc.h"
-#include "core/io/json.h"
+#include "core/io/json_parser.h"
 
 JSONRPC::JSONRPC() {
 }
@@ -156,19 +156,17 @@ String JSONRPC::process_string(const String &p_input) {
 	}
 
 	Variant ret;
-	Variant input;
-	String err_message;
-	int err_line;
-	if (OK != JSON::parse(p_input, input, err_message, err_line)) {
+	JSONParser json_parser;
+	if (OK != json_parser.parse(p_input)) {
 		ret = make_response_error(JSONRPC::PARSE_ERROR, "Parse error");
 	} else {
-		ret = process_action(input, true);
+		ret = process_action(json_parser.get_data(), true);
 	}
 
 	if (ret.get_type() == Variant::NIL) {
 		return "";
 	}
-	return JSON::print(ret);
+	return ret.to_json_string();
 }
 
 void JSONRPC::set_scope(const String &p_scope, Object *p_obj) {
