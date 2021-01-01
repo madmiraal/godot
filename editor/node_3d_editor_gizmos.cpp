@@ -4187,7 +4187,7 @@ void NavigationRegion3DGizmoPlugin::redraw(EditorNode3DGizmo *p_gizmo) {
 		return;
 	}
 
-	Vector<Vector3> vertices = navmeshie->get_vertices();
+	Vector<Vector3> vertices = navmeshie->_get_vertices();
 	const Vector3 *vr = vertices.ptr();
 	List<Face3> faces;
 	for (int i = 0; i < navmeshie->get_polygon_count(); i++) {
