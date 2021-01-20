@@ -850,7 +850,7 @@ void GDScriptByteCodeGenerator::write_call_ptrcall(const Address &p_target, cons
 			CASE_TYPE(STRING_NAME);
 			CASE_TYPE(NODE_PATH);
 			CASE_TYPE(RID);
-			CASE_TYPE(QUAT);
+			CASE_TYPE(QUATERNION);
 			CASE_TYPE(OBJECT);
 			CASE_TYPE(CALLABLE);
 			CASE_TYPE(SIGNAL);

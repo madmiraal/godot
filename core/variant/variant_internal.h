@@ -135,8 +135,8 @@ public:
 	_FORCE_INLINE_ static const Transform2D *get_transform2d(const Variant *v) { return v->_data._transform2d; }
 	_FORCE_INLINE_ static Plane *get_plane(Variant *v) { return reinterpret_cast<Plane *>(v->_data._mem); }
 	_FORCE_INLINE_ static const Plane *get_plane(const Variant *v) { return reinterpret_cast<const Plane *>(v->_data._mem); }
-	_FORCE_INLINE_ static Quat *get_quat(Variant *v) { return reinterpret_cast<Quat *>(v->_data._mem); }
-	_FORCE_INLINE_ static const Quat *get_quat(const Variant *v) { return reinterpret_cast<const Quat *>(v->_data._mem); }
+	_FORCE_INLINE_ static Quaternion *get_quaternion(Variant *v) { return reinterpret_cast<Quaternion *>(v->_data._mem); }
+	_FORCE_INLINE_ static const Quaternion *get_quaternion(const Variant *v) { return reinterpret_cast<const Quaternion *>(v->_data._mem); }
 	_FORCE_INLINE_ static ::AABB *get_aabb(Variant *v) { return v->_data._aabb; }
 	_FORCE_INLINE_ static const ::AABB *get_aabb(const Variant *v) { return v->_data._aabb; }
 	_FORCE_INLINE_ static Basis *get_basis(Variant *v) { return v->_data._basis; }
@@ -317,8 +317,8 @@ public:
 				return get_transform(v);
 			case Variant::TRANSFORM2D:
 				return get_transform2d(v);
-			case Variant::QUAT:
-				return get_quat(v);
+			case Variant::QUATERNION:
+				return get_quaternion(v);
 			case Variant::PLANE:
 				return get_plane(v);
 			case Variant::BASIS:
@@ -395,8 +395,8 @@ public:
 				return get_transform(v);
 			case Variant::TRANSFORM2D:
 				return get_transform2d(v);
-			case Variant::QUAT:
-				return get_quat(v);
+			case Variant::QUATERNION:
+				return get_quaternion(v);
 			case Variant::PLANE:
 				return get_plane(v);
 			case Variant::BASIS:
@@ -595,9 +595,9 @@ struct VariantGetInternalPtr<Plane> {
 };
 
 template <>
-struct VariantGetInternalPtr<Quat> {
-	static Quat *get_ptr(Variant *v) { return VariantInternal::get_quat(v); }
-	static const Quat *get_ptr(const Variant *v) { return VariantInternal::get_quat(v); }
+struct VariantGetInternalPtr<Quaternion> {
+	static Quaternion *get_ptr(Variant *v) { return VariantInternal::get_quaternion(v); }
+	static const Quaternion *get_ptr(const Variant *v) { return VariantInternal::get_quaternion(v); }
 };
 
 template <>
@@ -824,9 +824,9 @@ struct VariantInternalAccessor<Plane> {
 };
 
 template <>
-struct VariantInternalAccessor<Quat> {
-	static _FORCE_INLINE_ const Quat &get(const Variant *v) { return *VariantInternal::get_quat(v); }
-	static _FORCE_INLINE_ void set(Variant *v, const Quat &p_value) { *VariantInternal::get_quat(v) = p_value; }
+struct VariantInternalAccessor<Quaternion> {
+	static _FORCE_INLINE_ const Quaternion &get(const Variant *v) { return *VariantInternal::get_quaternion(v); }
+	static _FORCE_INLINE_ void set(Variant *v, const Quaternion &p_value) { *VariantInternal::get_quaternion(v) = p_value; }
 };
 
 template <>
@@ -1060,8 +1060,8 @@ struct VariantInitializer<Plane> {
 };
 
 template <>
-struct VariantInitializer<Quat> {
-	static _FORCE_INLINE_ void init(Variant *v) { VariantInternal::init_generic<Quat>(v); }
+struct VariantInitializer<Quaternion> {
+	static _FORCE_INLINE_ void init(Variant *v) { VariantInternal::init_generic<Quaternion>(v); }
 };
 
 template <>
@@ -1234,8 +1234,8 @@ struct VariantZeroAssigner<Plane> {
 };
 
 template <>
-struct VariantZeroAssigner<Quat> {
-	static _FORCE_INLINE_ void zero(Variant *v) { *VariantInternal::get_quat(v) = Quat(); }
+struct VariantZeroAssigner<Quaternion> {
+	static _FORCE_INLINE_ void zero(Variant *v) { *VariantInternal::get_quaternion(v) = Quaternion(); }
 };
 
 template <>

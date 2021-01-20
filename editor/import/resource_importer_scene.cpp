@@ -686,7 +686,7 @@ void ResourceImporterScene::_create_clips(Node *scene, const Array &p_clips, boo
 
 						if (kt > (from + 0.01) && k > 0) {
 							if (default_anim->track_get_type(j) == Animation::TYPE_TRANSFORM) {
-								Quat q;
+								Quaternion q;
 								Vector3 p;
 								Vector3 s;
 								default_anim->transform_track_interpolate(j, from, &p, &q, &s);
@@ -700,7 +700,7 @@ void ResourceImporterScene::_create_clips(Node *scene, const Array &p_clips, boo
 					}
 
 					if (default_anim->track_get_type(j) == Animation::TYPE_TRANSFORM) {
-						Quat q;
+						Quaternion q;
 						Vector3 p;
 						Vector3 s;
 						default_anim->transform_track_get_key(j, k, &p, &q, &s);
@@ -714,7 +714,7 @@ void ResourceImporterScene::_create_clips(Node *scene, const Array &p_clips, boo
 
 				if (dtrack != -1 && kt >= to) {
 					if (default_anim->track_get_type(j) == Animation::TYPE_TRANSFORM) {
-						Quat q;
+						Quaternion q;
 						Vector3 p;
 						Vector3 s;
 						default_anim->transform_track_interpolate(j, to, &p, &q, &s);
@@ -732,7 +732,7 @@ void ResourceImporterScene::_create_clips(Node *scene, const Array &p_clips, boo
 				dtrack = new_anim->get_track_count() - 1;
 				new_anim->track_set_path(dtrack, default_anim->track_get_path(j));
 				if (default_anim->track_get_type(j) == Animation::TYPE_TRANSFORM) {
-					Quat q;
+					Quaternion q;
 					Vector3 p;
 					Vector3 s;
 					default_anim->transform_track_interpolate(j, from, &p, &q, &s);

@@ -239,7 +239,7 @@ String GDScriptFunction::_get_call_error(const Callable::CallError &p_err, const
 		&&OPCODE_CALL_PTRCALL_VECTOR3I,              \
 		&&OPCODE_CALL_PTRCALL_TRANSFORM2D,           \
 		&&OPCODE_CALL_PTRCALL_PLANE,                 \
-		&&OPCODE_CALL_PTRCALL_QUAT,                  \
+		&&OPCODE_CALL_PTRCALL_QUATERNION,            \
 		&&OPCODE_CALL_PTRCALL_AABB,                  \
 		&&OPCODE_CALL_PTRCALL_BASIS,                 \
 		&&OPCODE_CALL_PTRCALL_TRANSFORM,             \
@@ -349,7 +349,7 @@ String GDScriptFunction::_get_call_error(const Callable::CallError &p_err, const
 #define OP_GET_VECTOR3I get_vector3i
 #define OP_GET_RECT2 get_rect2
 #define OP_GET_RECT2I get_rect2i
-#define OP_GET_QUAT get_quat
+#define OP_GET_QUATERNION get_quaternion
 #define OP_GET_COLOR get_color
 #define OP_GET_STRING get_string
 #define OP_GET_STRING_NAME get_string_name
@@ -1585,7 +1585,7 @@ Variant GDScriptFunction::call(GDScriptInstance *p_instance, const Variant **p_a
 			OPCODE_CALL_PTR(VECTOR3I);
 			OPCODE_CALL_PTR(TRANSFORM2D);
 			OPCODE_CALL_PTR(PLANE);
-			OPCODE_CALL_PTR(QUAT);
+			OPCODE_CALL_PTR(QUATERNION);
 			OPCODE_CALL_PTR(AABB);
 			OPCODE_CALL_PTR(BASIS);
 			OPCODE_CALL_PTR(TRANSFORM);

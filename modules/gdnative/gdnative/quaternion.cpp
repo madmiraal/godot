@@ -1,5 +1,5 @@
 /*************************************************************************/
-/*  quat.cpp                                                             */
+/*  quaternion.cpp                                                       */
 /*************************************************************************/
 /*                       This file is part of:                           */
 /*                           GODOT ENGINE                                */
@@ -28,27 +28,27 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
 /*************************************************************************/
 
-#include "gdnative/quat.h"
+#include "gdnative/quaternion.h"
 
-#include "core/math/quat.h"
+#include "core/math/quaternion.h"
 
-static_assert(sizeof(godot_quat) == sizeof(Quat), "Quat size mismatch");
+static_assert(sizeof(godot_quaternion) == sizeof(Quaternion), "Quaternion size mismatch");
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void GDAPI godot_quat_new(godot_quat *p_self) {
-	memnew_placement(p_self, Quat);
+void GDAPI godot_quaternion_new(godot_quaternion *p_self) {
+	memnew_placement(p_self, Quaternion);
 }
 
-godot_real_t GDAPI *godot_quat_operator_index(godot_quat *p_self, godot_int p_index) {
-	Quat *self = (Quat *)p_self;
+godot_real_t GDAPI *godot_quaternion_operator_index(godot_quaternion *p_self, godot_int p_index) {
+	Quaternion *self = (Quaternion *)p_self;
 	return (godot_real_t *)&self->operator[](p_index);
 }
 
-const godot_real_t GDAPI *godot_quat_operator_index_const(const godot_quat *p_self, godot_int p_index) {
-	const Quat *self = (const Quat *)p_self;
+const godot_real_t GDAPI *godot_quaternion_operator_index_const(const godot_quaternion *p_self, godot_int p_index) {
+	const Quaternion *self = (const Quaternion *)p_self;
 	return (const godot_real_t *)&self->operator[](p_index);
 }
 

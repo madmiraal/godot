@@ -69,7 +69,7 @@ void GLTFNode::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "skeleton"), "set_skeleton", "get_skeleton"); // GLTFSkeletonIndex
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "joint"), "set_joint", "get_joint"); // bool
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "translation"), "set_translation", "get_translation"); // Vector3
-	ADD_PROPERTY(PropertyInfo(Variant::QUAT, "rotation"), "set_rotation", "get_rotation"); // Quat
+	ADD_PROPERTY(PropertyInfo(Variant::QUATERNION, "rotation"), "set_rotation", "get_rotation"); // Quaternion
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR3, "scale"), "set_scale", "get_scale"); // Vector3
 	ADD_PROPERTY(PropertyInfo(Variant::PACKED_INT32_ARRAY, "children"), "set_children", "get_children"); // Vector<int>
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "fake_joint_parent"), "set_fake_joint_parent", "get_fake_joint_parent"); // GLTFNodeIndex
@@ -148,11 +148,11 @@ void GLTFNode::set_translation(Vector3 p_translation) {
 	translation = p_translation;
 }
 
-Quat GLTFNode::get_rotation() {
+Quaternion GLTFNode::get_rotation() {
 	return rotation;
 }
 
-void GLTFNode::set_rotation(Quat p_rotation) {
+void GLTFNode::set_rotation(Quaternion p_rotation) {
 	rotation = p_rotation;
 }
 

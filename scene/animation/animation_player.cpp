@@ -372,7 +372,7 @@ void AnimationPlayer::_animation_process_animation(AnimationData *p_anim, float 
 				}
 
 				Vector3 loc;
-				Quat rot;
+				Quaternion rot;
 				Vector3 scale;
 
 				Error err = a->transform_track_interpolate(i, p_time, &loc, &rot, &scale);
@@ -845,7 +845,7 @@ void AnimationPlayer::_animation_update_transforms() {
 			ERR_CONTINUE(nc->accum_pass != accum_pass);
 
 			t.origin = nc->loc_accum;
-			t.basis.set_quat_scale(nc->rot_accum, nc->scale_accum);
+			t.basis.set_quaternion_scale(nc->rot_accum, nc->scale_accum);
 			if (nc->skeleton && nc->bone_idx >= 0) {
 				nc->skeleton->set_bone_pose(nc->bone_idx, t);
 
