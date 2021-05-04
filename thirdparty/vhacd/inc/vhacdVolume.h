@@ -1,15 +1,15 @@
 /* Copyright (c) 2011 Khaled Mamou (kmamou at gmail dot com)
  All rights reserved.
- 
- 
+
+
  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
- 
+
  1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
- 
+
  2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
- 
+
  3. The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #pragma once
@@ -43,12 +43,12 @@ class PrimitiveSet {
 public:
     virtual ~PrimitiveSet(){};
     virtual PrimitiveSet* Create() const = 0;
-    virtual const size_t GetNPrimitives() const = 0;
-    virtual const size_t GetNPrimitivesOnSurf() const = 0;
-    virtual const size_t GetNPrimitivesInsideSurf() const = 0;
-    virtual const double GetEigenValue(AXIS axis) const = 0;
-    virtual const double ComputeMaxVolumeError() const = 0;
-    virtual const double ComputeVolume() const = 0;
+    virtual size_t GetNPrimitives() const = 0;
+    virtual size_t GetNPrimitivesOnSurf() const = 0;
+    virtual size_t GetNPrimitivesInsideSurf() const = 0;
+    virtual double GetEigenValue(AXIS axis) const = 0;
+    virtual double ComputeMaxVolumeError() const = 0;
+    virtual double ComputeVolume() const = 0;
     virtual void Clip(const Plane& plane, PrimitiveSet* const positivePart,
         PrimitiveSet* const negativePart) const = 0;
     virtual void Intersect(const Plane& plane, SArray<Vec3<double> >* const positivePts,
@@ -80,12 +80,12 @@ public:
     //! Constructor.
     VoxelSet();
 
-    const size_t GetNPrimitives() const { return m_voxels.Size(); }
-    const size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
-    const size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
-    const double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
-    const double ComputeVolume() const { return m_unitVolume * m_voxels.Size(); }
-    const double ComputeMaxVolumeError() const { return m_unitVolume * m_numVoxelsOnSurface; }
+    size_t GetNPrimitives() const { return m_voxels.Size(); }
+    size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
+    size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
+    double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
+    double ComputeVolume() const { return m_unitVolume * m_voxels.Size(); }
+    double ComputeMaxVolumeError() const { return m_unitVolume * m_numVoxelsOnSurface; }
     const Vec3<short>& GetMinBBVoxels() const { return m_minBBVoxels; }
     const Vec3<short>& GetMaxBBVoxels() const { return m_maxBBVoxels; }
     const Vec3<double>& GetMinBB() const { return m_minBB; }
@@ -127,8 +127,8 @@ public:
     }
     void AlignToPrincipalAxes(){};
     void RevertAlignToPrincipalAxes(){};
-    Voxel* const GetVoxels() { return m_voxels.Data(); }
-    const Voxel* const GetVoxels() const { return m_voxels.Data(); }
+    Voxel* GetVoxels() { return m_voxels.Data(); }
+    const Voxel* GetVoxels() const { return m_voxels.Data(); }
 
 private:
     size_t m_numVoxelsOnSurface;
@@ -163,16 +163,16 @@ public:
     //! Constructor.
     TetrahedronSet();
 
-    const size_t GetNPrimitives() const { return m_tetrahedra.Size(); }
-    const size_t GetNPrimitivesOnSurf() const { return m_numTetrahedraOnSurface; }
-    const size_t GetNPrimitivesInsideSurf() const { return m_numTetrahedraInsideSurface; }
+    size_t GetNPrimitives() const { return m_tetrahedra.Size(); }
+    size_t GetNPrimitivesOnSurf() const { return m_numTetrahedraOnSurface; }
+    size_t GetNPrimitivesInsideSurf() const { return m_numTetrahedraInsideSurface; }
     const Vec3<double>& GetMinBB() const { return m_minBB; }
     const Vec3<double>& GetMaxBB() const { return m_maxBB; }
     const Vec3<double>& GetBarycenter() const { return m_barycenter; }
-    const double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
-    const double GetSacle() const { return m_scale; }
-    const double ComputeVolume() const;
-    const double ComputeMaxVolumeError() const;
+    double GetEigenValue(AXIS axis) const { return m_D[axis][axis]; }
+    double GetSacle() const { return m_scale; }
+    double ComputeVolume() const;
+    double ComputeMaxVolumeError() const;
     void ComputeConvexHull(Mesh& meshCH, const size_t sampling = 1) const;
     void ComputePrincipalAxes();
     void AlignToPrincipalAxes();
@@ -235,8 +235,8 @@ public:
         assert(k < m_dim[0] || k >= 0);
         return m_data[i + j * m_dim[0] + k * m_dim[0] * m_dim[1]];
     }
-    const size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
-    const size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
+    size_t GetNPrimitivesOnSurf() const { return m_numVoxelsOnSurface; }
+    size_t GetNPrimitivesInsideSurf() const { return m_numVoxelsInsideSurface; }
     void Convert(Mesh& mesh, const VOXEL_VALUE value) const;
     void Convert(VoxelSet& vset) const;
     void Convert(TetrahedronSet& tset) const;
