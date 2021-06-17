@@ -1151,13 +1151,19 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 						manifest_end.resize(p_manifest.size() - ofs);
 						memcpy(manifest_end.ptrw(), &p_manifest[ofs], manifest_end.size());
 
-						int32_t attr_name_string = string_table.find("name");
-						ERR_FAIL_COND_MSG(attr_name_string == -1, "Template does not have 'name' attribute.");
+						uint32_t attr_name_string = string_table.find("name");
+						if (attr_name_string == -1) {
+							string_table.push_back("name");
+							attr_name_string = string_table.size() - 1;
+						}
 
-						int32_t ns_android_string = string_table.find("android");
-						ERR_FAIL_COND_MSG(ns_android_string == -1, "Template does not have 'android' namespace.");
+						uint32_t ns_android_string = string_table.find("android");
+						if (ns_android_string == -1) {
+							string_table.push_back("android");
+							ns_android_string = string_table.size() - 1;
+						}
 
-						int32_t attr_uses_permission_string = string_table.find("uses-permission");
+						uint32_t attr_uses_permission_string = string_table.find("uses-permission");
 						if (attr_uses_permission_string == -1) {
 							string_table.push_back("uses-permission");
 							attr_uses_permission_string = string_table.size() - 1;
@@ -1166,9 +1172,6 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 						for (int i = 0; i < perms.size(); ++i) {
 							print_line("Adding permission " + perms[i]);
 
-							manifest_cur_size += 56 + 24; // node + end node
-							p_manifest.resize(manifest_cur_size);
-
 							// Add permission to the string pool
 							int32_t perm_string = string_table.find(perms[i]);
 							if (perm_string == -1) {
@@ -1176,31 +1179,65 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 								perm_string = string_table.size() - 1;
 							}
 
+							uint32_t number_of_attributes = 1;
+
+							bool write_external_storage = perms[i] == "android.permission.WRITE_EXTERNAL_STORAGE";
+							uint32_t max_sdk_version_string = -1;
+							uint32_t value_string = -1;
+							if (write_external_storage) {
+								number_of_attributes++;
+								max_sdk_version_string = string_table.find("maxSdkVersion");
+								if (max_sdk_version_string == -1) {
+									string_table.push_back("maxSdkVersion");
+									max_sdk_version_string = string_table.size() - 1;
+								}
+								value_string = string_table.find("28");
+								if (value_string == -1) {
+									string_table.push_back("28");
+									value_string = string_table.size() - 1;
+								}
+							}
+							uint32_t permission_size = 36 + 20 * number_of_attributes;
+
+							manifest_cur_size += permission_size + 24;
+							p_manifest.resize(manifest_cur_size);
+
 							// start tag
 							encode_uint16(0x102, &p_manifest.write[ofs]); // type
 							encode_uint16(16, &p_manifest.write[ofs + 2]); // headersize
-							encode_uint32(56, &p_manifest.write[ofs + 4]); // size
+							encode_uint32(permission_size, &p_manifest.write[ofs + 4]); // size
 							encode_uint32(0, &p_manifest.write[ofs + 8]); // lineno
 							encode_uint32(-1, &p_manifest.write[ofs + 12]); // comment
 							encode_uint32(-1, &p_manifest.write[ofs + 16]); // ns
 							encode_uint32(attr_uses_permission_string, &p_manifest.write[ofs + 20]); // name
 							encode_uint16(20, &p_manifest.write[ofs + 24]); // attr_start
 							encode_uint16(20, &p_manifest.write[ofs + 26]); // attr_size
-							encode_uint16(1, &p_manifest.write[ofs + 28]); // num_attrs
+							encode_uint16(number_of_attributes, &p_manifest.write[ofs + 28]); // num_attrs
 							encode_uint16(0, &p_manifest.write[ofs + 30]); // id_index
 							encode_uint16(0, &p_manifest.write[ofs + 32]); // class_index
 							encode_uint16(0, &p_manifest.write[ofs + 34]); // style_index
+							ofs += 36;
 
 							// attribute
-							encode_uint32(ns_android_string, &p_manifest.write[ofs + 36]); // ns
-							encode_uint32(attr_name_string, &p_manifest.write[ofs + 40]); // 'name'
-							encode_uint32(perm_string, &p_manifest.write[ofs + 44]); // raw_value
-							encode_uint16(8, &p_manifest.write[ofs + 48]); // typedvalue_size
-							p_manifest.write[ofs + 50] = 0; // typedvalue_always0
-							p_manifest.write[ofs + 51] = 0x03; // typedvalue_type (string)
-							encode_uint32(perm_string, &p_manifest.write[ofs + 52]); // typedvalue reference
+							encode_uint32(ns_android_string, &p_manifest.write[ofs]); // ns
+							encode_uint32(attr_name_string, &p_manifest.write[ofs + 4]); // 'name'
+							encode_uint32(perm_string, &p_manifest.write[ofs + 8]); // raw_value
+							encode_uint16(8, &p_manifest.write[ofs + 12]); // typedvalue_size
+							p_manifest.write[ofs + 14] = 0; // typedvalue_always0
+							p_manifest.write[ofs + 15] = 0x03; // typedvalue_type (string)
+							encode_uint32(perm_string, &p_manifest.write[ofs + 16]); // typedvalue reference
+							ofs += 20;
 
-							ofs += 56;
+							if (write_external_storage) {
+								encode_uint32(ns_android_string, &p_manifest.write[ofs]); // android
+								encode_uint32(max_sdk_version_string, &p_manifest.write[ofs + 4]); // 'maxSdkVersion'
+								encode_uint32(value_string, &p_manifest.write[ofs + 8]); // maximum SDK version
+								encode_uint16(8, &p_manifest.write[ofs + 12]); // typedvalue_size
+								p_manifest.write[ofs + 14] = 0; // typedvalue_always0
+								p_manifest.write[ofs + 15] = 0x03; // typedvalue_type (string)
+								encode_uint32(perm_string, &p_manifest.write[ofs + 16]); // typedvalue reference
+								ofs += 20;
+							}
 
 							// end tag
 							encode_uint16(0x103, &p_manifest.write[ofs]); // type
@@ -1210,7 +1247,6 @@ class EditorExportPlatformAndroid : public EditorExportPlatform {
 							encode_uint32(-1, &p_manifest.write[ofs + 12]); // comment
 							encode_uint32(-1, &p_manifest.write[ofs + 16]); // ns
 							encode_uint32(attr_uses_permission_string, &p_manifest.write[ofs + 20]); // name
-
 							ofs += 24;
 						}
 
