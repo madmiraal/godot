@@ -126,29 +126,35 @@ class OS_X11 : public OS_Unix {
 	int last_click_button_index;
 	uint32_t last_button_state;
 
-	struct {
-		int opcode;
-		Vector<int> touch_devices;
-		Map<int, Vector2> absolute_devices;
-		Map<int, Vector2> pen_pressure_range;
-		Map<int, Vector2> pen_tilt_x_range;
-		Map<int, Vector2> pen_tilt_y_range;
-		XIEventMask all_event_mask;
-		XIEventMask all_master_event_mask;
-		Map<int, Vector2> state;
-		double pressure;
-		bool pressure_supported;
+	int xi_extension = 0;
+	Vector2 xi_relative_motion;
+	Vector2 xi_raw_pos;
+	Vector2 xi_old_raw_pos;
+	::Time xi_last_relative_time = 0;
+	struct XIPointerDevice {
+		int device_id;
+		char *name;
+		uint32_t button_state = 0;
+		bool absolute_device = false;
+		bool pressure_device = false;
+		Vector2 pressure_range;
+		double pressure = 0.0;
+		bool tilt_device = false;
+		Vector2 tilt_x_range;
+		Vector2 tilt_y_range;
 		Vector2 tilt;
-		Vector2 mouse_pos_to_filter;
-		Vector2 relative_motion;
-		Vector2 raw_pos;
-		Vector2 old_raw_pos;
-		::Time last_relative_time;
-	} xi;
+	};
+	Map<int, XIPointerDevice> xi_pointer_devices;
+
+#ifdef TOUCH_ENABLED
+	bool xi_touch_devices = false;
+	Vector2 xi_touch_filter_position = Vector2(1e10, 1e10);
+	Map<int, Vector2> xi_touch_state;
+#endif // TOUCH_ENABLED
 
 	bool refresh_device_info();
 
-	unsigned int get_mouse_button_state(unsigned int p_x11_button, int p_x11_type);
+	void set_mouse_button_state(unsigned int p_x11_button, int p_x11_type, int source_id);
 	void get_key_modifier_state(unsigned int p_x11_state, Ref<InputEventWithModifiers> state);
 	void flush_mouse_motion();
 
