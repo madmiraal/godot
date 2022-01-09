@@ -205,7 +205,8 @@ class DisplayServerX11 : public DisplayServer {
 		::Time last_relative_time;
 	} xi;
 
-	bool _refresh_device_info();
+	bool _check_xinput();
+	void _refresh_device_info();
 
 	Rect2i _screen_get_rect(int p_screen) const;
 
