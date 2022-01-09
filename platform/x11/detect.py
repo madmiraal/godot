@@ -77,7 +77,6 @@ def get_opts():
         BoolVariable("udev", "Use udev for gamepad connection callbacks", True),
         BoolVariable("debug_symbols", "Add debugging symbols to release/release_debug builds", True),
         BoolVariable("separate_debug_symbols", "Create a separate file containing debugging symbols", False),
-        BoolVariable("touch", "Enable touch events", True),
         BoolVariable("execinfo", "Use libexecinfo on systems where glibc is not available", False),
     ]
 
@@ -231,9 +230,6 @@ def configure(env):
     env.ParseConfig("pkg-config xrandr --cflags --libs")
     env.ParseConfig("pkg-config xrender --cflags --libs")
     env.ParseConfig("pkg-config xi --cflags --libs")
-
-    if env["touch"]:
-        env.Append(CPPDEFINES=["TOUCH_ENABLED"])
 
     # FIXME: Check for existence of the libs before parsing their flags with pkg-config
 

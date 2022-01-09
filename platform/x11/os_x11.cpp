@@ -200,12 +200,13 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 		}
 	}
 
-	if (!refresh_device_info()) {
-		OS::get_singleton()->alert("Your system does not support XInput 2.\n"
+	if (!_check_xinput()) {
+		OS::get_singleton()->alert("Your system does not support XInput 2.2\n"
 								   "Please upgrade your distribution.",
 				"Unable to initialize XInput");
 		return ERR_UNAVAILABLE;
 	}
+	_refresh_device_info();
 
 	xim = XOpenIM(x11_display, nullptr, nullptr, nullptr);
 
@@ -472,14 +473,10 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	XISetMask(xi.all_master_event_mask.mask, XI_DeviceChanged);
 	XISetMask(xi.all_master_event_mask.mask, XI_RawMotion);
 
-#ifdef TOUCH_ENABLED
-	if (xi.touch_devices.size()) {
-		XISetMask(xi.all_event_mask.mask, XI_TouchBegin);
-		XISetMask(xi.all_event_mask.mask, XI_TouchUpdate);
-		XISetMask(xi.all_event_mask.mask, XI_TouchEnd);
-		XISetMask(xi.all_event_mask.mask, XI_TouchOwnership);
-	}
-#endif
+	XISetMask(xi.all_event_mask.mask, XI_TouchBegin);
+	XISetMask(xi.all_event_mask.mask, XI_TouchUpdate);
+	XISetMask(xi.all_event_mask.mask, XI_TouchEnd);
+	XISetMask(xi.all_event_mask.mask, XI_TouchOwnership);
 
 	XISelectEvents(x11_display, x11_window, &xi.all_event_mask, 1);
 	XISelectEvents(x11_display, DefaultRootWindow(x11_display), &xi.all_master_event_mask, 1);
@@ -634,30 +631,27 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	return OK;
 }
 
-bool OS_X11::refresh_device_info() {
+bool OS_X11::_check_xinput() {
 	int event_base, error_base;
-
-	print_verbose("XInput: Refreshing devices.");
-
 	if (!XQueryExtension(x11_display, "XInputExtension", &xi.opcode, &event_base, &error_base)) {
-		print_verbose("XInput extension not available. Please upgrade your distribution.");
+		print_verbose("XInput extension not available.");
 		return false;
 	}
 
 	int xi_major_query = XINPUT_CLIENT_VERSION_MAJOR;
 	int xi_minor_query = XINPUT_CLIENT_VERSION_MINOR;
-
-	if (XIQueryVersion(x11_display, &xi_major_query, &xi_minor_query) != Success) {
-		print_verbose(vformat("XInput 2 not available (server supports %d.%d).", xi_major_query, xi_minor_query));
+	if (XIQueryVersion(x11_display, &xi_major_query, &xi_minor_query) != Success ||
+			xi_major_query < XINPUT_CLIENT_VERSION_MAJOR ||
+			(xi_major_query == XINPUT_CLIENT_VERSION_MAJOR && xi_minor_query < XINPUT_CLIENT_VERSION_MINOR)) {
+		print_verbose("XInput 2.2 not available.");
 		xi.opcode = 0;
 		return false;
 	}
 
-	if (xi_major_query < XINPUT_CLIENT_VERSION_MAJOR || (xi_major_query == XINPUT_CLIENT_VERSION_MAJOR && xi_minor_query < XINPUT_CLIENT_VERSION_MINOR)) {
-		print_verbose(vformat("XInput %d.%d not available (server supports %d.%d). Touch input unavailable.",
-				XINPUT_CLIENT_VERSION_MAJOR, XINPUT_CLIENT_VERSION_MINOR, xi_major_query, xi_minor_query));
-	}
+	return true;
+}
 
+void OS_X11::_refresh_device_info() {
 	xi.absolute_devices.clear();
 	xi.touch_devices.clear();
 
@@ -688,11 +682,9 @@ bool OS_X11::refresh_device_info() {
 		double tilt_y_min = 0;
 		double tilt_y_max = 0;
 		for (int j = 0; j < dev->num_classes; j++) {
-#ifdef TOUCH_ENABLED
 			if (dev->classes[j]->type == XITouchClass && ((XITouchClassInfo *)dev->classes[j])->mode == XIDirectTouch) {
 				direct_touch = true;
 			}
-#endif
 			if (dev->classes[j]->type == XIValuatorClass) {
 				XIValuatorClassInfo *class_info = (XIValuatorClassInfo *)dev->classes[j];
 
@@ -741,13 +733,6 @@ bool OS_X11::refresh_device_info() {
 	}
 
 	XIFreeDeviceInfo(info);
-#ifdef TOUCH_ENABLED
-	if (!xi.touch_devices.size()) {
-		print_verbose("XInput: No touch devices found.");
-	}
-#endif
-
-	return true;
 }
 
 void OS_X11::xim_destroy_callback(::XIM im, ::XPointer client_data,
@@ -2488,7 +2473,7 @@ void OS_X11::process_xevents() {
 				switch (event_data->evtype) {
 					case XI_HierarchyChanged:
 					case XI_DeviceChanged: {
-						refresh_device_info();
+						_refresh_device_info();
 					} break;
 					case XI_RawMotion: {
 						XIRawEvent *raw_event = (XIRawEvent *)event_data;
@@ -2585,7 +2570,7 @@ void OS_X11::process_xevents() {
 
 						xi.last_relative_time = raw_event->time;
 					} break;
-#ifdef TOUCH_ENABLED
+
 					case XI_TouchBegin:
 					case XI_TouchEnd: {
 						bool is_begin = event_data->evtype == XI_TouchBegin;
@@ -2633,7 +2618,6 @@ void OS_X11::process_xevents() {
 							curr_pos_elem->value() = pos;
 						}
 					} break;
-#endif
 				}
 			}
 		}
@@ -2697,12 +2681,7 @@ void OS_X11::process_xevents() {
 							ButtonPressMask | ButtonReleaseMask | PointerMotionMask,
 							GrabModeAsync, GrabModeAsync, x11_window, None, CurrentTime);
 				}
-#ifdef TOUCH_ENABLED
-				// Grab touch devices to avoid OS gesture interference
-				/*for (int i = 0; i < xi.touch_devices.size(); ++i) {
-					XIGrabDevice(x11_display, xi.touch_devices[i], x11_window, CurrentTime, None, XIGrabModeAsync, XIGrabModeAsync, False, &xi.touch_event_mask);
-				}*/
-#endif
+
 				if (xic) {
 					// Block events polling while changing input focus
 					// because it triggers some event polling internally.
@@ -2727,11 +2706,6 @@ void OS_X11::process_xevents() {
 					}
 					XUngrabPointer(x11_display, CurrentTime);
 				}
-#ifdef TOUCH_ENABLED
-				// Ungrab touch devices so input works as usual while we are unfocused
-				/*for (int i = 0; i < xi.touch_devices.size(); ++i) {
-					XIUngrabDevice(x11_display, xi.touch_devices[i], CurrentTime);
-				}*/
 
 				// Release every pointer to avoid sticky points
 				for (Map<int, Vector2>::Element *E = xi.state.front(); E; E = E->next()) {
@@ -2742,7 +2716,7 @@ void OS_X11::process_xevents() {
 					input->parse_input_event(st);
 				}
 				xi.state.clear();
-#endif
+
 				if (xic) {
 					// Block events polling while changing input focus
 					// because it triggers some event polling internally.
