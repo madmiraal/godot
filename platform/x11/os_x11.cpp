@@ -136,7 +136,7 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 
 	XInitThreads();
 
-	/** XLIB INITIALIZATION **/
+	// Xlib Initialization
 	x11_display = XOpenDisplay(nullptr);
 
 	if (!x11_display) {
@@ -244,23 +244,7 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 		XFree(imvalret);
 	}
 
-/*
-	char* windowid = getenv("GODOT_WINDOWID");
-	if (windowid) {
-
-		//freopen("/home/punto/stdout", "w", stdout);
-		//reopen("/home/punto/stderr", "w", stderr);
-		x11_window = atol(windowid);
-
-		XWindowAttributes xwa;
-		XGetWindowAttributes(x11_display,x11_window,&xwa);
-
-		current_videomode.width = xwa.width;
-		current_videomode.height = xwa.height;
-	};
-	*/
-
-// maybe contextgl wants to be in charge of creating the window
+// Maybe contextgl wants to be in charge of creating the window
 #if defined(OPENGL_ENABLED)
 	if (getenv("DRI_PRIME") == nullptr) {
 		int use_prime = -1;
@@ -481,7 +465,7 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	XISelectEvents(x11_display, x11_window, &xi.all_event_mask, 1);
 	XISelectEvents(x11_display, DefaultRootWindow(x11_display), &xi.all_master_event_mask, 1);
 
-	/* set the titlebar name */
+	// Set the titlebar name
 	XStoreName(x11_display, x11_window, "Godot");
 
 	wm_delete = XInternAtom(x11_display, "WM_DELETE_WINDOW", true);
@@ -823,11 +807,6 @@ void OS_X11::finalize() {
 	}
 	main_loop = nullptr;
 
-	/*
-	if (debugger_connection_console) {
-		memdelete(debugger_connection_console);
-	}
-	*/
 #ifdef ALSAMIDI_ENABLED
 	driver_alsamidi.close();
 #endif
@@ -953,10 +932,6 @@ void OS_X11::warp_mouse_position(const Point2 &p_to) {
 	if (mouse_mode == MOUSE_MODE_CAPTURED) {
 		last_mouse_pos = p_to;
 	} else {
-		/*XWindowAttributes xwa;
-		XGetWindowAttributes(x11_display, x11_window, &xwa);
-		printf("%d %d\n", xwa.x, xwa.y); needed? */
-
 		XWarpPointer(x11_display, None, x11_window,
 				0, 0, 0, 0, (int)p_to.x, (int)p_to.y);
 	}
@@ -1900,7 +1875,7 @@ void *OS_X11::get_native_handle(int p_handle_type) {
 void OS_X11::get_key_modifier_state(unsigned int p_x11_state, Ref<InputEventWithModifiers> state) {
 	state->set_shift((p_x11_state & ShiftMask));
 	state->set_control((p_x11_state & ControlMask));
-	state->set_alt((p_x11_state & Mod1Mask /*|| p_x11_state&Mod5Mask*/)); //altgr should not count as alt
+	state->set_alt((p_x11_state & Mod1Mask)); // AltGr (Mod5Mask) should not count as Alt
 	state->set_metakey((p_x11_state & Mod4Mask));
 }
 
@@ -1924,7 +1899,7 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 	// The docs stink and every toolkit seems to
 	// do it in a different way.
 
-	/* Phase 1, obtain a proper keysym */
+	// Phase 1, obtain a proper keysym
 
 	// This was also very difficult to figure out.
 	// You'd expect you could just use Keysym provided by
@@ -2031,7 +2006,7 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 #endif
 	}
 
-	/* Phase 2, obtain a pigui keycode from the keysym */
+	// Phase 2, obtain a pigui keycode from the keysym
 
 	// KeyMappingX11 just translated the X11 keysym to a PIGUI
 	// keysym, so it works in all platforms the same.
@@ -2039,14 +2014,14 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 	unsigned int keycode = KeyMappingX11::get_keycode(keysym_keycode);
 	unsigned int physical_keycode = KeyMappingX11::get_scancode(xkeyevent->keycode);
 
-	/* Phase 3, obtain a unicode character from the keysym */
+	// Phase 3, obtain a unicode character from the keysym
 
 	// KeyMappingX11 also translates keysym to unicode.
 	// It does a binary search on a table to translate
 	// most properly.
 	unsigned int unicode = keysym_unicode > 0 ? KeyMappingX11::get_unicode_from_keysym(keysym_unicode) : 0;
 
-	/* Phase 4, determine if event must be filtered */
+	// Phase 4, determine if event must be filtered
 
 	// This seems to be a side-effect of using XIM.
 	// XFilterEvent looks like a core X11 function,
@@ -2065,7 +2040,7 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 		keycode = physical_keycode;
 	}
 
-	/* Phase 5, determine modifier mask */
+	// Phase 5, determine modifier mask
 
 	// No problems here, except I had no way to
 	// know Mod1 was ALT and Mod4 was META (applekey/winkey)
@@ -2078,7 +2053,7 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 
 	get_key_modifier_state(xkeyevent->state, k);
 
-	/* Phase 6, determine echo character */
+	// Phase 6, determine echo character
 
 	// Echo characters in X11 are a keyrelease and a keypress
 	// one after the other with the (almot) same timestamp.
@@ -2117,7 +2092,7 @@ void OS_X11::_handle_key_event(XKeyEvent *p_event, LocalVector<XEvent> &p_events
 		// save the time to check for echo when keypress happens
 	}
 
-	/* Phase 7, send event to Window */
+	// Phase 7, send event to Window
 
 	k->set_pressed(keypress);
 
@@ -2733,7 +2708,6 @@ void OS_X11::process_xevents() {
 
 			case ButtonPress:
 			case ButtonRelease: {
-				/* exit in case of a mouse button press */
 				last_timestamp = event.xbutton.time;
 				if (mouse_mode == MOUSE_MODE_CAPTURED) {
 					event.xbutton.x = last_mouse_pos.x;
@@ -3013,17 +2987,6 @@ void OS_X11::process_xevents() {
 	if (do_mouse_warp) {
 		XWarpPointer(x11_display, None, x11_window,
 				0, 0, 0, 0, (int)current_videomode.width / 2, (int)current_videomode.height / 2);
-
-		/*
-		Window root, child;
-		int root_x, root_y;
-		int win_x, win_y;
-		unsigned int mask;
-		XQueryPointer( x11_display, x11_window, &root, &child, &root_x, &root_y, &win_x, &win_y, &mask );
-
-		printf("Root: %d,%d\n", root_x, root_y);
-		printf("Win: %d,%d\n", win_x, win_y);
-		*/
 	}
 
 	input->flush_buffered_events();
@@ -3786,15 +3749,7 @@ void OS_X11::_set_use_vsync(bool p_enable) {
 	}
 #endif
 }
-/*
-bool OS_X11::is_vsync_enabled() const {
 
-	if (context_gl)
-		return context_gl->is_using_vsync();
-
-	return true;
-}
-*/
 void OS_X11::set_context(int p_context) {
 	XClassHint *classHint = XAllocClassHint();
 
