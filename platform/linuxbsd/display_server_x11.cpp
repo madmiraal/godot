@@ -2569,7 +2569,7 @@ static Atom pick_target_from_atoms(Display *p_disp, Atom p_t1, Atom p_t2, Atom p
 void DisplayServerX11::_get_key_modifier_state(unsigned int p_x11_state, Ref<InputEventWithModifiers> state) {
 	state->set_shift_pressed((p_x11_state & ShiftMask));
 	state->set_ctrl_pressed((p_x11_state & ControlMask));
-	state->set_alt_pressed((p_x11_state & Mod1Mask /*|| p_x11_state&Mod5Mask*/)); //altgr should not count as alt
+	state->set_alt_pressed((p_x11_state & Mod1Mask)); // AltGr (Mod5Mask) should not count as Alt
 	state->set_meta_pressed((p_x11_state & Mod4Mask));
 }
 
@@ -2594,7 +2594,7 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 	// The docs stink and every toolkit seems to
 	// do it in a different way.
 
-	/* Phase 1, obtain a proper keysym */
+	// Phase 1, obtain a proper keysym
 
 	// This was also very difficult to figure out.
 	// You'd expect you could just use Keysym provided by
@@ -2704,7 +2704,7 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 #endif
 	}
 
-	/* Phase 2, obtain a Godot keycode from the keysym */
+	// Phase 2, obtain a Godot keycode from the keysym
 
 	// KeyMappingX11 just translated the X11 keysym to a PIGUI
 	// keysym, so it works in all platforms the same.
@@ -2712,14 +2712,14 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 	Key keycode = KeyMappingX11::get_keycode(keysym_keycode);
 	Key physical_keycode = KeyMappingX11::get_scancode(xkeyevent->keycode);
 
-	/* Phase 3, obtain a unicode character from the keysym */
+	// Phase 3, obtain a unicode character from the keysym
 
 	// KeyMappingX11 also translates keysym to unicode.
 	// It does a binary search on a table to translate
 	// most properly.
 	unsigned int unicode = keysym_unicode > 0 ? KeyMappingX11::get_unicode_from_keysym(keysym_unicode) : 0;
 
-	/* Phase 4, determine if event must be filtered */
+	// Phase 4, determine if event must be filtered
 
 	// This seems to be a side-effect of using XIM.
 	// XFilterEvent looks like a core X11 function,
@@ -2738,7 +2738,7 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 		keycode = (Key)physical_keycode;
 	}
 
-	/* Phase 5, determine modifier mask */
+	// Phase 5, determine modifier mask
 
 	// No problems here, except I had no way to
 	// know Mod1 was ALT and Mod4 was META (applekey/winkey)
@@ -2752,7 +2752,7 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 
 	_get_key_modifier_state(xkeyevent->state, k);
 
-	/* Phase 6, determine echo character */
+	// Phase 6, determine echo character
 
 	// Echo characters in X11 are a keyrelease and a keypress
 	// one after the other with the (almot) same timestamp.
@@ -2793,7 +2793,7 @@ void DisplayServerX11::_handle_key_event(WindowID p_window, XKeyEvent *p_event, 
 		// save the time to check for echo when keypress happens
 	}
 
-	/* Phase 7, send event to Window */
+	// Phase 7, send event to Window
 
 	k->set_pressed(keypress);
 
@@ -3649,7 +3649,6 @@ void DisplayServerX11::process_events() {
 
 			case ButtonPress:
 			case ButtonRelease: {
-				/* exit in case of a mouse button press */
 				last_timestamp = event.xbutton.time;
 				if (mouse_mode == MOUSE_MODE_CAPTURED) {
 					event.xbutton.x = last_mouse_pos.x;
@@ -3995,17 +3994,6 @@ void DisplayServerX11::process_events() {
 	if (do_mouse_warp) {
 		XWarpPointer(x11_display, None, windows[MAIN_WINDOW_ID].x11_window,
 				0, 0, 0, 0, (int)windows[MAIN_WINDOW_ID].size.width / 2, (int)windows[MAIN_WINDOW_ID].size.height / 2);
-
-		/*
-		Window root, child;
-		int root_x, root_y;
-		int win_x, win_y;
-		unsigned int mask;
-		XQueryPointer( x11_display, x11_window, &root, &child, &root_x, &root_y, &win_x, &win_y, &mask );
-
-		printf("Root: %d,%d\n", root_x, root_y);
-		printf("Win: %d,%d\n", win_x, win_y);
-		*/
 	}
 
 	Input::get_singleton()->flush_buffered_events();
@@ -4318,7 +4306,7 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V
 			XISelectEvents(x11_display, wd.x11_window, &all_event_mask, 1);
 		}
 
-		/* set the titlebar name */
+		// set the titlebar name
 		XStoreName(x11_display, wd.x11_window, "Godot");
 		XSetWMProtocols(x11_display, wd.x11_window, &wm_delete, 1);
 		if (xdnd_aware != None) {
@@ -4447,7 +4435,7 @@ DisplayServerX11::DisplayServerX11(const String &p_rendering_driver, WindowMode 
 
 	XInitThreads(); //always use threads
 
-	/** XLIB INITIALIZATION **/
+	// Xlib Initialization
 	x11_display = XOpenDisplay(nullptr);
 
 	if (!x11_display) {
@@ -4557,7 +4545,7 @@ DisplayServerX11::DisplayServerX11(const String &p_rendering_driver, WindowMode 
 		XFree(imvalret);
 	}
 
-	/* Atorm internment */
+	// Atom internment
 	wm_delete = XInternAtom(x11_display, "WM_DELETE_WINDOW", true);
 	//Set Xdnd (drag & drop) support
 	xdnd_aware = XInternAtom(x11_display, "XdndAware", False);
@@ -4823,10 +4811,6 @@ DisplayServerX11::DisplayServerX11(const String &p_rendering_driver, WindowMode 
 	cursor_set_shape(CURSOR_BUSY);
 
 	requested = None;
-
-	/*if (p_desired.layered) {
-		set_window_per_pixel_transparency_enabled(true);
-	}*/
 
 	XEvent xevent;
 	while (XPending(x11_display) > 0) {
