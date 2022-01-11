@@ -424,46 +424,44 @@ Error OS_X11::initialize(const VideoMode &p_desired, int p_video_driver, int p_a
 	ERR_FAIL_COND_V(!visual_server, ERR_UNAVAILABLE);
 	ERR_FAIL_COND_V(x11_window == 0, ERR_UNAVAILABLE);
 
-	XSetWindowAttributes new_attr;
+	long x11_mask =
+			KeyPressMask | // KeyPress
+			KeyReleaseMask | // KeyRelease
+			ButtonPressMask | // ButtonPress
+			ButtonReleaseMask | // ButtonRelease
+			EnterWindowMask | // EnterNotify
+			LeaveWindowMask | // LeaveNotify
+			PointerMotionMask | // MotionNotify
+			ExposureMask | // Expose
+			VisibilityChangeMask | // VisibilityNotify
+			StructureNotifyMask | // ConfigureNotify
+			SubstructureNotifyMask | // ConfigureNotify children
+			FocusChangeMask | // FocusIn, FocusOut
+			PropertyChangeMask; // PropertyNotify
 
-	new_attr.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask |
-			ButtonReleaseMask | EnterWindowMask |
-			LeaveWindowMask | PointerMotionMask |
-			Button1MotionMask |
-			Button2MotionMask | Button3MotionMask |
-			Button4MotionMask | Button5MotionMask |
-			ButtonMotionMask | KeymapStateMask |
-			ExposureMask | VisibilityChangeMask |
-			StructureNotifyMask |
-			SubstructureNotifyMask | SubstructureRedirectMask |
-			FocusChangeMask | PropertyChangeMask |
-			ColormapChangeMask | OwnerGrabButtonMask |
-			im_event_mask;
+	XSelectInput(x11_display, x11_window, x11_mask);
 
-	XChangeWindowAttributes(x11_display, x11_window, CWEventMask, &new_attr);
+	unsigned char xi_root_mask[XIMaskLen(XI_LASTEVENT)] = {};
+	XISetMask(xi_root_mask, XI_HierarchyChanged);
+	XISetMask(xi_root_mask, XI_RawMotion);
 
-	static unsigned char all_mask_data[XIMaskLen(XI_LASTEVENT)] = {};
-	static unsigned char all_master_mask_data[XIMaskLen(XI_LASTEVENT)] = {};
+	XIEventMask xi_root_events;
+	xi_root_events.deviceid = XIAllDevices;
+	xi_root_events.mask_len = XIMaskLen(XI_LASTEVENT);
+	xi_root_events.mask = xi_root_mask;
+	XISelectEvents(x11_display, DefaultRootWindow(x11_display), &xi_root_events, 1);
 
-	xi.all_event_mask.deviceid = XIAllDevices;
-	xi.all_event_mask.mask_len = sizeof(all_mask_data);
-	xi.all_event_mask.mask = all_mask_data;
+	unsigned char xi_window_mask[XIMaskLen(XI_LASTEVENT)] = {};
+	XISetMask(xi_window_mask, XI_DeviceChanged);
+	XISetMask(xi_window_mask, XI_TouchBegin);
+	XISetMask(xi_window_mask, XI_TouchUpdate);
+	XISetMask(xi_window_mask, XI_TouchEnd);
 
-	xi.all_master_event_mask.deviceid = XIAllMasterDevices;
-	xi.all_master_event_mask.mask_len = sizeof(all_master_mask_data);
-	xi.all_master_event_mask.mask = all_master_mask_data;
-
-	XISetMask(xi.all_event_mask.mask, XI_HierarchyChanged);
-	XISetMask(xi.all_master_event_mask.mask, XI_DeviceChanged);
-	XISetMask(xi.all_master_event_mask.mask, XI_RawMotion);
-
-	XISetMask(xi.all_event_mask.mask, XI_TouchBegin);
-	XISetMask(xi.all_event_mask.mask, XI_TouchUpdate);
-	XISetMask(xi.all_event_mask.mask, XI_TouchEnd);
-	XISetMask(xi.all_event_mask.mask, XI_TouchOwnership);
-
-	XISelectEvents(x11_display, x11_window, &xi.all_event_mask, 1);
-	XISelectEvents(x11_display, DefaultRootWindow(x11_display), &xi.all_master_event_mask, 1);
+	XIEventMask xi_window_events;
+	xi_window_events.deviceid = XIAllMasterDevices;
+	xi_window_events.mask_len = sizeof(xi_window_mask);
+	xi_window_events.mask = xi_window_mask;
+	XISelectEvents(x11_display, x11_window, &xi_window_events, 1);
 
 	// Set the titlebar name
 	XStoreName(x11_display, x11_window, "Godot");
@@ -943,15 +941,8 @@ void OS_X11::flush_mouse_motion() {
 
 	for (uint32_t event_index = 0; event_index < polled_events.size(); ++event_index) {
 		XEvent &event = polled_events[event_index];
-		if (XGetEventData(x11_display, &event.xcookie) && event.xcookie.type == GenericEvent && event.xcookie.extension == xi.opcode) {
-			XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
-			if (event_data->evtype == XI_RawMotion) {
-				XFreeEventData(x11_display, &event.xcookie);
-				polled_events.remove(event_index--);
-				continue;
-			}
-			XFreeEventData(x11_display, &event.xcookie);
-			break;
+		if (event.type == GenericEvent && event.xgeneric.extension == xi.opcode && event.xgeneric.evtype == XI_RawMotion) {
+			polled_events.remove(event_index--);
 		}
 	}
 
@@ -2439,19 +2430,15 @@ void OS_X11::process_xevents() {
 	for (uint32_t event_index = 0; event_index < events.size(); ++event_index) {
 		XEvent &event = events[event_index];
 
-		if (XGetEventData(x11_display, &event.xcookie)) {
-			if (event.xcookie.type == GenericEvent && event.xcookie.extension == xi.opcode) {
-				XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
-				int index = event_data->detail;
-				Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
-
-				switch (event_data->evtype) {
+		if (event.type == GenericEvent && event.xcookie.extension == xi.opcode) {
+			if (XGetEventData(x11_display, &event.xcookie)) {
+				switch (event.xcookie.evtype) {
 					case XI_HierarchyChanged:
 					case XI_DeviceChanged: {
 						_refresh_device_info();
 					} break;
 					case XI_RawMotion: {
-						XIRawEvent *raw_event = (XIRawEvent *)event_data;
+						XIRawEvent *raw_event = (XIRawEvent *)event.xcookie.data;
 						int device_id = raw_event->deviceid;
 
 						// Determine the axis used (called valuators in XInput for some forsaken reason)
@@ -2548,7 +2535,10 @@ void OS_X11::process_xevents() {
 
 					case XI_TouchBegin:
 					case XI_TouchEnd: {
+						XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
 						bool is_begin = event_data->evtype == XI_TouchBegin;
+						int index = event_data->detail;
+						Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
 
 						Ref<InputEventScreenTouch> st;
 						st.instance();
@@ -2577,11 +2567,14 @@ void OS_X11::process_xevents() {
 					} break;
 
 					case XI_TouchUpdate: {
+						XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
+						int index = event_data->detail;
 						Map<int, Vector2>::Element *curr_pos_elem = xi.state.find(index);
 						if (!curr_pos_elem) { // Defensive
 							break;
 						}
 
+						Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
 						if (curr_pos_elem->value() != pos) {
 							Ref<InputEventScreenDrag> sd;
 							sd.instance();
@@ -2595,8 +2588,8 @@ void OS_X11::process_xevents() {
 					} break;
 				}
 			}
+			XFreeEventData(x11_display, &event.xcookie);
 		}
-		XFreeEventData(x11_display, &event.xcookie);
 
 		switch (event.type) {
 			case Expose: {
