@@ -4295,24 +4295,25 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V
 
 		if (id == MAIN_WINDOW_ID) {
 			x11_mask |=
-					KeyPressMask | // KeyPress
-					KeyReleaseMask | // KeyRelease
-					ButtonPressMask | // ButtonPress
-					ButtonReleaseMask | // ButtonRelease
-					EnterWindowMask | // EnterNotify
-					LeaveWindowMask | // LeaveNotify
-					PointerMotionMask | // MotionNotify
 					ExposureMask | // Expose
 					VisibilityChangeMask | // VisibilityNotify
 					StructureNotifyMask | // ConfigureNotify
 					SubstructureNotifyMask | // ConfigureNotify children
-					FocusChangeMask | // FocusIn, FocusOut
 					PropertyChangeMask; // PropertyNotify
 
 			XSelectInput(x11_display, wd.x11_window, x11_mask);
 
 			unsigned char xi_window_mask[XIMaskLen(XI_LASTEVENT)] = {};
 			XISetMask(xi_window_mask, XI_DeviceChanged);
+			XISetMask(xi_window_mask, XI_KeyPress);
+			XISetMask(xi_window_mask, XI_KeyRelease);
+			XISetMask(xi_window_mask, XI_ButtonPress);
+			XISetMask(xi_window_mask, XI_ButtonRelease);
+			XISetMask(xi_window_mask, XI_Motion);
+			XISetMask(xi_window_mask, XI_Enter);
+			XISetMask(xi_window_mask, XI_Leave);
+			XISetMask(xi_window_mask, XI_FocusIn);
+			XISetMask(xi_window_mask, XI_FocusOut);
 			XISetMask(xi_window_mask, XI_TouchBegin);
 			XISetMask(xi_window_mask, XI_TouchUpdate);
 			XISetMask(xi_window_mask, XI_TouchEnd);
