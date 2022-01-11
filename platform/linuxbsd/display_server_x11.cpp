@@ -277,15 +277,8 @@ void DisplayServerX11::_flush_mouse_motion() {
 
 	for (uint32_t event_index = 0; event_index < polled_events.size(); ++event_index) {
 		XEvent &event = polled_events[event_index];
-		if (XGetEventData(x11_display, &event.xcookie) && event.xcookie.type == GenericEvent && event.xcookie.extension == xi.opcode) {
-			XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
-			if (event_data->evtype == XI_RawMotion) {
-				XFreeEventData(x11_display, &event.xcookie);
-				polled_events.remove_at(event_index--);
-				continue;
-			}
-			XFreeEventData(x11_display, &event.xcookie);
-			break;
+		if (event.type == GenericEvent && event.xgeneric.extension == xi.opcode && event.xgeneric.evtype == XI_RawMotion) {
+			polled_events.remove_at(event_index--);
 		}
 	}
 
@@ -3332,19 +3325,15 @@ void DisplayServerX11::process_events() {
 			}
 		}
 
-		if (XGetEventData(x11_display, &event.xcookie)) {
-			if (event.xcookie.type == GenericEvent && event.xcookie.extension == xi.opcode) {
-				XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
-				int index = event_data->detail;
-				Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
-
-				switch (event_data->evtype) {
+		if (event.type == GenericEvent && event.xcookie.extension == xi.opcode) {
+			if (XGetEventData(x11_display, &event.xcookie)) {
+				switch (event.xcookie.evtype) {
 					case XI_HierarchyChanged:
 					case XI_DeviceChanged: {
 						_refresh_device_info();
 					} break;
 					case XI_RawMotion: {
-						XIRawEvent *raw_event = (XIRawEvent *)event_data;
+						XIRawEvent *raw_event = (XIRawEvent *)event.xcookie.data;
 						int device_id = raw_event->deviceid;
 
 						// Determine the axis used (called valuators in XInput for some forsaken reason)
@@ -3441,7 +3430,10 @@ void DisplayServerX11::process_events() {
 
 					case XI_TouchBegin:
 					case XI_TouchEnd: {
+						XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
 						bool is_begin = event_data->evtype == XI_TouchBegin;
+						int index = event_data->detail;
+						Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
 
 						Ref<InputEventScreenTouch> st;
 						st.instantiate();
@@ -3471,11 +3463,14 @@ void DisplayServerX11::process_events() {
 					} break;
 
 					case XI_TouchUpdate: {
+						XIDeviceEvent *event_data = (XIDeviceEvent *)event.xcookie.data;
+						int index = event_data->detail;
 						Map<int, Vector2>::Element *curr_pos_elem = xi.state.find(index);
 						if (!curr_pos_elem) { // Defensive
 							break;
 						}
 
+						Vector2 pos = Vector2(event_data->event_x, event_data->event_y);
 						if (curr_pos_elem->value() != pos) {
 							Ref<InputEventScreenDrag> sd;
 							sd.instantiate();
@@ -3490,8 +3485,8 @@ void DisplayServerX11::process_events() {
 					} break;
 				}
 			}
+			XFreeEventData(x11_display, &event.xcookie);
 		}
-		XFreeEventData(x11_display, &event.xcookie);
 
 		switch (event.type) {
 			case MapNotify: {
@@ -4269,43 +4264,6 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V
 			}
 		}
 
-		long im_event_mask = 0;
-
-		{
-			XIEventMask all_event_mask;
-			XSetWindowAttributes new_attr;
-
-			new_attr.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask |
-					ButtonReleaseMask | EnterWindowMask |
-					LeaveWindowMask | PointerMotionMask |
-					Button1MotionMask |
-					Button2MotionMask | Button3MotionMask |
-					Button4MotionMask | Button5MotionMask |
-					ButtonMotionMask | KeymapStateMask |
-					ExposureMask | VisibilityChangeMask |
-					StructureNotifyMask |
-					SubstructureNotifyMask | SubstructureRedirectMask |
-					FocusChangeMask | PropertyChangeMask |
-					ColormapChangeMask | OwnerGrabButtonMask |
-					im_event_mask;
-
-			XChangeWindowAttributes(x11_display, wd.x11_window, CWEventMask, &new_attr);
-
-			static unsigned char all_mask_data[XIMaskLen(XI_LASTEVENT)] = {};
-
-			all_event_mask.deviceid = XIAllDevices;
-			all_event_mask.mask_len = sizeof(all_mask_data);
-			all_event_mask.mask = all_mask_data;
-
-			XISetMask(all_event_mask.mask, XI_HierarchyChanged);
-			XISetMask(all_event_mask.mask, XI_TouchBegin);
-			XISetMask(all_event_mask.mask, XI_TouchUpdate);
-			XISetMask(all_event_mask.mask, XI_TouchEnd);
-			XISetMask(all_event_mask.mask, XI_TouchOwnership);
-
-			XISelectEvents(x11_display, wd.x11_window, &all_event_mask, 1);
-		}
-
 		// set the titlebar name
 		XStoreName(x11_display, wd.x11_window, "Godot");
 		XSetWMProtocols(x11_display, wd.x11_window, &wm_delete, 1);
@@ -4313,13 +4271,14 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V
 			XChangeProperty(x11_display, wd.x11_window, xdnd_aware, XA_ATOM, 32, PropModeReplace, (unsigned char *)&xdnd_version, 1);
 		}
 
+		long x11_mask = 0;
 		if (xim && xim_style) {
 			// Block events polling while changing input focus
 			// because it triggers some event polling internally.
 			MutexLock mutex_lock(events_mutex);
 
 			wd.xic = XCreateIC(xim, XNInputStyle, xim_style, XNClientWindow, wd.x11_window, XNFocusWindow, wd.x11_window, (char *)nullptr);
-			if (XGetICValues(wd.xic, XNFilterEvents, &im_event_mask, nullptr) != nullptr) {
+			if (XGetICValues(wd.xic, XNFilterEvents, &x11_mask, nullptr) != nullptr) {
 				WARN_PRINT("XGetICValues couldn't obtain XNFilterEvents value");
 				XDestroyIC(wd.xic);
 				wd.xic = nullptr;
@@ -4332,6 +4291,37 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V
 		} else {
 			wd.xic = nullptr;
 			WARN_PRINT("XCreateIC couldn't create wd.xic");
+		}
+
+		if (id == MAIN_WINDOW_ID) {
+			x11_mask |=
+					KeyPressMask | // KeyPress
+					KeyReleaseMask | // KeyRelease
+					ButtonPressMask | // ButtonPress
+					ButtonReleaseMask | // ButtonRelease
+					EnterWindowMask | // EnterNotify
+					LeaveWindowMask | // LeaveNotify
+					PointerMotionMask | // MotionNotify
+					ExposureMask | // Expose
+					VisibilityChangeMask | // VisibilityNotify
+					StructureNotifyMask | // ConfigureNotify
+					SubstructureNotifyMask | // ConfigureNotify children
+					FocusChangeMask | // FocusIn, FocusOut
+					PropertyChangeMask; // PropertyNotify
+
+			XSelectInput(x11_display, wd.x11_window, x11_mask);
+
+			unsigned char xi_window_mask[XIMaskLen(XI_LASTEVENT)] = {};
+			XISetMask(xi_window_mask, XI_DeviceChanged);
+			XISetMask(xi_window_mask, XI_TouchBegin);
+			XISetMask(xi_window_mask, XI_TouchUpdate);
+			XISetMask(xi_window_mask, XI_TouchEnd);
+
+			XIEventMask xi_window_events;
+			xi_window_events.deviceid = XIAllMasterDevices;
+			xi_window_events.mask_len = sizeof(xi_window_mask);
+			xi_window_events.mask = xi_window_mask;
+			XISelectEvents(x11_display, wd.x11_window, &xi_window_events, 1);
 		}
 
 		_update_context(wd);
@@ -4675,17 +4665,15 @@ DisplayServerX11::DisplayServerX11(const String &p_rendering_driver, WindowMode 
 	}
 #endif
 
-	{
-		//set all event master mask
-		XIEventMask all_master_event_mask;
-		static unsigned char all_master_mask_data[XIMaskLen(XI_LASTEVENT)] = {};
-		all_master_event_mask.deviceid = XIAllMasterDevices;
-		all_master_event_mask.mask_len = sizeof(all_master_mask_data);
-		all_master_event_mask.mask = all_master_mask_data;
-		XISetMask(all_master_event_mask.mask, XI_DeviceChanged);
-		XISetMask(all_master_event_mask.mask, XI_RawMotion);
-		XISelectEvents(x11_display, DefaultRootWindow(x11_display), &all_master_event_mask, 1);
-	}
+	unsigned char xi_root_mask[XIMaskLen(XI_LASTEVENT)] = {};
+	XISetMask(xi_root_mask, XI_HierarchyChanged);
+	XISetMask(xi_root_mask, XI_RawMotion);
+
+	XIEventMask xi_root_events;
+	xi_root_events.deviceid = XIAllDevices;
+	xi_root_events.mask_len = XIMaskLen(XI_LASTEVENT);
+	xi_root_events.mask = xi_root_mask;
+	XISelectEvents(x11_display, DefaultRootWindow(x11_display), &xi_root_events, 1);
 
 	cursor_size = XcursorGetDefaultSize(x11_display);
 	cursor_theme = XcursorGetTheme(x11_display);
