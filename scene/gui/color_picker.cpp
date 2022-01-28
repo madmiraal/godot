@@ -1001,8 +1001,8 @@ void ColorPicker::_screen_input(const Ref<InputEvent> &p_event) {
 
 	Ref<InputEventMouseMotion> mev = p_event;
 	if (mev.is_valid()) {
-		Viewport *r = get_tree()->get_root();
-		if (!r->get_visible_rect().has_point(mev->get_global_position())) {
+		Viewport &r = get_tree()->get_root()->get_viewport();
+		if (!r.get_visible_rect().has_point(mev->get_global_position())) {
 			return;
 		}
 
@@ -1026,10 +1026,10 @@ void ColorPicker::_screen_pick_pressed() {
 		return;
 	}
 
-	Viewport *r = get_tree()->get_root();
+	Viewport &r = get_tree()->get_root();
 	if (!screen) {
 		screen = memnew(Control);
-		r->add_child(screen);
+		r.add_child(screen);
 		screen->set_as_top_level(true);
 		screen->set_anchors_and_offsets_preset(Control::PRESET_WIDE);
 		screen->set_default_cursor_shape(CURSOR_POINTING_HAND);

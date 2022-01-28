@@ -2263,7 +2263,7 @@ bool Main::start() {
 		bool embed_subwindows = GLOBAL_DEF("display/window/subwindows/embed_subwindows", true);
 
 		if (OS::get_singleton()->is_single_window() || (!project_manager && !editor && embed_subwindows)) {
-			sml->get_root()->set_embed_subwindows_hint(true);
+			sml->get_root()->get_viewport().set_embed_subwindows_hint(true);
 		}
 		ResourceLoader::add_custom_loaders();
 		ResourceSaver::add_custom_savers();
@@ -2393,16 +2393,16 @@ bool Main::start() {
 			DisplayServer::get_singleton()->window_set_min_size(Size2i(64, 64));
 
 			bool snap_controls = GLOBAL_DEF("gui/common/snap_controls_to_pixels", true);
-			sml->get_root()->set_snap_controls_to_pixels(snap_controls);
+			sml->get_root()->get_viewport().set_snap_controls_to_pixels(snap_controls);
 
 			bool font_oversampling = GLOBAL_DEF("gui/fonts/dynamic_fonts/use_oversampling", true);
 			sml->get_root()->set_use_font_oversampling(font_oversampling);
 
 			int texture_filter = GLOBAL_DEF("rendering/textures/canvas_textures/default_texture_filter", 1);
 			int texture_repeat = GLOBAL_DEF("rendering/textures/canvas_textures/default_texture_repeat", 0);
-			sml->get_root()->set_default_canvas_item_texture_filter(
+			sml->get_root()->get_viewport().set_default_canvas_item_texture_filter(
 					Viewport::DefaultCanvasItemTextureFilter(texture_filter));
-			sml->get_root()->set_default_canvas_item_texture_repeat(
+			sml->get_root()->get_viewport().set_default_canvas_item_texture_repeat(
 					Viewport::DefaultCanvasItemTextureRepeat(texture_repeat));
 
 		} else {
@@ -2447,7 +2447,7 @@ bool Main::start() {
 					"interface/editor/single_window_mode");
 
 			if (editor_embed_subwindows) {
-				sml->get_root()->set_embed_subwindows_hint(true);
+				sml->get_root()->get_viewport().set_embed_subwindows_hint(true);
 			}
 		}
 #endif

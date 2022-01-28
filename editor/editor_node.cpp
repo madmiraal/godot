@@ -605,10 +605,10 @@ void EditorNode::_notification(int p_what) {
 			Engine::get_singleton()->set_editor_hint(true);
 
 			OS::get_singleton()->set_low_processor_usage_mode_sleep_usec(int(EDITOR_GET("interface/editor/low_processor_mode_sleep_usec")));
-			get_tree()->get_root()->set_as_audio_listener_3d(false);
-			get_tree()->get_root()->set_as_audio_listener_2d(false);
-			get_tree()->get_root()->set_snap_2d_transforms_to_pixel(false);
-			get_tree()->get_root()->set_snap_2d_vertices_to_pixel(false);
+			get_tree()->get_root()->get_viewport().set_as_audio_listener_3d(false);
+			get_tree()->get_root()->get_viewport().set_as_audio_listener_2d(false);
+			get_tree()->get_root()->get_viewport().set_snap_2d_transforms_to_pixel(false);
+			get_tree()->get_root()->get_viewport().set_snap_2d_vertices_to_pixel(false);
 			get_tree()->set_auto_accept_quit(false);
 			get_tree()->get_root()->connect("files_dropped", callable_mp(this, &EditorNode::_dropped_files));
 
@@ -2093,7 +2093,7 @@ void EditorNode::push_item(Object *p_object, const String &p_property, bool p_in
 }
 
 void EditorNode::_save_default_environment() {
-	Ref<Environment> fallback = get_tree()->get_root()->get_world_3d()->get_fallback_environment();
+	Ref<Environment> fallback = get_tree()->get_root()->get_viewport().get_world_3d()->get_fallback_environment();
 
 	if (fallback.is_valid() && fallback->get_path().is_resource_file()) {
 		Map<RES, bool> processed;

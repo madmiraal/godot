@@ -199,8 +199,6 @@ public:
 private:
 	friend class ViewportTexture;
 
-	Viewport *parent = nullptr;
-
 	AudioListener2D *audio_listener_2d = nullptr;
 	Camera2D *camera_2d = nullptr;
 	Set<CanvasLayer *> canvas_layers;
@@ -452,7 +450,6 @@ private:
 	bool _sub_windows_forward_input(const Ref<InputEvent> &p_event);
 	SubWindowResize _sub_window_get_resize_margin(Window *p_subwindow, const Point2 &p_point);
 
-	virtual bool _can_consume_input_events() const { return true; }
 	uint64_t event_count = 0;
 
 protected:
@@ -598,8 +595,6 @@ public:
 	void set_default_canvas_item_texture_repeat(DefaultCanvasItemTextureRepeat p_repeat);
 	DefaultCanvasItemTextureRepeat get_default_canvas_item_texture_repeat() const;
 
-	virtual DisplayServer::WindowID get_window_id() const = 0;
-
 	void set_embed_subwindows_hint(bool p_embed);
 	bool get_embed_subwindows_hint() const;
 	bool is_embedding_subwindows() const;
@@ -712,7 +707,6 @@ private:
 
 protected:
 	static void _bind_methods();
-	virtual DisplayServer::WindowID get_window_id() const override;
 	Transform2D _stretch_transform();
 	void _notification(int p_what);
 

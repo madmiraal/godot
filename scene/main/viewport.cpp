@@ -208,7 +208,7 @@ void Viewport::_sub_window_register(Window *p_window) {
 
 	_sub_window_grab_focus(p_window);
 
-	RenderingServer::get_singleton()->viewport_set_parent_viewport(p_window->viewport, viewport);
+	RenderingServer::get_singleton()->viewport_set_parent_viewport(p_window->get_viewport().viewport, viewport);
 }
 
 void Viewport::_sub_window_update(Window *p_window) {
@@ -259,7 +259,7 @@ void Viewport::_sub_window_update(Window *p_window) {
 		close_icon->draw(sw.canvas_item, r.position + Vector2(r.size.width - close_h_ofs, -close_v_ofs));
 	}
 
-	RS::get_singleton()->canvas_item_add_texture_rect(sw.canvas_item, r, sw.window->get_texture()->get_rid());
+	RS::get_singleton()->canvas_item_add_texture_rect(sw.canvas_item, r, sw.window->get_viewport().get_texture()->get_rid());
 }
 
 void Viewport::_sub_window_grab_focus(Window *p_window) {
@@ -354,7 +354,7 @@ void Viewport::_sub_window_remove(Window *p_window) {
 
 		gui.subwindow_focused->_event_callback(DisplayServer::WINDOW_EVENT_FOCUS_OUT);
 
-		if (parent_visible && parent_visible != this) {
+		if (parent_visible && &parent_visible->get_viewport() != this) {
 			gui.subwindow_focused = parent_visible;
 			gui.subwindow_focused->_event_callback(DisplayServer::WINDOW_EVENT_FOCUS_IN);
 		} else {
@@ -373,10 +373,8 @@ void Viewport::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			if (get_parent()) {
-				parent = get_parent()->get_viewport();
+				Viewport *parent = get_parent()->get_viewport();
 				RenderingServer::get_singleton()->viewport_set_parent_viewport(viewport, parent->get_viewport_rid());
-			} else {
-				parent = nullptr;
 			}
 
 			current_canvas = find_world_2d()->get_canvas();
@@ -973,7 +971,7 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 		return;
 	}
 
-	if (parent && parent->find_world_2d() == p_world_2d) {
+	if (get_parent() && get_parent()->get_viewport()->find_world_2d() == p_world_2d) {
 		WARN_PRINT("Unable to use parent world_2d as world_2d");
 		return;
 	}
@@ -1000,8 +998,8 @@ void Viewport::set_world_2d(const Ref<World2D> &p_world_2d) {
 Ref<World2D> Viewport::find_world_2d() const {
 	if (world_2d.is_valid()) {
 		return world_2d;
-	} else if (parent) {
-		return parent->find_world_2d();
+	} else if (get_parent()) {
+		return get_parent()->get_viewport()->find_world_2d();
 	} else {
 		return Ref<World2D>();
 	}
@@ -2687,10 +2685,6 @@ void Viewport::push_input(const Ref<InputEvent> &p_event, bool p_local_coords) {
 		return;
 	}
 
-	if (!_can_consume_input_events()) {
-		return;
-	}
-
 	if (!is_input_handled()) {
 		get_tree()->_call_input_pause(input_group, SceneTree::CALL_INPUT_TYPE_INPUT, ev, this); //not a bug, must happen before GUI, order is _input -> gui input -> _unhandled input
 	}
@@ -2707,7 +2701,7 @@ void Viewport::push_unhandled_input(const Ref<InputEvent> &p_event, bool p_local
 	ERR_FAIL_COND(!is_inside_tree());
 	local_input_handled = false;
 
-	if (disable_input || !_can_consume_input_events()) {
+	if (disable_input) {
 		return;
 	}
 
@@ -3016,10 +3010,6 @@ Viewport::DefaultCanvasItemTextureRepeat Viewport::get_default_canvas_item_textu
 	return default_canvas_item_texture_repeat;
 }
 
-DisplayServer::WindowID Viewport::get_window_id() const {
-	return DisplayServer::MAIN_WINDOW_ID;
-}
-
 Viewport *Viewport::get_parent_viewport() const {
 	ERR_FAIL_COND_V(!is_inside_tree(), nullptr);
 	if (!get_parent()) {
@@ -3322,8 +3312,8 @@ Ref<World3D> Viewport::find_world_3d() const {
 		return own_world_3d;
 	} else if (world_3d.is_valid()) {
 		return world_3d;
-	} else if (parent) {
-		return parent->find_world_3d();
+	} else if (get_parent()) {
+		return get_parent()->get_viewport()->find_world_3d();
 	} else {
 		return Ref<World3D>();
 	}
@@ -3916,10 +3906,6 @@ void SubViewport::set_clear_mode(ClearMode p_mode) {
 
 SubViewport::ClearMode SubViewport::get_clear_mode() const {
 	return clear_mode;
-}
-
-DisplayServer::WindowID SubViewport::get_window_id() const {
-	return DisplayServer::INVALID_WINDOW_ID;
 }
 
 Transform2D SubViewport::_stretch_transform() {

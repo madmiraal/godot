@@ -1310,7 +1310,7 @@ void AnimationPlayerEditor::_allocate_onion_layers() {
 
 	// Reset the capture canvas item to the current root viewport texture (defensive).
 	RS::get_singleton()->canvas_item_clear(onion.capture.canvas_item);
-	RS::get_singleton()->canvas_item_add_texture_rect(onion.capture.canvas_item, Rect2(Point2(), capture_size), get_tree()->get_root()->get_texture()->get_rid());
+	RS::get_singleton()->canvas_item_add_texture_rect(onion.capture.canvas_item, Rect2(Point2(), capture_size), get_tree()->get_root()->get_viewport().get_texture()->get_rid());
 
 	onion.capture_size = capture_size;
 }
@@ -1402,7 +1402,7 @@ void AnimationPlayerEditor::_prepare_onion_layers_2() {
 	}
 
 	// Tweak the root viewport to ensure it's rendered before our target.
-	RID root_vp = get_tree()->get_root()->get_viewport_rid();
+	RID root_vp = get_tree()->get_root()->get_viewport().get_viewport_rid();
 	Rect2 root_vp_screen_rect = Rect2(Vector2(), get_tree()->get_root()->get_size());
 	RS::get_singleton()->viewport_attach_to_screen(root_vp, Rect2());
 	RS::get_singleton()->viewport_set_update_mode(root_vp, RS::VIEWPORT_UPDATE_ALWAYS);

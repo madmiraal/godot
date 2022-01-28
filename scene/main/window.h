@@ -38,8 +38,8 @@ class Font;
 class StyleBox;
 class Theme;
 
-class Window : public Viewport {
-	GDCLASS(Window, Viewport)
+class Window : public Node {
+	GDCLASS(Window, Node)
 public:
 	enum Mode {
 		MODE_WINDOWED = DisplayServer::WINDOW_MODE_WINDOWED,
@@ -83,7 +83,10 @@ public:
 	};
 
 private:
+	Window *parent = nullptr;
+
 	DisplayServer::WindowID window_id = DisplayServer::INVALID_WINDOW_ID;
+	Viewport viewport;
 
 	String title;
 	mutable int current_screen = 0;
@@ -146,7 +149,6 @@ private:
 	void _window_drop_files(const Vector<String> &p_files);
 	void _rect_changed_callback(const Rect2i &p_callback);
 	void _event_callback(DisplayServer::WindowEvent p_event);
-	virtual bool _can_consume_input_events() const override;
 
 protected:
 	Viewport *_get_embedder() const;
@@ -167,6 +169,11 @@ public:
 		NOTIFICATION_POST_POPUP = 31,
 		NOTIFICATION_THEME_CHANGED = 32
 	};
+
+	Viewport &get_viewport();
+
+	void set_input_as_handled();
+	bool is_input_handled() const;
 
 	void set_title(const String &p_title);
 	String get_title() const;
@@ -290,7 +297,7 @@ public:
 	int get_theme_default_font_size() const;
 
 	Rect2i get_parent_rect() const;
-	virtual DisplayServer::WindowID get_window_id() const override;
+	DisplayServer::WindowID get_window_id() const;
 
 	Window();
 	~Window();

@@ -35,6 +35,18 @@
 #include "scene/gui/control.h"
 #include "scene/scene_string_names.h"
 
+Viewport &Window::get_viewport() {
+	return viewport;
+}
+
+void Window::set_input_as_handled() {
+	viewport.set_input_as_handled();
+}
+
+bool Window::is_input_handled() const {
+	return viewport.is_input_handled();
+}
+
 void Window::set_title(const String &p_title) {
 	title = p_title;
 
@@ -269,7 +281,7 @@ void Window::_make_window() {
 
 	_update_window_callbacks();
 
-	RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_VISIBLE);
+	RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_VISIBLE);
 	DisplayServer::get_singleton()->show_window(window_id);
 }
 
@@ -305,7 +317,7 @@ void Window::_clear_window() {
 	}
 
 	_update_viewport_size();
-	RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
+	RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
 }
 
 void Window::_rect_changed_callback(const Rect2i &p_callback) {
@@ -412,11 +424,11 @@ void Window::set_visible(bool p_visible) {
 		if (visible) {
 			embedder = embedder_vp;
 			embedder->_sub_window_register(this);
-			RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE);
+			RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE);
 		} else {
 			embedder->_sub_window_remove(this);
 			embedder = nullptr;
-			RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
+			RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
 		}
 		_update_window_size();
 	}
@@ -427,7 +439,7 @@ void Window::set_visible(bool p_visible) {
 	notification(NOTIFICATION_VISIBILITY_CHANGED);
 	emit_signal(SceneStringNames::get_singleton()->visibility_changed);
 
-	RS::get_singleton()->viewport_set_active(get_viewport_rid(), visible);
+	RS::get_singleton()->viewport_set_active(viewport.get_viewport_rid(), visible);
 
 	//update transient exclusive
 	if (transient_parent) {
@@ -677,12 +689,12 @@ void Window::_update_viewport_size() {
 	}
 
 	bool allocate = is_inside_tree() && visible && (window_id != DisplayServer::INVALID_WINDOW_ID || embedder != nullptr);
-	_set_size(final_size, final_size_override, attach_to_screen_rect, stretch_transform, allocate);
+	viewport._set_size(final_size, final_size_override, attach_to_screen_rect, stretch_transform, allocate);
 
 	if (window_id != DisplayServer::INVALID_WINDOW_ID) {
-		RenderingServer::get_singleton()->viewport_attach_to_screen(get_viewport_rid(), attach_to_screen_rect, window_id);
+		RenderingServer::get_singleton()->viewport_attach_to_screen(viewport.get_viewport_rid(), attach_to_screen_rect, window_id);
 	} else {
-		RenderingServer::get_singleton()->viewport_attach_to_screen(get_viewport_rid(), Rect2i(), DisplayServer::INVALID_WINDOW_ID);
+		RenderingServer::get_singleton()->viewport_attach_to_screen(viewport.get_viewport_rid(), Rect2i(), DisplayServer::INVALID_WINDOW_ID);
 	}
 
 	if (window_id == DisplayServer::MAIN_WINDOW_ID) {
@@ -746,7 +758,7 @@ void Window::_notification(int p_what) {
 				//create as embedded
 				if (embedder) {
 					embedder->_sub_window_register(this);
-					RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE);
+					RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_PARENT_VISIBLE);
 					_update_window_size();
 				}
 
@@ -764,7 +776,7 @@ void Window::_notification(int p_what) {
 					}
 					_update_viewport_size(); //then feed back to the viewport
 					_update_window_callbacks();
-					RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_VISIBLE);
+					RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_WHEN_VISIBLE);
 				} else {
 					//create
 					if (visible) {
@@ -779,7 +791,7 @@ void Window::_notification(int p_what) {
 			if (visible) {
 				notification(NOTIFICATION_VISIBILITY_CHANGED);
 				emit_signal(SceneStringNames::get_singleton()->visibility_changed);
-				RS::get_singleton()->viewport_set_active(get_viewport_rid(), true);
+				RS::get_singleton()->viewport_set_active(viewport.get_viewport_rid(), true);
 			}
 		} break;
 		case NOTIFICATION_READY: {
@@ -812,7 +824,7 @@ void Window::_notification(int p_what) {
 
 			if (!is_embedded() && window_id != DisplayServer::INVALID_WINDOW_ID) {
 				if (window_id == DisplayServer::MAIN_WINDOW_ID) {
-					RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
+					RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
 					_update_window_callbacks();
 				} else {
 					_clear_window();
@@ -821,12 +833,12 @@ void Window::_notification(int p_what) {
 				if (embedder) {
 					embedder->_sub_window_remove(this);
 					embedder = nullptr;
-					RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
+					RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
 				}
 				_update_viewport_size(); //called by clear and make, which does not happen here
 			}
 
-			RS::get_singleton()->viewport_set_active(get_viewport_rid(), false);
+			RS::get_singleton()->viewport_set_active(viewport.get_viewport_rid(), false);
 		} break;
 	}
 }
@@ -936,10 +948,6 @@ void Window::child_controls_changed() {
 	call_deferred(SNAME("_update_child_controls"));
 }
 
-bool Window::_can_consume_input_events() const {
-	return exclusive_child == nullptr;
-}
-
 void Window::_window_input(const Ref<InputEvent> &p_ev) {
 	if (EngineDebugger::is_active()) {
 		//quit from game window using F8
@@ -958,21 +966,21 @@ void Window::_window_input(const Ref<InputEvent> &p_ev) {
 			focus_target->grab_focus();
 		}*/
 
-		if (!is_embedding_subwindows()) { //not embedding, no need for event
+		if (!viewport.is_embedding_subwindows()) { //not embedding, no need for event
 			return;
 		}
 	}
 
 	emit_signal(SceneStringNames::get_singleton()->window_input, p_ev);
 
-	push_input(p_ev);
+	viewport.push_input(p_ev);
 	if (!is_input_handled()) {
-		push_unhandled_input(p_ev);
+		viewport.push_unhandled_input(p_ev);
 	}
 }
 
 void Window::_window_input_text(const String &p_text) {
-	push_text_input(p_text);
+	viewport.push_text_input(p_text);
 }
 
 void Window::_window_drop_files(const Vector<String> &p_files) {
@@ -1143,17 +1151,17 @@ bool Window::has_focus() const {
 
 Rect2i Window::get_usable_parent_rect() const {
 	ERR_FAIL_COND_V(!is_inside_tree(), Rect2());
-	Rect2i parent;
+	Rect2i parent_rect;
 	if (is_embedded()) {
-		parent = _get_embedder()->get_visible_rect();
+		parent_rect = _get_embedder()->get_visible_rect();
 	} else {
 		const Window *w = is_visible() ? this : get_parent_visible_window();
 		//find a parent that can contain us
-		ERR_FAIL_COND_V(!w, Rect2());
+		ERR_FAIL_COND_V(!w, Rect2i());
 
-		parent = DisplayServer::get_singleton()->screen_get_usable_rect(DisplayServer::get_singleton()->window_get_current_screen(w->get_window_id()));
+		parent_rect = DisplayServer::get_singleton()->screen_get_usable_rect(DisplayServer::get_singleton()->window_get_current_screen(w->get_window_id()));
 	}
-	return parent;
+	return parent_rect;
 }
 
 void Window::add_child_notify(Node *p_child) {
@@ -1384,7 +1392,6 @@ Window::LayoutDirection Window::get_layout_direction() const {
 
 bool Window::is_layout_rtl() const {
 	if (layout_dir == LAYOUT_DIRECTION_INHERITED) {
-		Window *parent = Object::cast_to<Window>(get_parent());
 		if (parent) {
 			return parent->is_layout_rtl();
 		} else {
@@ -1639,7 +1646,7 @@ void Window::_bind_methods() {
 }
 
 Window::Window() {
-	RS::get_singleton()->viewport_set_update_mode(get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
+	RS::get_singleton()->viewport_set_update_mode(viewport.get_viewport_rid(), RS::VIEWPORT_UPDATE_DISABLED);
 }
 
 Window::~Window() {
