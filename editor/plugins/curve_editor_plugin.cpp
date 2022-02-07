@@ -540,7 +540,7 @@ void CurveEditor::update_view_transform() {
 
 	Transform2D world_trans;
 	world_trans.translate(-world_rect.position - Vector2(0, world_rect.size.y));
-	world_trans.scale(Vector2(scale.x, -scale.y));
+	world_trans.pre_scale(Vector2(scale.x, -scale.y));
 
 	Transform2D view_trans;
 	view_trans.translate(view_margin);

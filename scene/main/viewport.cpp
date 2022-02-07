@@ -1098,8 +1098,8 @@ Transform2D Viewport::_get_input_pre_xform() const {
 	Transform2D pre_xf;
 
 	if (to_screen_rect.size.x != 0 && to_screen_rect.size.y != 0) {
-		pre_xf.elements[2] = -to_screen_rect.position;
-		pre_xf.scale(Vector2(size) / to_screen_rect.size);
+		pre_xf.translate(-to_screen_rect.position);
+		pre_xf.pre_scale(Vector2(size) / to_screen_rect.size);
 	}
 
 	return pre_xf;

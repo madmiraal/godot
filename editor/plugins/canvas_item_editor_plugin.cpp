@@ -2728,13 +2728,13 @@ void CanvasItemEditor::_draw_rulers() {
 		List<CanvasItem *> selection = _get_edited_canvas_items();
 		if (snap_relative && selection.size() > 0) {
 			ruler_transform.translate(_get_encompassing_rect_from_list(selection).position);
-			ruler_transform.scale_basis(grid_step * Math::pow(2.0, grid_step_multiplier));
+			ruler_transform.scale(grid_step * Math::pow(2.0, grid_step_multiplier));
 		} else {
 			ruler_transform.translate(grid_offset);
-			ruler_transform.scale_basis(grid_step * Math::pow(2.0, grid_step_multiplier));
+			ruler_transform.scale(grid_step * Math::pow(2.0, grid_step_multiplier));
 		}
 		while ((transform * ruler_transform).get_scale().x < 50 || (transform * ruler_transform).get_scale().y < 50) {
-			ruler_transform.scale_basis(Point2(2, 2));
+			ruler_transform.scale(Point2(2, 2));
 		}
 	} else {
 		real_t basic_rule = 100;
@@ -3618,8 +3618,8 @@ void CanvasItemEditor::_draw_locks_and_groups(Node *p_node, const Transform2D &p
 void CanvasItemEditor::_draw_viewport() {
 	// Update the transform
 	transform = Transform2D();
-	transform.scale_basis(Size2(zoom, zoom));
-	transform.elements[2] = -view_offset * zoom;
+	transform.scale(Size2(zoom, zoom));
+	transform.translate(-view_offset);
 	editor->get_scene_root()->set_global_canvas_transform(transform);
 
 	// hide/show buttons depending on the selection

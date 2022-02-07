@@ -807,9 +807,8 @@ void ScriptEditorDebugger::_notification(int p_what) {
 					float zoom = state["zoom"];
 					Point2 offset = state["ofs"];
 					Transform2D transform;
-
-					transform.scale_basis(Size2(zoom, zoom));
-					transform.elements[2] = -offset * zoom;
+					transform.scale(Size2(zoom, zoom));
+					transform.translate(-offset);
 
 					Array msg;
 					msg.push_back(transform);

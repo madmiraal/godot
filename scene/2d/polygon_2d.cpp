@@ -210,7 +210,7 @@ void Polygon2D::_notification(int p_what) {
 
 			if (texture.is_valid()) {
 				Transform2D texmat(tex_rot, tex_ofs);
-				texmat.scale(tex_scale);
+				texmat.pre_scale(tex_scale);
 				Size2 tex_size = texture->get_size();
 
 				uvs.resize(len);

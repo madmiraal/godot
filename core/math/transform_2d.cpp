@@ -65,18 +65,20 @@ Transform2D Transform2D::affine_inverse() const {
 	return inv;
 }
 
-void Transform2D::rotate(const real_t p_phi) {
-	*this = Transform2D(p_phi, Vector2()) * (*this);
+real_t Transform2D::basis_determinant() const {
+	return elements[0].x * elements[1].y - elements[0].y * elements[1].x;
 }
 
-real_t Transform2D::get_skew() const {
-	real_t det = basis_determinant();
-	return Math::acos(elements[0].normalized().dot(SIGN(det) * elements[1].normalized())) - Math_PI * 0.5;
+Size2 Transform2D::get_scale() const {
+	real_t det_sign = SIGN(basis_determinant());
+	return Size2(elements[0].length(), det_sign * elements[1].length());
 }
 
-void Transform2D::set_skew(const real_t p_angle) {
-	real_t det = basis_determinant();
-	elements[1] = SIGN(det) * elements[0].rotated((Math_PI * 0.5 + p_angle)).normalized() * elements[1].length();
+void Transform2D::set_scale(const Size2 &p_scale) {
+	elements[0].normalize();
+	elements[1].normalize();
+	elements[0] *= p_scale.x;
+	elements[1] *= p_scale.y;
 }
 
 real_t Transform2D::get_rotation() const {
@@ -92,6 +94,100 @@ void Transform2D::set_rotation(const real_t p_rot) {
 	elements[1][0] = -sr;
 	elements[1][1] = cr;
 	set_scale(scale);
+}
+
+real_t Transform2D::get_skew() const {
+	real_t det = basis_determinant();
+	return Math::acos(elements[0].normalized().dot(SIGN(det) * elements[1].normalized())) - Math_PI * 0.5;
+}
+
+void Transform2D::set_skew(const real_t p_angle) {
+	real_t det = basis_determinant();
+	elements[1] = SIGN(det) * elements[0].rotated((Math_PI * 0.5 + p_angle)).normalized() * elements[1].length();
+}
+
+void Transform2D::set_rotation_and_scale(const real_t p_rot, const Size2 &p_scale) {
+	elements[0][0] = Math::cos(p_rot) * p_scale.x;
+	elements[1][1] = Math::cos(p_rot) * p_scale.y;
+	elements[1][0] = -Math::sin(p_rot) * p_scale.y;
+	elements[0][1] = Math::sin(p_rot) * p_scale.x;
+}
+
+void Transform2D::set_rotation_scale_and_skew(const real_t p_rot, const Size2 &p_scale, const real_t p_skew) {
+	elements[0][0] = Math::cos(p_rot) * p_scale.x;
+	elements[1][1] = Math::cos(p_rot + p_skew) * p_scale.y;
+	elements[1][0] = -Math::sin(p_rot + p_skew) * p_scale.y;
+	elements[0][1] = Math::sin(p_rot) * p_scale.x;
+}
+
+void Transform2D::translate(const Vector2 &p_translation) {
+	elements[2].x = tdotx(p_translation);
+	elements[2].y = tdoty(p_translation);
+}
+
+void Transform2D::pre_translate(const Vector2 &p_translation) {
+	elements[2] += p_translation;
+}
+
+Transform2D Transform2D::translated(const Vector2 &p_translation) const {
+	Transform2D result = *this;
+	result.translate(p_translation);
+	return result;
+}
+
+Transform2D Transform2D::pre_translated(const Vector2 &p_translation) const {
+	Transform2D result = *this;
+	result.pre_translate(p_translation);
+	return result;
+}
+
+void Transform2D::scale(const Size2 &p_scale) {
+	elements[0] *= p_scale.x;
+	elements[1] *= p_scale.y;
+}
+
+void Transform2D::pre_scale(const Size2 &p_scale) {
+	elements[0] *= p_scale;
+	elements[1] *= p_scale;
+	elements[2] *= p_scale;
+}
+
+Transform2D Transform2D::scaled(const Size2 &p_scale) const {
+	Transform2D result = *this;
+	result.scale(p_scale);
+	return result;
+}
+
+Transform2D Transform2D::pre_scaled(const Size2 &p_scale) const {
+	Transform2D result = *this;
+	result.pre_scale(p_scale);
+	return result;
+}
+
+void Transform2D::rotate(const real_t p_radians) {
+	*this *= Transform2D(p_radians, Vector2());
+}
+
+void Transform2D::pre_rotate(const real_t p_radians) {
+	*this = Transform2D(p_radians, Vector2()) * (*this);
+}
+
+Transform2D Transform2D::rotated(const real_t p_radians) const {
+	Transform2D result = *this;
+	result.rotate(p_radians);
+	return result;
+}
+
+Transform2D Transform2D::pre_rotated(const real_t p_radians) const {
+	Transform2D result = *this;
+	result.pre_rotate(p_radians);
+	return result;
+}
+
+Transform2D Transform2D::untranslated() const {
+	Transform2D result = *this;
+	result.elements[2] = Vector2();
+	return result;
 }
 
 Transform2D::Transform2D(const real_t p_rot, const Vector2 &p_pos) {
@@ -110,38 +206,6 @@ Transform2D::Transform2D(const real_t p_rot, const Size2 &p_scale, const real_t 
 	elements[1][0] = -Math::sin(p_rot + p_skew) * p_scale.y;
 	elements[0][1] = Math::sin(p_rot) * p_scale.x;
 	elements[2] = p_pos;
-}
-
-Size2 Transform2D::get_scale() const {
-	real_t det_sign = SIGN(basis_determinant());
-	return Size2(elements[0].length(), det_sign * elements[1].length());
-}
-
-void Transform2D::set_scale(const Size2 &p_scale) {
-	elements[0].normalize();
-	elements[1].normalize();
-	elements[0] *= p_scale.x;
-	elements[1] *= p_scale.y;
-}
-
-void Transform2D::scale(const Size2 &p_scale) {
-	scale_basis(p_scale);
-	elements[2] *= p_scale;
-}
-
-void Transform2D::scale_basis(const Size2 &p_scale) {
-	elements[0][0] *= p_scale.x;
-	elements[0][1] *= p_scale.y;
-	elements[1][0] *= p_scale.x;
-	elements[1][1] *= p_scale.y;
-}
-
-void Transform2D::translate(const real_t p_tx, const real_t p_ty) {
-	translate(Vector2(p_tx, p_ty));
-}
-
-void Transform2D::translate(const Vector2 &p_translation) {
-	elements[2] += basis_xform(p_translation);
 }
 
 void Transform2D::orthonormalize() {
@@ -217,56 +281,6 @@ Transform2D Transform2D::operator*(const Transform2D &p_transform) const {
 	return t;
 }
 
-Transform2D Transform2D::translated(const Vector2 &p_translation) const {
-	Transform2D result = *this;
-	result[2].x = tdotx(p_translation);
-	result[2].y = tdoty(p_translation);
-	return result;
-}
-
-Transform2D Transform2D::pre_translated(const Vector2 &p_translation) const {
-	Transform2D result = *this;
-	result[2] += p_translation;
-	return result;
-}
-
-Transform2D Transform2D::scaled(const Size2 &p_scale) const {
-	Transform2D result = *this;
-	result[0] *= p_scale.x;
-	result[1] *= p_scale.y;
-	return result;
-}
-
-Transform2D Transform2D::pre_scaled(const Size2 &p_scale) const {
-	Transform2D result = *this;
-	result[0] *= p_scale;
-	result[1] *= p_scale;
-	result[2] *= p_scale;
-	return result;
-}
-
-Transform2D Transform2D::rotated(const real_t p_radians) const {
-	Transform2D result = *this;
-	result *= Transform2D(p_radians, Vector2());
-	return result;
-}
-
-Transform2D Transform2D::pre_rotated(const real_t p_radians) const {
-	Transform2D result = Transform2D(p_radians, Vector2());
-	result *= *this;
-	return result;
-}
-
-Transform2D Transform2D::untranslated() const {
-	Transform2D result = *this;
-	result.elements[2] = Vector2();
-	return result;
-}
-
-real_t Transform2D::basis_determinant() const {
-	return elements[0].x * elements[1].y - elements[0].y * elements[1].x;
-}
-
 Transform2D Transform2D::interpolate_with(const Transform2D &p_transform, const real_t p_c) const {
 	//extract parameters
 	Vector2 p1 = get_origin();
@@ -298,7 +312,7 @@ Transform2D Transform2D::interpolate_with(const Transform2D &p_transform, const 
 
 	//construct matrix
 	Transform2D res(v.angle(), p1.lerp(p2, p_c));
-	res.scale_basis(s1.lerp(s2, p_c));
+	res.pre_scale(s1.lerp(s2, p_c));
 	return res;
 }
 

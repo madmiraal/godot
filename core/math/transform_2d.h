@@ -62,6 +62,7 @@ struct _NO_DISCARD_ Transform2D {
 		ERR_FAIL_INDEX_V(p_axis, 3, Vector2());
 		return elements[p_axis];
 	}
+
 	_FORCE_INLINE_ void set_axis(int p_axis, const Vector2 &p_vec) {
 		ERR_FAIL_INDEX(p_axis, 3);
 		elements[p_axis] = p_vec;
@@ -73,31 +74,35 @@ struct _NO_DISCARD_ Transform2D {
 	void affine_invert();
 	Transform2D affine_inverse() const;
 
-	void set_rotation(const real_t p_rot);
-	real_t get_rotation() const;
-	real_t get_skew() const;
-	void set_skew(const real_t p_angle);
-	_FORCE_INLINE_ void set_rotation_and_scale(const real_t p_rot, const Size2 &p_scale);
-	_FORCE_INLINE_ void set_rotation_scale_and_skew(const real_t p_rot, const Size2 &p_scale, const real_t p_skew);
-	void rotate(const real_t p_phi);
-
-	void scale(const Size2 &p_scale);
-	void scale_basis(const Size2 &p_scale);
-	void translate(const real_t p_tx, const real_t p_ty);
-	void translate(const Vector2 &p_translation);
-
 	real_t basis_determinant() const;
+
+	const Vector2 &get_origin() const { return elements[2]; }
+	void set_origin(const Vector2 &p_origin) { elements[2] = p_origin; }
 
 	Size2 get_scale() const;
 	void set_scale(const Size2 &p_scale);
 
-	_FORCE_INLINE_ const Vector2 &get_origin() const { return elements[2]; }
-	_FORCE_INLINE_ void set_origin(const Vector2 &p_origin) { elements[2] = p_origin; }
+	real_t get_rotation() const;
+	void set_rotation(const real_t p_rot);
 
+	real_t get_skew() const;
+	void set_skew(const real_t p_angle);
+
+	void set_rotation_and_scale(const real_t p_rot, const Size2 &p_scale);
+	void set_rotation_scale_and_skew(const real_t p_rot, const Size2 &p_scale, const real_t p_skew);
+
+	void translate(const Vector2 &p_translation);
+	void pre_translate(const Vector2 &p_translation);
 	Transform2D translated(const Vector2 &p_translation) const;
 	Transform2D pre_translated(const Vector2 &p_translation) const;
+
+	void scale(const Size2 &p_scale);
+	void pre_scale(const Size2 &p_scale);
 	Transform2D scaled(const Size2 &p_scale) const;
 	Transform2D pre_scaled(const Size2 &p_scale) const;
+
+	void rotate(const real_t p_radians);
+	void pre_rotate(const real_t p_radians);
 	Transform2D rotated(const real_t p_radians) const;
 	Transform2D pre_rotated(const real_t p_radians) const;
 
@@ -193,20 +198,6 @@ Rect2 Transform2D::xform(const Rect2 &p_rect) const {
 	new_rect.expand_to(pos + y);
 	new_rect.expand_to(pos + x + y);
 	return new_rect;
-}
-
-void Transform2D::set_rotation_and_scale(const real_t p_rot, const Size2 &p_scale) {
-	elements[0][0] = Math::cos(p_rot) * p_scale.x;
-	elements[1][1] = Math::cos(p_rot) * p_scale.y;
-	elements[1][0] = -Math::sin(p_rot) * p_scale.y;
-	elements[0][1] = Math::sin(p_rot) * p_scale.x;
-}
-
-void Transform2D::set_rotation_scale_and_skew(const real_t p_rot, const Size2 &p_scale, const real_t p_skew) {
-	elements[0][0] = Math::cos(p_rot) * p_scale.x;
-	elements[1][1] = Math::cos(p_rot + p_skew) * p_scale.y;
-	elements[1][0] = -Math::sin(p_rot + p_skew) * p_scale.y;
-	elements[0][1] = Math::sin(p_rot) * p_scale.x;
 }
 
 Rect2 Transform2D::xform_inv(const Rect2 &p_rect) const {
