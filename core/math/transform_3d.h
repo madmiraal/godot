@@ -45,21 +45,21 @@ struct _NO_DISCARD_ Transform3D {
 	void affine_invert();
 	Transform3D affine_inverse() const;
 
-	void rotate(const Vector3 &p_axis, real_t p_phi);
-	void rotate_basis(const Vector3 &p_axis, real_t p_phi);
-
 	void set_look_at(const Vector3 &p_eye, const Vector3 &p_target, const Vector3 &p_up = Vector3(0, 1, 0));
 	Transform3D looking_at(const Vector3 &p_target, const Vector3 &p_up = Vector3(0, 1, 0)) const;
 
-	void scale(const Vector3 &p_scale);
-	void scale_basis(const Vector3 &p_scale);
-	void translate(real_t p_tx, real_t p_ty, real_t p_tz);
 	void translate(const Vector3 &p_translation);
-
+	void pre_translate(const Vector3 &p_translation);
 	Transform3D translated(const Vector3 &p_translation) const;
 	Transform3D pre_translated(const Vector3 &p_translation) const;
+
+	void scale(const Vector3 &p_scale);
+	void pre_scale(const Vector3 &p_scale);
 	Transform3D scaled(const Vector3 &p_scale) const;
 	Transform3D pre_scaled(const Vector3 &p_scale) const;
+
+	void rotate(const Vector3 &p_axis, real_t p_radians);
+	void pre_rotate(const Vector3 &p_axis, real_t p_radians);
 	Transform3D rotated(const Vector3 &p_axis, real_t p_radians) const;
 	Transform3D pre_rotated(const Vector3 &p_axis, real_t p_radians) const;
 

@@ -57,14 +57,6 @@ Transform3D Transform3D::inverse() const {
 	return ret;
 }
 
-void Transform3D::rotate(const Vector3 &p_axis, real_t p_phi) {
-	*this = rotated(p_axis, p_phi);
-}
-
-void Transform3D::rotate_basis(const Vector3 &p_axis, real_t p_phi) {
-	basis.rotate(p_axis, p_phi);
-}
-
 Transform3D Transform3D::looking_at(const Vector3 &p_target, const Vector3 &p_up) const {
 	Transform3D t = *this;
 	t.basis = Basis::looking_at(p_target - origin, p_up);
@@ -104,65 +96,70 @@ Transform3D Transform3D::interpolate_with(const Transform3D &p_transform, real_t
 	return interp;
 }
 
-void Transform3D::scale(const Vector3 &p_scale) {
-	basis.scale(p_scale);
-	origin *= p_scale;
-}
-
-void Transform3D::scale_basis(const Vector3 &p_scale) {
-	basis.scale(p_scale);
-}
-
-void Transform3D::translate(real_t p_tx, real_t p_ty, real_t p_tz) {
-	translate(Vector3(p_tx, p_ty, p_tz));
-}
-
 void Transform3D::translate(const Vector3 &p_translation) {
-	for (int i = 0; i < 3; i++) {
-		origin[i] += basis[i].dot(p_translation);
-	}
+	origin.x += basis[0].dot(p_translation);
+	origin.y += basis[1].dot(p_translation);
+	origin.z += basis[2].dot(p_translation);
+}
+
+void Transform3D::pre_translate(const Vector3 &p_translation) {
+	origin += p_translation;
 }
 
 Transform3D Transform3D::translated(const Vector3 &p_translation) const {
 	Transform3D result = *this;
-	result.origin.x += basis[0].dot(p_translation);
-	result.origin.y += basis[1].dot(p_translation);
-	result.origin.z += basis[2].dot(p_translation);
+	result.translate(p_translation);
 	return result;
 }
 
 Transform3D Transform3D::pre_translated(const Vector3 &p_translation) const {
 	Transform3D result = *this;
-	result.origin += p_translation;
+	result.pre_translate(p_translation);
 	return result;
+}
+
+void Transform3D::scale(const Vector3 &p_scale) {
+	basis[0] *= p_scale;
+	basis[1] *= p_scale;
+	basis[2] *= p_scale;
+}
+
+void Transform3D::pre_scale(const Vector3 &p_scale) {
+	basis[0] *= p_scale.x;
+	basis[1] *= p_scale.y;
+	basis[2] *= p_scale.z;
+	origin *= p_scale;
 }
 
 Transform3D Transform3D::scaled(const Vector3 &p_scale) const {
 	Transform3D result = *this;
-	result.basis[0] *= p_scale;
-	result.basis[1] *= p_scale;
-	result.basis[2] *= p_scale;
+	result.scale(p_scale);
 	return result;
 }
 
 Transform3D Transform3D::pre_scaled(const Vector3 &p_scale) const {
 	Transform3D result = *this;
-	result.basis[0] *= p_scale.x;
-	result.basis[1] *= p_scale.y;
-	result.basis[2] *= p_scale.z;
-	result.origin *= p_scale;
+	result.pre_scale(p_scale);
 	return result;
+}
+
+void Transform3D::rotate(const Vector3 &p_axis, real_t p_radians) {
+	*this *= Transform3D(Basis(p_axis, p_radians), Vector3());
+}
+
+void Transform3D::pre_rotate(const Vector3 &p_axis, real_t p_radians) {
+	*this = Transform3D(Basis(p_axis, p_radians), Vector3()) * (*this);
 }
 
 Transform3D Transform3D::rotated(const Vector3 &p_axis, real_t p_radians) const {
 	Transform3D result = *this;
-	result *= Transform3D(Basis(p_axis, p_radians), Vector3());
+	result.rotate(p_axis, p_radians);
 	return result;
 }
 
 Transform3D Transform3D::pre_rotated(const Vector3 &p_axis, real_t p_radians) const {
-	Transform3D result(Basis(p_axis, p_radians), Vector3());
-	result *= *this;
+	Transform3D result = *this;
+	result.pre_rotate(p_axis, p_radians);
 	return result;
 }
 

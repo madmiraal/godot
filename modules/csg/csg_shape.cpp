@@ -1871,7 +1871,7 @@ CSGBrush *CSGPolygon3D::_build_brush() {
 					current_xform.translate(Vector3(0, 0, -depth));
 				} break;
 				case MODE_SPIN: {
-					current_xform.rotate(Vector3(0, 1, 0), spin_step);
+					current_xform.pre_rotate(Vector3(0, 1, 0), spin_step);
 				} break;
 				case MODE_PATH: {
 					double previous_offset = x0 * extrusion_step;

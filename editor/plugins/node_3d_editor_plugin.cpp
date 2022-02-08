@@ -354,9 +354,9 @@ Transform3D Node3DEditorViewport::to_camera_transform(const Cursor &p_cursor) co
 	camera_transform.basis.rotate(Vector3(0, 1, 0), -p_cursor.y_rot);
 
 	if (orthogonal) {
-		camera_transform.translate(0, 0, (get_zfar() - get_znear()) / 2.0);
+		camera_transform.translate(Vector3(0, 0, (get_zfar() - get_znear()) / 2.0));
 	} else {
-		camera_transform.translate(0, 0, p_cursor.distance);
+		camera_transform.translate(Vector3(0, 0, p_cursor.distance));
 	}
 
 	return camera_transform;
@@ -620,7 +620,7 @@ Vector3 Node3DEditorViewport::_get_screen_to_space(const Vector3 &p_vector3) {
 	camera_transform.translate(cursor.pos);
 	camera_transform.basis.rotate(Vector3(1, 0, 0), -cursor.x_rot);
 	camera_transform.basis.rotate(Vector3(0, 1, 0), -cursor.y_rot);
-	camera_transform.translate(0, 0, cursor.distance);
+	camera_transform.translate(Vector3(0, 0, cursor.distance));
 
 	return camera_transform.xform(Vector3(((p_vector3.x / get_size().width) * 2.0 - 1.0) * screen_he.x, ((1.0 - (p_vector3.y / get_size().height)) * 2.0 - 1.0) * screen_he.y, -(get_znear() + p_vector3.z)));
 }
@@ -3230,7 +3230,7 @@ void Node3DEditorViewport::_menu_option(int p_option) {
 					xform.basis.set_euler(camera_transform.basis.get_euler());
 				} else {
 					xform = camera_transform;
-					xform.scale_basis(sp->get_scale());
+					xform.scale(sp->get_scale());
 				}
 
 				undo_redo->add_do_method(sp, "set_global_transform", xform);

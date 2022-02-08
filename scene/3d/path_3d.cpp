@@ -181,7 +181,7 @@ void PathFollow3D::_update_transform(bool p_update_xyz_rot) {
 				}
 
 				if (likely(!Math::is_zero_approx(axis.length()))) {
-					t.rotate_basis(axis.normalized(), angle);
+					t.rotate(axis.normalized(), angle);
 				}
 			}
 
@@ -200,7 +200,7 @@ void PathFollow3D::_update_transform(bool p_update_xyz_rot) {
 				}
 
 				if (likely(!Math::is_zero_approx(tilt_axis.length()))) {
-					t.rotate_basis(tilt_axis.normalized(), tilt_angle);
+					t.rotate(tilt_axis.normalized(), tilt_angle);
 				}
 			}
 		}
