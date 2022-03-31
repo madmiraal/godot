@@ -66,7 +66,9 @@ public class GodotGestureHandler extends GestureDetector.SimpleOnGestureListener
 
 	@Override
 	public void onLongPress(MotionEvent event) {
-		//Log.i("GodotGesture", "onLongPress");
+		final int x = Math.round(event.getX());
+		final int y = Math.round(event.getY());
+		GodotLib.longpress(x, y);
 	}
 
 	@Override

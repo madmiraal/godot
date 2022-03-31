@@ -322,6 +322,14 @@ JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_hover(JNIEnv *env, jc
 }
 
 // Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longpress(JNIEnv *env, jclass clazz, jint p_x, jint p_y) {
+	if (step.get() <= 0)
+		return;
+
+	input_handler->process_long_press(Point2(p_x, p_y));
+}
+
+// Called on the UI thread
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_doubleTap(JNIEnv *env, jclass clazz, jint p_button_mask, jint p_x, jint p_y) {
 	if (step.get() <= 0)
 		return;

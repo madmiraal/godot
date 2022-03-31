@@ -101,6 +101,11 @@ public class GodotLib {
 	public static native void hover(int type, float x, float y);
 
 	/**
+	 * Forward long_press events from the main thread to the GL thread.
+	 */
+	public static native void longpress(int x, int y);
+
+	/**
 	 * Forward double_tap events from the main thread to the GL thread.
 	 */
 	public static native void doubleTap(int buttonMask, int x, int y);

@@ -302,6 +302,18 @@ void AndroidInputHandler::_wheel_button_click(int event_buttons_mask, const Ref<
 	input->parse_input_event(evdd);
 }
 
+void AndroidInputHandler::process_long_press(Point2 p_pos) {
+	Ref<InputEventMouseButton> ev;
+	ev.instance();
+	_set_key_modifier_state(ev);
+	ev->set_position(p_pos);
+	ev->set_global_position(p_pos);
+	ev->set_pressed(true);
+	ev->set_button_index(BUTTON_RIGHT);
+	ev->set_button_mask(BUTTON_MASK_RIGHT);
+	input->parse_input_event(ev);
+}
+
 void AndroidInputHandler::process_double_tap(int event_android_button_mask, Point2 p_pos) {
 	int event_button_mask = _android_button_mask_to_godot_button_mask(event_android_button_mask);
 	Ref<InputEventMouseButton> ev;
