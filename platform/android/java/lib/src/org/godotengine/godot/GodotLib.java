@@ -94,24 +94,47 @@ public class GodotLib {
 	/**
 	 * Forward touch events from the main thread to the GL thread.
 	 */
-	public static native void touch(int inputDevice, int event, int pointer, int pointerCount, float[] positions);
-	public static native void touch(int inputDevice, int event, int pointer, int pointerCount, float[] positions, int buttonsMask);
-	public static native void touch(int inputDevice, int event, int pointer, int pointerCount, float[] positions, int buttonsMask, float verticalFactor, float horizontalFactor);
+	public static native void touch(int action, int pointerId, int pointerCount, float[] positions);
 
 	/**
-	 * Forward hover events from the main thread to the GL thread.
+	 * Forward mouse hover events from the main thread to the GL thread.
 	 */
-	public static native void hover(int type, float x, float y);
+	public static native void mouseHover(int action, float x, float y);
 
 	/**
-	 * Forward double_tap events from the main thread to the GL thread.
+	 * Forward mouse button press and move events from the main thread to the GL thread.
 	 */
-	public static native void doubleTap(int buttonMask, int x, int y);
+	public static native void mouseEvent(int action, float x, float y, int buttonMask);
+
+	/**
+	 * Forward mouse scroll events from the main thread to the GL thread.
+	 */
+	public static native void mouseScroll(float x, float y, int buttonMask, float horizontalFactor, float verticalFactor);
+
+	/**
+	 * Forward mouse double click events from the main thread to the GL thread.
+	 */
+	public static native void mouseDoubleClick(float x, float y, int buttonMask);
+
+	/**
+	 * Forward double tap events from the main thread to the GL thread.
+	 */
+	public static native void doubleTap(float x, float y);
+
+	/**
+	 * Forward long press events from the main thread to the GL thread.
+	 */
+	public static native void longPress(float x, float y);
 
 	/**
 	 * Forward scroll events from the main thread to the GL thread.
 	 */
-	public static native void scroll(int x, int y);
+	public static native void scroll(float distanceX, float distanceY);
+
+	/**
+	 * Forward scroll events from the main thread to the GL thread.
+	 */
+	public static native void fling(float distanceX, float distanceY);
 
 	/**
 	 * Forward accelerometer sensor events from the main thread to the GL thread.

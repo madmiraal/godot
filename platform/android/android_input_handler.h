@@ -76,14 +76,18 @@ private:
 	static MouseButton _button_index_from_mask(MouseButton button_mask);
 	static MouseButton _android_button_mask_to_godot_button_mask(int android_button_mask);
 
-	void _wheel_button_click(MouseButton event_buttons_mask, const Ref<InputEventMouseButton> &ev, MouseButton wheel_button, float factor);
+	void _wheel_button_click(MouseButton p_button_mask, const Ref<InputEventMouseButton> &p_ev, MouseButton p_wheel_button, float p_factor);
 
 public:
 	void process_touch(int p_event, int p_pointer, const Vector<TouchPos> &p_points);
-	void process_hover(int p_type, Point2 p_pos);
-	void process_mouse_event(int input_device, int event_action, int event_android_buttons_mask, Point2 event_pos, float event_vertical_factor = 0, float event_horizontal_factor = 0);
-	void process_double_tap(int event_android_button_mask, Point2 p_pos);
+	void process_mouse_hover(int p_action, Point2 p_pos);
+	void process_mouse_event(int p_action, int p_source, Point2 p_pos, int p_button_mask);
+	void process_mouse_scroll(int p_source, Point2 p_pos, int p_button_mask, float p_horizontal_factor, float p_vertical_factor);
+	void process_mouse_double_click(Point2 p_pos, int p_button_mask);
+	void process_double_tap(Point2 p_pos);
+	void process_long_press(Point2 p_pos);
 	void process_scroll(Point2 p_pos);
+	void process_fling(Vector2 p_velocity);
 	void process_joy_event(JoypadEvent p_event);
 	void process_key_event(int p_keycode, int p_scancode, int p_unicode_char, bool p_pressed);
 };
