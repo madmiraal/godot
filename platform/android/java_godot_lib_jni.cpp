@@ -277,52 +277,66 @@ JNIEXPORT jboolean JNICALL Java_org_godotengine_godot_GodotLib_step(JNIEnv *env,
 	return should_swap_buffers;
 }
 
-void touch_preprocessing(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
+// Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__III_3F(JNIEnv *env, jclass clazz, jint p_action, jint p_pointer_idx, jint p_pointer_count, jfloatArray p_positions) {
 	if (step.get() <= 0)
 		return;
 
 	Vector<AndroidInputHandler::TouchPos> points;
-	for (int i = 0; i < pointer_count; i++) {
-		jfloat p[3];
-		env->GetFloatArrayRegion(positions, i * 3, 3, p);
-		AndroidInputHandler::TouchPos tp;
-		tp.pos = Point2(p[1], p[2]);
-		tp.id = (int)p[0];
-		points.push_back(tp);
+	for (int i = 0; i < p_pointer_count; i++) {
+		jfloat point[3];
+		env->GetFloatArrayRegion(p_positions, i * 3, 3, point);
+		AndroidInputHandler::TouchPos touch;
+		touch.pos = Point2(point[1], point[2]);
+		touch.id = (int)point[0];
+		points.push_back(touch);
 	}
 
-	if ((input_device & AINPUT_SOURCE_MOUSE) == AINPUT_SOURCE_MOUSE) {
-		input_handler->process_mouse_event(ev, buttons_mask, points[0].pos, vertical_factor, horizontal_factor);
-	} else {
-		input_handler->process_touch(ev, pointer, points);
-	}
+	input_handler->process_touch(p_action, p_pointer_idx, points);
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3F(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position) {
-	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position);
-}
-
-// Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FI(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask) {
-	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position, buttons_mask);
-}
-
-// Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FIFF(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray position, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor) {
-	touch_preprocessing(env, clazz, input_device, ev, pointer, pointer_count, position, buttons_mask, vertical_factor, horizontal_factor);
-}
-
-// Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_hover(JNIEnv *env, jclass clazz, jint p_type, jfloat p_x, jfloat p_y) {
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseHover(JNIEnv *env, jclass clazz, jint p_action, jfloat p_x, jfloat p_y) {
 	if (step.get() <= 0)
 		return;
 
-	input_handler->process_hover(p_type, Point2(p_x, p_y));
+	input_handler->process_mouse_hover(p_action, Point2(p_x, p_y));
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longpress(JNIEnv *env, jclass clazz, jint p_x, jint p_y) {
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseEvent(JNIEnv *env, jclass clazz, jint p_action, jfloat p_x, jfloat p_y, jint p_button_mask) {
+	if (step.get() <= 0)
+		return;
+
+	input_handler->process_mouse_event(p_action, Point2(p_x, p_y), p_button_mask);
+}
+
+// Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseScroll(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y, jint p_button_mask, jfloat p_horizontal_factor, jfloat p_vertical_factor) {
+	if (step.get() <= 0)
+		return;
+
+	input_handler->process_mouse_scroll(Point2(p_x, p_y), p_button_mask, p_horizontal_factor, p_vertical_factor);
+}
+
+// Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseDoubleClick(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y, jint p_button_mask) {
+	if (step.get() <= 0)
+		return;
+
+	input_handler->process_mouse_double_click(Point2(p_x, p_y), p_button_mask);
+}
+
+// Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_doubleTap(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y) {
+	if (step.get() <= 0)
+		return;
+
+	input_handler->process_double_tap(Point2(p_x, p_y));
+}
+
+// Called on the UI thread
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longPress(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y) {
 	if (step.get() <= 0)
 		return;
 
@@ -330,19 +344,19 @@ JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longpress(JNIEnv *env
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_doubleTap(JNIEnv *env, jclass clazz, jint p_button_mask, jint p_x, jint p_y) {
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_scroll(JNIEnv *env, jclass clazz, jfloat p_distance_x, jfloat p_distance_y) {
 	if (step.get() <= 0)
 		return;
 
-	input_handler->process_double_tap(p_button_mask, Point2(p_x, p_y));
+	input_handler->process_scroll(Point2(p_distance_x, p_distance_y));
 }
 
 // Called on the UI thread
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_scroll(JNIEnv *env, jclass clazz, jint p_x, jint p_y) {
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_fling(JNIEnv *env, jclass clazz, jfloat p_velocity_x, jfloat p_velocity_y) {
 	if (step.get() <= 0)
 		return;
 
-	input_handler->process_scroll(Point2(p_x, p_y));
+	input_handler->process_fling(Vector2(p_velocity_x, p_velocity_y));
 }
 
 // Called on the UI thread

@@ -34,6 +34,7 @@ import org.godotengine.godot.GodotLib;
 import org.godotengine.godot.GodotView;
 
 import android.view.GestureDetector;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 
 /**
@@ -54,7 +55,6 @@ public class GodotGestureHandler extends GestureDetector.SimpleOnGestureListener
 	@Override
 	public boolean onDown(MotionEvent event) {
 		super.onDown(event);
-		//Log.i("GodotGesture", "onDown");
 		return true;
 	}
 
@@ -66,33 +66,33 @@ public class GodotGestureHandler extends GestureDetector.SimpleOnGestureListener
 
 	@Override
 	public void onLongPress(MotionEvent event) {
-		final int x = Math.round(event.getX());
-		final int y = Math.round(event.getY());
-		GodotLib.longpress(x, y);
+		final float x = event.getX();
+		final float y = event.getY();
+		GodotLib.longPress(x, y);
 	}
 
 	@Override
 	public boolean onDoubleTap(MotionEvent event) {
-		//Log.i("GodotGesture", "onDoubleTap");
-		final int x = Math.round(event.getX());
-		final int y = Math.round(event.getY());
-		final int buttonMask = event.getButtonState();
-		GodotLib.doubleTap(buttonMask, x, y);
+		final float x = event.getX();
+		final float y = event.getY();
+		if (event.isFromSource(InputDevice.SOURCE_MOUSE)) {
+			final int buttonMask = event.getButtonState();
+			GodotLib.mouseDoubleClick(x, y, buttonMask);
+		} else {
+			GodotLib.doubleTap(x, y);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-		//Log.i("GodotGesture", "onScroll");
-		final int x = Math.round(distanceX);
-		final int y = Math.round(distanceY);
-		GodotLib.scroll(x, y);
+		GodotLib.scroll(distanceX, distanceY);
 		return true;
 	}
 
 	@Override
 	public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
-		//Log.i("GodotGesture", "onFling");
+		GodotLib.fling(velocityX, velocityY);
 		return true;
 	}
 }

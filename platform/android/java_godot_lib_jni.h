@@ -35,7 +35,7 @@
 #include <jni.h>
 
 // These functions can be called from within JAVA and are the means by which our JAVA implementation calls back into our C++ code.
-// See java/src/org/godotengine/godot/GodotLib.java for the JAVA side of this (yes that's why we have the long names)
+// See java/lib/src/org/godotengine/godot/GodotLib.java for the JAVA side of this (yes that's why we have the long names)
 extern "C" {
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_initialize(JNIEnv *env, jclass clazz, jobject activity, jobject godot_instance, jobject p_asset_manager, jboolean p_use_apk_expansion);
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_ondestroy(JNIEnv *env, jclass clazz);
@@ -44,14 +44,15 @@ JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_resize(JNIEnv *env, j
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_newcontext(JNIEnv *env, jclass clazz);
 JNIEXPORT jboolean JNICALL Java_org_godotengine_godot_GodotLib_step(JNIEnv *env, jclass clazz);
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_back(JNIEnv *env, jclass clazz);
-void touch_preprocessing(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask = 0, jfloat vertical_factor = 0, jfloat horizontal_factor = 0);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3F(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FI(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__IIII_3FIFF(JNIEnv *env, jclass clazz, jint input_device, jint ev, jint pointer, jint pointer_count, jfloatArray positions, jint buttons_mask, jfloat vertical_factor, jfloat horizontal_factor);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_hover(JNIEnv *env, jclass clazz, jint p_type, jfloat p_x, jfloat p_y);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longpress(JNIEnv *env, jclass clazz, jint p_x, jint p_y);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_doubleTap(JNIEnv *env, jclass clazz, jint p_button_mask, jint p_x, jint p_y);
-JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_scroll(JNIEnv *env, jclass clazz, jint p_x, jint p_y);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_touch__III_3F(JNIEnv *env, jclass clazz, jint p_action, jint p_pointer_idx, jint p_pointer_count, jfloatArray p_positions);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseHover(JNIEnv *env, jclass clazz, jint p_action, jfloat p_x, jfloat p_y);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseEvent(JNIEnv *env, jclass clazz, jint p_action, jfloat p_x, jfloat p_y, jint p_button_mask);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseScroll(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y, jint p_button_mask, jfloat p_horizontal_factor, jfloat p_vertical_factor);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_mouseDoubleClick(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y, jint p_buttonMask);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_doubleTap(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_longPress(JNIEnv *env, jclass clazz, jfloat p_x, jfloat p_y);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_scroll(JNIEnv *env, jclass clazz, jfloat p_distance_x, jfloat p_distance_y);
+JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_fling(JNIEnv *env, jclass clazz, jfloat p_velocity_x, jfloat p_velocity_y);
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_key(JNIEnv *env, jclass clazz, jint p_keycode, jint p_scancode, jint p_unicode_char, jboolean p_pressed);
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_joybutton(JNIEnv *env, jclass clazz, jint p_device, jint p_button, jboolean p_pressed);
 JNIEXPORT void JNICALL Java_org_godotengine_godot_GodotLib_joyaxis(JNIEnv *env, jclass clazz, jint p_device, jint p_axis, jfloat p_value);

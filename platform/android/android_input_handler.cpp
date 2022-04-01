@@ -218,9 +218,9 @@ void AndroidInputHandler::process_touch(int p_event, int p_pointer, const Vector
 	}
 }
 
-void AndroidInputHandler::process_hover(int p_type, Point2 p_pos) {
+void AndroidInputHandler::process_mouse_hover(int p_action, Point2 p_pos) {
 	// https://developer.android.com/reference/android/view/MotionEvent.html#ACTION_HOVER_ENTER
-	switch (p_type) {
+	switch (p_action) {
 		case AMOTION_EVENT_ACTION_HOVER_MOVE: // hover move
 		case AMOTION_EVENT_ACTION_HOVER_ENTER: // hover enter
 		case AMOTION_EVENT_ACTION_HOVER_EXIT: { // hover exit
@@ -236,23 +236,23 @@ void AndroidInputHandler::process_hover(int p_type, Point2 p_pos) {
 	}
 }
 
-void AndroidInputHandler::process_mouse_event(int event_action, int event_android_buttons_mask, Point2 event_pos, float event_vertical_factor, float event_horizontal_factor) {
-	int event_buttons_mask = _android_button_mask_to_godot_button_mask(event_android_buttons_mask);
-	switch (event_action) {
+void AndroidInputHandler::process_mouse_event(int p_action, Point2 p_pos, int p_button_mask) {
+	int button_mask = _android_button_mask_to_godot_button_mask(p_button_mask);
+	switch (p_action) {
 		case AMOTION_EVENT_ACTION_BUTTON_PRESS:
 		case AMOTION_EVENT_ACTION_BUTTON_RELEASE: {
 			Ref<InputEventMouseButton> ev;
 			ev.instance();
 			_set_key_modifier_state(ev);
-			ev->set_position(event_pos);
-			ev->set_global_position(event_pos);
-			ev->set_pressed(event_action == AMOTION_EVENT_ACTION_BUTTON_PRESS);
-			int changed_button_mask = buttons_state ^ event_buttons_mask;
+			ev->set_position(p_pos);
+			ev->set_global_position(p_pos);
+			ev->set_pressed(p_action == AMOTION_EVENT_ACTION_BUTTON_PRESS);
+			int changed_button_mask = buttons_state ^ button_mask;
 
-			buttons_state = event_buttons_mask;
+			buttons_state = button_mask;
 
 			ev->set_button_index(_button_index_from_mask(changed_button_mask));
-			ev->set_button_mask(event_buttons_mask);
+			ev->set_button_mask(button_mask);
 			input->parse_input_event(ev);
 		} break;
 
@@ -260,46 +260,75 @@ void AndroidInputHandler::process_mouse_event(int event_action, int event_androi
 			Ref<InputEventMouseMotion> ev;
 			ev.instance();
 			_set_key_modifier_state(ev);
-			ev->set_position(event_pos);
-			ev->set_global_position(event_pos);
-			ev->set_relative(event_pos - hover_prev_pos);
-			ev->set_button_mask(event_buttons_mask);
+			ev->set_position(p_pos);
+			ev->set_global_position(p_pos);
+			ev->set_relative(p_pos - hover_prev_pos);
+			ev->set_button_mask(button_mask);
 			input->parse_input_event(ev);
-			hover_prev_pos = event_pos;
-		} break;
-		case AMOTION_EVENT_ACTION_SCROLL: {
-			Ref<InputEventMouseButton> ev;
-			ev.instance();
-			_set_key_modifier_state(ev);
-			ev->set_position(event_pos);
-			ev->set_global_position(event_pos);
-			ev->set_pressed(true);
-			buttons_state = event_buttons_mask;
-			if (event_vertical_factor > 0) {
-				_wheel_button_click(event_buttons_mask, ev, BUTTON_WHEEL_UP, event_vertical_factor);
-			} else if (event_vertical_factor < 0) {
-				_wheel_button_click(event_buttons_mask, ev, BUTTON_WHEEL_DOWN, -event_vertical_factor);
-			}
-
-			if (event_horizontal_factor > 0) {
-				_wheel_button_click(event_buttons_mask, ev, BUTTON_WHEEL_RIGHT, event_horizontal_factor);
-			} else if (event_horizontal_factor < 0) {
-				_wheel_button_click(event_buttons_mask, ev, BUTTON_WHEEL_LEFT, -event_horizontal_factor);
-			}
+			hover_prev_pos = p_pos;
 		} break;
 	}
 }
 
-void AndroidInputHandler::_wheel_button_click(int event_buttons_mask, const Ref<InputEventMouseButton> &ev, int wheel_button, float factor) {
+void AndroidInputHandler::process_mouse_scroll(Point2 p_pos, int p_button_mask, float p_horizontal_factor, float p_vertical_factor) {
+	int button_mask = _android_button_mask_to_godot_button_mask(p_button_mask);
+	Ref<InputEventMouseButton> ev;
+	ev.instance();
+	_set_key_modifier_state(ev);
+	ev->set_position(p_pos);
+	ev->set_global_position(p_pos);
+	ev->set_pressed(true);
+	buttons_state = button_mask;
+
+	if (p_horizontal_factor > 0) {
+		_wheel_button_click(p_button_mask, ev, BUTTON_WHEEL_RIGHT, p_horizontal_factor);
+	} else if (p_horizontal_factor < 0) {
+		_wheel_button_click(p_button_mask, ev, BUTTON_WHEEL_LEFT, -p_horizontal_factor);
+	}
+	if (p_vertical_factor > 0) {
+		_wheel_button_click(p_button_mask, ev, BUTTON_WHEEL_UP, p_vertical_factor);
+	} else if (p_vertical_factor < 0) {
+		_wheel_button_click(p_button_mask, ev, BUTTON_WHEEL_DOWN, -p_vertical_factor);
+	}
+}
+
+void AndroidInputHandler::_wheel_button_click(int p_button_mask, const Ref<InputEventMouseButton> &p_ev, int p_wheel_button, float p_factor) {
+	Ref<InputEventMouseButton> ev = p_ev->duplicate();
+	ev->set_button_index(p_wheel_button);
+	ev->set_button_mask(p_button_mask ^ (1 << (p_wheel_button - 1)));
+	ev->set_factor(p_factor);
+	input->parse_input_event(ev);
 	Ref<InputEventMouseButton> evd = ev->duplicate();
-	evd->set_button_index(wheel_button);
-	evd->set_button_mask(event_buttons_mask ^ (1 << (wheel_button - 1)));
-	evd->set_factor(factor);
+	evd->set_pressed(false);
+	evd->set_button_mask(p_button_mask);
 	input->parse_input_event(evd);
-	Ref<InputEventMouseButton> evdd = evd->duplicate();
-	evdd->set_pressed(false);
-	evdd->set_button_mask(event_buttons_mask);
-	input->parse_input_event(evdd);
+}
+
+void AndroidInputHandler::process_mouse_double_click(Point2 p_pos, int p_button_mask) {
+	int button_mask = _android_button_mask_to_godot_button_mask(p_button_mask);
+	Ref<InputEventMouseButton> ev;
+	ev.instance();
+	_set_key_modifier_state(ev);
+	ev->set_position(p_pos);
+	ev->set_global_position(p_pos);
+	ev->set_pressed(true);
+	ev->set_button_index(_button_index_from_mask(button_mask));
+	ev->set_button_mask(button_mask);
+	ev->set_doubleclick(true);
+	input->parse_input_event(ev);
+}
+
+void AndroidInputHandler::process_double_tap(Point2 p_pos) {
+	Ref<InputEventMouseButton> ev;
+	ev.instance();
+	_set_key_modifier_state(ev);
+	ev->set_position(p_pos);
+	ev->set_global_position(p_pos);
+	ev->set_pressed(true);
+	ev->set_button_index(BUTTON_LEFT);
+	ev->set_button_mask(BUTTON_MASK_LEFT);
+	ev->set_doubleclick(true);
+	Input::get_singleton()->parse_input_event(ev);
 }
 
 void AndroidInputHandler::process_long_press(Point2 p_pos) {
@@ -314,20 +343,6 @@ void AndroidInputHandler::process_long_press(Point2 p_pos) {
 	input->parse_input_event(ev);
 }
 
-void AndroidInputHandler::process_double_tap(int event_android_button_mask, Point2 p_pos) {
-	int event_button_mask = _android_button_mask_to_godot_button_mask(event_android_button_mask);
-	Ref<InputEventMouseButton> ev;
-	ev.instance();
-	_set_key_modifier_state(ev);
-	ev->set_position(p_pos);
-	ev->set_global_position(p_pos);
-	ev->set_pressed(event_button_mask != 0);
-	ev->set_button_index(_button_index_from_mask(event_button_mask));
-	ev->set_button_mask(event_button_mask);
-	ev->set_doubleclick(true);
-	input->parse_input_event(ev);
-}
-
 void AndroidInputHandler::process_scroll(Point2 p_pos) {
 	Ref<InputEventPanGesture> ev;
 	ev.instance();
@@ -336,6 +351,10 @@ void AndroidInputHandler::process_scroll(Point2 p_pos) {
 	ev->set_delta(p_pos - scroll_prev_pos);
 	input->parse_input_event(ev);
 	scroll_prev_pos = p_pos;
+}
+
+void AndroidInputHandler::process_fling(Vector2 p_velocity) {
+	//TODO
 }
 
 int AndroidInputHandler::_button_index_from_mask(int button_mask) {

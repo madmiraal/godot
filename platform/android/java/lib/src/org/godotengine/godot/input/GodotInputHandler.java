@@ -139,9 +139,10 @@ public class GodotInputHandler implements InputDeviceListener {
 	}
 
 	public boolean onTouchEvent(final MotionEvent event) {
+		final int action = event.getActionMasked();
 		// Mouse drag (mouse pressed and move) doesn't fire onGenericMotionEvent so this is needed
 		if (event.isFromSource(InputDevice.SOURCE_MOUSE)) {
-			if (event.getAction() != MotionEvent.ACTION_MOVE) {
+			if (action != MotionEvent.ACTION_MOVE) {
 				// we return true because every time a mouse event is fired, the event is already handled
 				// in onGenericMotionEvent, so by touch event we can say that the event is also handled
 				return true;
@@ -149,20 +150,20 @@ public class GodotInputHandler implements InputDeviceListener {
 			return handleMouseEvent(event);
 		}
 
-		final int evcount = event.getPointerCount();
-		if (evcount == 0)
+		final int pointerCount = event.getPointerCount();
+		if (pointerCount == 0) {
 			return true;
+		}
 
 		if (godotView != null) {
-			final float[] arr = new float[event.getPointerCount() * 3]; // pointerId1, x1, y1, pointerId2, etc...
-
+			// pointerId1, x1, y1, pointerId2, x2, y2, etc...
+			final float[] positions = new float[event.getPointerCount() * 3];
 			for (int i = 0; i < event.getPointerCount(); i++) {
-				arr[i * 3 + 0] = event.getPointerId(i);
-				arr[i * 3 + 1] = event.getX(i);
-				arr[i * 3 + 2] = event.getY(i);
+				positions[i * 3 + 0] = event.getPointerId(i);
+				positions[i * 3 + 1] = event.getX(i);
+				positions[i * 3 + 2] = event.getY(i);
 			}
-			final int action = event.getActionMasked();
-			final int pointer_idx = event.getPointerId(event.getActionIndex());
+			final int pointerId = event.getPointerId(event.getActionIndex());
 
 			switch (action) {
 				case MotionEvent.ACTION_DOWN:
@@ -171,7 +172,7 @@ public class GodotInputHandler implements InputDeviceListener {
 				case MotionEvent.ACTION_MOVE:
 				case MotionEvent.ACTION_POINTER_UP:
 				case MotionEvent.ACTION_POINTER_DOWN: {
-					GodotLib.touch(event.getSource(), action, pointer_idx, evcount, arr);
+					GodotLib.touch(action, pointerId, pointerCount, positions);
 				} break;
 			}
 		}
@@ -179,7 +180,9 @@ public class GodotInputHandler implements InputDeviceListener {
 	}
 
 	public boolean onGenericMotionEvent(MotionEvent event) {
-		if (event.isFromSource(InputDevice.SOURCE_JOYSTICK) && event.getAction() == MotionEvent.ACTION_MOVE) {
+		final int source = event.getSource();
+		final int action = event.getActionMasked();
+		if (source == InputDevice.SOURCE_JOYSTICK && action == MotionEvent.ACTION_MOVE) {
 			// Check if the device exists
 			final int deviceId = event.getDeviceId();
 			if (mJoystickIds.indexOfKey(deviceId) >= 0) {
@@ -212,13 +215,12 @@ public class GodotInputHandler implements InputDeviceListener {
 				}
 				return true;
 			}
-		} else if (event.isFromSource(InputDevice.SOURCE_STYLUS)) {
+		} else if (source == InputDevice.SOURCE_STYLUS) {
 			final float x = event.getX();
 			final float y = event.getY();
-			final int type = event.getAction();
-			GodotLib.hover(type, x, y);
+			GodotLib.mouseHover(action, x, y);
 			return true;
-		} else if ((event.isFromSource(InputDevice.SOURCE_MOUSE))) {
+		} else if (source == InputDevice.SOURCE_MOUSE) {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 				return handleMouseEvent(event);
 			}
@@ -401,34 +403,32 @@ public class GodotInputHandler implements InputDeviceListener {
 	}
 
 	private boolean handleMouseEvent(final MotionEvent event) {
-		switch (event.getActionMasked()) {
+		final float x = event.getX();
+		final float y = event.getY();
+		final int buttonMask = event.getButtonState();
+		final int action = event.getActionMasked();
+		switch (action) {
 			case MotionEvent.ACTION_HOVER_ENTER:
 			case MotionEvent.ACTION_HOVER_MOVE:
 			case MotionEvent.ACTION_HOVER_EXIT: {
-				final float x = event.getX();
-				final float y = event.getY();
-				final int type = event.getAction();
-				GodotLib.hover(type, x, y);
+				GodotLib.mouseHover(action, x, y);
 				return true;
 			}
 			case MotionEvent.ACTION_BUTTON_PRESS:
 			case MotionEvent.ACTION_BUTTON_RELEASE:
 			case MotionEvent.ACTION_MOVE: {
-				final float x = event.getX();
-				final float y = event.getY();
-				final int buttonsMask = event.getButtonState();
-				final int action = event.getAction();
-				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, x, y }, buttonsMask);
+				GodotLib.mouseEvent(action, x, y, buttonMask);
 				return true;
 			}
 			case MotionEvent.ACTION_SCROLL: {
-				final float x = event.getX();
-				final float y = event.getY();
-				final int buttonsMask = event.getButtonState();
-				final int action = event.getAction();
-				final float verticalFactor = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
 				final float horizontalFactor = event.getAxisValue(MotionEvent.AXIS_HSCROLL);
-				GodotLib.touch(event.getSource(), action, 0, 1, new float[] { 0, x, y }, buttonsMask, verticalFactor, horizontalFactor);
+				final float verticalFactor = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+				GodotLib.mouseScroll(x, y, buttonMask, horizontalFactor, verticalFactor);
+			}
+			case MotionEvent.ACTION_DOWN:
+			case MotionEvent.ACTION_UP: {
+				// we can safely ignore these cases because they are always come beside ACTION_BUTTON_PRESS and ACTION_BUTTON_RELEASE
+				return true;
 			}
 		}
 		return false;
