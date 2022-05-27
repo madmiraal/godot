@@ -229,7 +229,7 @@ public:
 	virtual String clipboard_get_primary() const;
 
 	virtual Array get_display_cutouts() const { return Array(); }
-	virtual Rect2i get_display_safe_area() const { return screen_get_usable_rect(); }
+	virtual Rect2i get_window_safe_area() const { return screen_get_usable_rect(); }
 
 	enum {
 		SCREEN_OF_MAIN_WINDOW = -1

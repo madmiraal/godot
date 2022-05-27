@@ -134,7 +134,7 @@ public:
 	virtual void tts_resume() override;
 	virtual void tts_stop() override;
 
-	virtual Rect2i get_display_safe_area() const override;
+	virtual Rect2i get_window_safe_area() const override;
 
 	virtual int get_screen_count() const override;
 	virtual Point2i screen_get_position(int p_screen = SCREEN_OF_MAIN_WINDOW) const override;

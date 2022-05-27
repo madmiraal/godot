@@ -51,13 +51,13 @@ private:
 	jmethodID _get_cache_dir = 0;
 	jmethodID _get_data_dir = 0;
 	jmethodID _get_display_cutouts = 0;
-	jmethodID _get_display_safe_area = 0;
 	jmethodID _get_locale = 0;
 	jmethodID _get_model = 0;
 	jmethodID _get_screen_DPI = 0;
 	jmethodID _get_scaled_density = 0;
 	jmethodID _get_screen_refresh_rate = 0;
 	jmethodID _get_unique_id = 0;
+	jmethodID _get_window_safe_area = 0;
 	jmethodID _show_keyboard = 0;
 	jmethodID _hide_keyboard = 0;
 	jmethodID _set_screen_orientation = 0;
@@ -79,7 +79,7 @@ public:
 	float get_scaled_density();
 	float get_screen_refresh_rate(float fallback);
 	Array get_display_cutouts();
-	Rect2i get_display_safe_area();
+	Rect2i get_window_safe_area();
 	String get_unique_id();
 	bool has_vk();
 	void show_vk(const String &p_existing, bool p_multiline, int p_max_input_length, int p_cursor_start, int p_cursor_end);

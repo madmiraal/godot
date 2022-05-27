@@ -142,10 +142,10 @@ Array DisplayServerAndroid::get_display_cutouts() const {
 	return godot_io_java->get_display_cutouts();
 }
 
-Rect2i DisplayServerAndroid::get_display_safe_area() const {
+Rect2i DisplayServerAndroid::get_window_safe_area() const {
 	GodotIOJavaWrapper *godot_io_java = OS_Android::get_singleton()->get_godot_io_java();
 	ERR_FAIL_NULL_V(godot_io_java, Rect2i());
-	return godot_io_java->get_display_safe_area();
+	return godot_io_java->get_window_safe_area();
 }
 
 void DisplayServerAndroid::screen_set_keep_on(bool p_enable) {

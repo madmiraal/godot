@@ -360,7 +360,7 @@ void DisplayServerIPhone::tts_stop() {
 	[tts stopSpeaking];
 }
 
-Rect2i DisplayServerIPhone::get_display_safe_area() const {
+Rect2i DisplayServerIPhone::get_window_safe_area() const {
 	if (@available(iOS 11, *)) {
 		UIEdgeInsets insets = UIEdgeInsetsZero;
 		UIView *view = AppDelegate.viewController.godotView;

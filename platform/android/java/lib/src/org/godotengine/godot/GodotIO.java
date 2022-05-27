@@ -49,6 +49,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.Display;
 import android.view.DisplayCutout;
+import android.view.View;
 import android.view.WindowInsets;
 
 import java.io.IOException;
@@ -240,15 +241,13 @@ public class GodotIO {
 		return fallback;
 	}
 
-	public int[] getDisplaySafeArea() {
-		DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-		Display display = activity.getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getRealSize(size);
-
-		int[] result = { 0, 0, size.x, size.y };
+	public int[] getWindowSafeArea() {
+		final View decorView = activity.getWindow().getDecorView();
+		Rect visibleRect = new Rect();
+		decorView.getWindowVisibleDisplayFrame(visibleRect);
+		int[] result = { 0, 0, visibleRect.width(), visibleRect.height() };
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			WindowInsets insets = activity.getWindow().getDecorView().getRootWindowInsets();
+			WindowInsets insets = decorView.getRootWindowInsets();
 			DisplayCutout cutout = insets.getDisplayCutout();
 			if (cutout != null) {
 				int insetLeft = cutout.getSafeInsetLeft();

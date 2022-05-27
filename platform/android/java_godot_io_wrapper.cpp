@@ -54,13 +54,13 @@ GodotIOJavaWrapper::GodotIOJavaWrapper(JNIEnv *p_env, jobject p_godot_io_instanc
 		_get_cache_dir = p_env->GetMethodID(cls, "getCacheDir", "()Ljava/lang/String;");
 		_get_data_dir = p_env->GetMethodID(cls, "getDataDir", "()Ljava/lang/String;");
 		_get_display_cutouts = p_env->GetMethodID(cls, "getDisplayCutouts", "()[I"),
-		_get_display_safe_area = p_env->GetMethodID(cls, "getDisplaySafeArea", "()[I"),
 		_get_locale = p_env->GetMethodID(cls, "getLocale", "()Ljava/lang/String;");
 		_get_model = p_env->GetMethodID(cls, "getModel", "()Ljava/lang/String;");
 		_get_screen_DPI = p_env->GetMethodID(cls, "getScreenDPI", "()I");
 		_get_scaled_density = p_env->GetMethodID(cls, "getScaledDensity", "()F");
 		_get_screen_refresh_rate = p_env->GetMethodID(cls, "getScreenRefreshRate", "(D)D");
 		_get_unique_id = p_env->GetMethodID(cls, "getUniqueID", "()Ljava/lang/String;");
+		_get_window_safe_area = p_env->GetMethodID(cls, "getWindowSafeArea", "()[I"),
 		_show_keyboard = p_env->GetMethodID(cls, "showKeyboard", "(Ljava/lang/String;ZIII)V");
 		_hide_keyboard = p_env->GetMethodID(cls, "hideKeyboard", "()V");
 		_set_screen_orientation = p_env->GetMethodID(cls, "setScreenOrientation", "(I)V");
@@ -186,12 +186,12 @@ Array GodotIOJavaWrapper::get_display_cutouts() {
 	return result;
 }
 
-Rect2i GodotIOJavaWrapper::get_display_safe_area() {
+Rect2i GodotIOJavaWrapper::get_window_safe_area() {
 	Rect2i result;
-	ERR_FAIL_NULL_V(_get_display_safe_area, result);
+	ERR_FAIL_NULL_V(_get_window_safe_area, result);
 	JNIEnv *env = get_jni_env();
 	ERR_FAIL_NULL_V(env, result);
-	jintArray returnArray = (jintArray)env->CallObjectMethod(godot_io_instance, _get_display_safe_area);
+	jintArray returnArray = (jintArray)env->CallObjectMethod(godot_io_instance, _get_window_safe_area);
 	ERR_FAIL_COND_V(env->GetArrayLength(returnArray) != 4, result);
 	jint *arrayBody = env->GetIntArrayElements(returnArray, JNI_FALSE);
 	result = Rect2i(arrayBody[0], arrayBody[1], arrayBody[2], arrayBody[3]);
