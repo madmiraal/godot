@@ -12,10 +12,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  android-template:
+  android-compile-export:
+    name: Compile Android Export
     runs-on: "ubuntu-20.04"
-    name: Template (target=release, tools=no)
-
+    strategy:
+      matrix:
+        arch: [armv7, arm64v8, x86, x86_64]
+        target: [release, debug]
     steps:
       - uses: actions/checkout@v2
 
@@ -38,23 +41,21 @@ jobs:
       - name: Setup python and scons
         uses: ./.github/actions/godot-deps
 
-      - name: Compilation (armv7)
+      - name: Compilation
         uses: ./.github/actions/godot-build
         with:
-          sconsflags: ${{ env.SCONSFLAGS }} android_arch=armv7
+          sconsflags: ${{ env.SCONSFLAGS }} android_arch=${{ matrix.arch }}
           platform: android
-          target: release
+          target: ${{ matrix.target }}
           tools: false
           tests: false
 
-      - name: Compilation (arm64v8)
-        uses: ./.github/actions/godot-build
-        with:
-          sconsflags: ${{ env.SCONSFLAGS }} android_arch=arm64v8
-          platform: android
-          target: release
-          tools: false
-          tests: false
+  android-template:
+    name: Godot templates
+    runs-on: "ubuntu-20.04"
+    needs: android-compile-export
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Generate Godot templates
         run: |
