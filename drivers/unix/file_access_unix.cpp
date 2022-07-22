@@ -34,6 +34,7 @@
 
 #include "core/os/os.h"
 #include "core/string/print_string.h"
+#include "errors_unix.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -75,7 +76,6 @@ Error FileAccessUnix::_open(const String &p_path, int p_mode_flags) {
 
 	path_src = p_path;
 	path = fix_path(p_path);
-	//printf("opening %s, %i\n", path.utf8().get_data(), Memory::get_static_mem_usage());
 
 	ERR_FAIL_COND_V_MSG(f, ERR_ALREADY_IN_USE, "File is already in use.");
 	const char *mode_string;
@@ -95,17 +95,19 @@ Error FileAccessUnix::_open(const String &p_path, int p_mode_flags) {
 	/* pretty much every implementation that uses fopen as primary
 	   backend (unix-compatible mostly) supports utf8 encoding */
 
-	//printf("opening %s as %s\n", p_path.utf8().get_data(), path.utf8().get_data());
 	struct stat st;
-	int err = stat(path.utf8().get_data(), &st);
-	if (!err) {
-		switch (st.st_mode & S_IFMT) {
-			case S_IFLNK:
-			case S_IFREG:
-				break;
-			default:
-				return ERR_FILE_CANT_OPEN;
-		}
+	if (stat(path.utf8().get_data(), &st) != 0) {
+		last_error = godot_error(errno);
+		return last_error;
+	}
+
+	switch (st.st_mode & S_IFMT) {
+		case S_IFLNK:
+		case S_IFREG:
+			break;
+		default:
+			last_error = ERR_FILE_CANT_OPEN;
+			return last_error;
 	}
 
 	if (is_backup_save_enabled() && (p_mode_flags == WRITE)) {
@@ -116,14 +118,7 @@ Error FileAccessUnix::_open(const String &p_path, int p_mode_flags) {
 	f = fopen(path.utf8().get_data(), mode_string);
 
 	if (f == nullptr) {
-		switch (errno) {
-			case ENOENT: {
-				last_error = ERR_FILE_NOT_FOUND;
-			} break;
-			default: {
-				last_error = ERR_FILE_CANT_OPEN;
-			} break;
-		}
+		last_error = godot_error(errno);
 		return last_error;
 	}
 
@@ -325,12 +320,10 @@ uint32_t FileAccessUnix::_get_unix_permissions(const String &p_file) {
 Error FileAccessUnix::_set_unix_permissions(const String &p_file, uint32_t p_permissions) {
 	String file = fix_path(p_file);
 
-	int err = chmod(file.utf8().get_data(), p_permissions);
-	if (!err) {
-		return OK;
+	if (chmod(file.utf8().get_data(), p_permissions) != 0) {
+		return godot_error(errno);
 	}
-
-	return FAILED;
+	return OK;
 }
 
 CloseNotificationFunc FileAccessUnix::close_notification_func = nullptr;

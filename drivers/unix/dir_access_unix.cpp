@@ -36,6 +36,7 @@
 #include "core/os/os.h"
 #include "core/string/print_string.h"
 #include "core/templates/list.h"
+#include "errors_unix.h"
 
 #include <errno.h>
 #include <stdio.h>
@@ -52,16 +53,10 @@
 
 Error DirAccessUnix::list_dir_begin() {
 	list_dir_end(); //close any previous dir opening!
-
-	//char real_current_dir_name[2048]; //is this enough?!
-	//getcwd(real_current_dir_name,2048);
-	//chdir(current_path.utf8().get_data());
 	dir_stream = opendir(current_dir.utf8().get_data());
-	//chdir(real_current_dir_name);
-	if (!dir_stream) {
-		return ERR_CANT_OPEN; //error!
+	if (dir_stream == nullptr) {
+		return godot_error(errno);
 	}
-
 	return OK;
 }
 
@@ -320,18 +315,10 @@ Error DirAccessUnix::make_dir(String p_dir) {
 
 	p_dir = fix_path(p_dir);
 
-	bool success = (mkdir(p_dir.utf8().get_data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0);
-	int err = errno;
-
-	if (success) {
-		return OK;
+	if (mkdir(p_dir.utf8().get_data(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) != 0) {
+		return godot_error(errno);
 	}
-
-	if (err == EEXIST) {
-		return ERR_ALREADY_EXISTS;
-	}
-
-	return ERR_CANT_CREATE;
+	return OK;
 }
 
 Error DirAccessUnix::change_dir(String p_dir) {
@@ -342,7 +329,9 @@ Error DirAccessUnix::change_dir(String p_dir) {
 	// prev_dir is the directory we are changing out of
 	String prev_dir;
 	char real_current_dir_name[2048];
-	ERR_FAIL_COND_V(getcwd(real_current_dir_name, 2048) == nullptr, ERR_BUG);
+	if (getcwd(real_current_dir_name, 2048) == nullptr) {
+		return godot_error(errno);
+	}
 	if (prev_dir.parse_utf8(real_current_dir_name) != OK) {
 		prev_dir = real_current_dir_name; //no utf8, maybe latin?
 	}
@@ -357,14 +346,15 @@ Error DirAccessUnix::change_dir(String p_dir) {
 		try_dir = p_dir;
 	}
 
-	bool worked = (chdir(try_dir.utf8().get_data()) == 0); // we can only give this utf8
-	if (!worked) {
-		return ERR_INVALID_PARAMETER;
+	if (chdir(try_dir.utf8().get_data()) != 0) {
+		return godot_error(errno);
 	}
 
 	String base = _get_root_path();
 	if (!base.is_empty() && !try_dir.begins_with(base)) {
-		ERR_FAIL_COND_V(getcwd(real_current_dir_name, 2048) == nullptr, ERR_BUG);
+		if (getcwd(real_current_dir_name, 2048) == nullptr) {
+			return godot_error(errno);
+		}
 		String new_dir;
 		new_dir.parse_utf8(real_current_dir_name);
 
@@ -375,7 +365,9 @@ Error DirAccessUnix::change_dir(String p_dir) {
 
 	// the directory exists, so set current_dir to try_dir
 	current_dir = try_dir;
-	ERR_FAIL_COND_V(chdir(prev_dir.utf8().get_data()) != 0, ERR_BUG);
+	if (chdir(prev_dir.utf8().get_data()) != 0) {
+		return godot_error(errno);
+	}
 	return OK;
 }
 
@@ -405,7 +397,10 @@ Error DirAccessUnix::rename(String p_path, String p_new_path) {
 
 	p_new_path = fix_path(p_new_path);
 
-	return ::rename(p_path.utf8().get_data(), p_new_path.utf8().get_data()) == 0 ? OK : FAILED;
+	if (::rename(p_path.utf8().get_data(), p_new_path.utf8().get_data()) != 0) {
+		return godot_error(errno);
+	}
+	return OK;
 }
 
 Error DirAccessUnix::remove(String p_path) {
@@ -417,14 +412,19 @@ Error DirAccessUnix::remove(String p_path) {
 
 	struct stat flags;
 	if ((stat(p_path.utf8().get_data(), &flags) != 0)) {
-		return FAILED;
+		return godot_error(errno);
 	}
 
 	if (S_ISDIR(flags.st_mode)) {
-		return ::rmdir(p_path.utf8().get_data()) == 0 ? OK : FAILED;
+		if (::rmdir(p_path.utf8().get_data()) != 0) {
+			return godot_error(errno);
+		}
 	} else {
-		return ::unlink(p_path.utf8().get_data()) == 0 ? OK : FAILED;
+		if (::unlink(p_path.utf8().get_data()) != 0) {
+			return godot_error(errno);
+		}
 	}
+	return OK;
 }
 
 bool DirAccessUnix::is_link(String p_file) {
@@ -436,7 +436,7 @@ bool DirAccessUnix::is_link(String p_file) {
 
 	struct stat flags;
 	if ((lstat(p_file.utf8().get_data(), &flags) != 0)) {
-		return FAILED;
+		return false;
 	}
 
 	return S_ISLNK(flags.st_mode);
@@ -467,11 +467,10 @@ Error DirAccessUnix::create_link(String p_source, String p_target) {
 	p_source = fix_path(p_source);
 	p_target = fix_path(p_target);
 
-	if (symlink(p_source.utf8().get_data(), p_target.utf8().get_data()) == 0) {
-		return OK;
-	} else {
-		return FAILED;
+	if (symlink(p_source.utf8().get_data(), p_target.utf8().get_data()) != 0) {
+		return godot_error(errno);
 	}
+	return OK;
 }
 
 uint64_t DirAccessUnix::get_space_left() {

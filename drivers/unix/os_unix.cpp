@@ -39,6 +39,7 @@
 #include "drivers/unix/file_access_unix.h"
 #include "drivers/unix/net_socket_posix.h"
 #include "drivers/unix/thread_posix.h"
+#include "errors_unix.h"
 #include "servers/rendering_server.h"
 
 #ifdef __APPLE__
@@ -171,17 +172,23 @@ Error OS_Unix::get_entropy(uint8_t *r_buffer, int p_bytes) {
 	int ofs = 0;
 	do {
 		int chunk = MIN(left, 256);
-		ERR_FAIL_COND_V(getentropy(r_buffer + ofs, chunk), FAILED);
+		if (getentropy(r_buffer + ofs, chunk) != 0) {
+			return godot_error(errno);
+		}
 		left -= chunk;
 		ofs += chunk;
 	} while (left > 0);
 #elif !defined(NO_URANDOM)
 	int r = open("/dev/urandom", O_RDONLY);
-	ERR_FAIL_COND_V(r < 0, FAILED);
+	if (r == -1) {
+		return godot_error(errno);
+	}
 	int left = p_bytes;
 	do {
 		ssize_t ret = read(r, r_buffer, p_bytes);
-		ERR_FAIL_COND_V(ret <= 0, FAILED);
+		if (ret == -1) {
+			return godot_error(errno);
+		}
 		left -= ret;
 	} while (left > 0);
 #else
@@ -404,13 +411,14 @@ Error OS_Unix::create_process(const String &p_path, const List<String> &p_argume
 }
 
 Error OS_Unix::kill(const ProcessID &p_pid) {
-	int ret = ::kill(p_pid, SIGKILL);
-	if (!ret) {
+	Error error = OK;
+	if (::kill(p_pid, SIGKILL) != 0) {
+		error = godot_error(errno);
 		//avoid zombie process
 		int st;
 		::waitpid(p_pid, &st, 0);
 	}
-	return ret ? ERR_INVALID_PARAMETER : OK;
+	return error;
 }
 
 int OS_Unix::get_process_id() const {
@@ -496,9 +504,8 @@ Error OS_Unix::get_dynamic_library_symbol_handle(void *p_library_handle, const S
 
 Error OS_Unix::set_cwd(const String &p_cwd) {
 	if (chdir(p_cwd.utf8().get_data()) != 0) {
-		return ERR_CANT_OPEN;
+		return godot_error(errno);
 	}
-
 	return OK;
 }
 
