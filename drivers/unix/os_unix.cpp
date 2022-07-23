@@ -37,6 +37,7 @@
 #include "drivers/unix/file_access_unix.h"
 #include "drivers/unix/net_socket_posix.h"
 #include "drivers/unix/thread_posix.h"
+#include "errors_unix.h"
 #include "servers/visual_server.h"
 
 #ifdef __APPLE__
@@ -350,13 +351,14 @@ Error OS_Unix::execute(const String &p_path, const List<String> &p_arguments, bo
 }
 
 Error OS_Unix::kill(const ProcessID &p_pid) {
-	int ret = ::kill(p_pid, SIGKILL);
-	if (!ret) {
+	Error error = OK;
+	if (::kill(p_pid, SIGKILL) != 0) {
+		error = godot_error(errno);
 		//avoid zombie process
 		int st;
 		::waitpid(p_pid, &st, 0);
 	}
-	return ret ? ERR_INVALID_PARAMETER : OK;
+	return error;
 }
 
 int OS_Unix::get_process_id() const {
@@ -437,9 +439,8 @@ Error OS_Unix::get_dynamic_library_symbol_handle(void *p_library_handle, const S
 
 Error OS_Unix::set_cwd(const String &p_cwd) {
 	if (chdir(p_cwd.utf8().get_data()) != 0) {
-		return ERR_CANT_OPEN;
+		return godot_error(errno);
 	}
-
 	return OK;
 }
 
