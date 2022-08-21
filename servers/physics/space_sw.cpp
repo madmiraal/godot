@@ -966,7 +966,8 @@ bool SpaceSW::test_body_motion(BodySW *p_body, const Transform &p_from, const Ve
 
 			if (stuck) {
 				safe = 0;
-				unsafe = 0;
+				// Set unsafe to the minimum after eight steps = 1/2^8.
+				unsafe = 1.0 / (1 << 8);
 				best_shape = j; //sadly it's the best
 				break;
 			}
